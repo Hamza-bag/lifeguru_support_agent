@@ -1,0 +1,36 @@
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
+const { handleTurn } = require('../src/pipeline/turn');
+const { createFactsClient } = require('../src/orders/factsClient');
+
+const CHAT = '9876543210';
+const facts = createFactsClient({ mode: 'mock' });
+
+describe('burst buffer (split messages)', () => {
+  it('holds fragments then routes once on combined puja question', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+
+    const t1 = await handleTurn({ state, text: 'meri', chatPhone: CHAT }, facts);
+    assert.equal(t1.response.replies.length, 0);
+    const t2 = await handleTurn({ state: t1.state, text: 'puja', chatPhone: CHAT }, facts);
+    assert.equal(t2.response.replies.length, 0);
+
+    const done = await handleTurn({ state: t2.state, text: 'kab hai', chatPhone: CHAT }, facts);
+    assert.match(done.response.replies.join(' '), /scheduled|Satyanarayan|निर्धारित/i);
+    assert.equal(done.state.userBurstBuffer, null);
+  });
+
+  it('waits for a third part when two fragments are still unclear', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+
+    const t1 = await handleTurn({ state, text: 'meri', chatPhone: CHAT }, facts);
+    assert.equal(t1.response.replies.length, 0);
+
+    const t2 = await handleTurn({ state: t1.state, text: 'puja', chatPhone: CHAT }, facts);
+    assert.equal(t2.response.replies.length, 0);
+
+    const t3 = await handleTurn({ state: t2.state, text: 'kab hai', chatPhone: CHAT }, facts);
+    assert.match(t3.response.replies.join(' '), /scheduled|Satyanarayan|निर्धारित/i);
+    assert.equal(t3.state.userBurstBuffer, null);
+  });
+});

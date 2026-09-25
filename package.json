@@ -1,0 +1,26 @@
+{
+  "name": "lifeguru-support-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LifeGuru WhatsApp support bot (SalesIQ webhook). POC.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "NODE_ENV=test node --test tests/*.js",
+    "chat": "node scripts/local-chat.js",
+    "smoke:admin": "node scripts/smoke-admin-facts.js",
+    "test:gemini": "node scripts/test-gemini-key.js",
+    "test:gemini-mirror": "node scripts/test-gemini-mirror.js",
+    "preflight:step5": "node scripts/preflight-step5.js",
+    "parse:pdf-chats": "python3 scripts/parse-pdf-chats.py",
+    "replay:pdf-chats": "node scripts/replay-pdf-chats.js logs/pdf-50-chats-parsed.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}

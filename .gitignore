@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Secrets (commit .env.example only)
+.env
+.env.local
+.env.*.local
+
+# Runtime logs (PII — chats, webhook samples, replay exports)
+logs/
+
+# Test / tooling
+coverage/
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,75 @@
+[
+  {
+    "id": "autopay_501",
+    "tags": ["autopay", "501", "subscription", "mandate", "deduct"],
+    "keywords": ["501", "autopay", "auto pay", "subscription", "mandate", "deduct", "कट", "ऑटो"],
+    "en": "If ₹501 was deducted for a subscription plan: the first puja/chadhava may be at ₹1, then the plan amount is used for seva over the following months. This is usually non-refundable once transferred for seva. To stop future auto-debits, cancel the UPI mandate in PhonePe/Google Pay. For disputes, our team can review your case.",
+    "hi": "अगर ₹501 subscription/autopay से कटा है: पहली puja/chadhava अक्सर ₹1 में होती है, फिर plan की राशि अगले महीनों की seva के लिए उपयोग होती है। Seva transfer के बाद refund आमतौर पर संभव नहीं। आगे की कटौती रोकने के लिए PhonePe/Google Pay में UPI mandate बंद करें। विवाद हो तो टीम case देख सकती है।"
+  },
+  {
+    "id": "no_money_guarantee",
+    "tags": ["policy", "guarantee", "returns", "money", "devotion"],
+    "keywords": [
+      "money return",
+      "max return",
+      "maximum return",
+      "guarantee",
+      "guaranteed",
+      "best puja",
+      "which puja",
+      "profit",
+      "financial",
+      "returns",
+      "paisa",
+      "labh",
+      "गारंटी",
+      "पैस",
+      "लाभ",
+      "फायदा"
+    ],
+    "en": "LifeGuru does not guarantee financial returns, profit, or “money back” from Mandir Puja or Chadhava. These are devotional offerings (seva) performed as per your sankalp, faith, and capacity. We cannot recommend a puja “for maximum returns.” If you need help choosing a seva or have a sensitive question, our team can guide you on chat.",
+    "hi": "LifeGuru Mandir Puja या Chadhava से पैसे/लाभ/“money return” की कोई गारंटी नहीं देता। ये भक्ति और सेवा (seva) हैं — आपकी श्रद्धा और क्षमता के अनुसार। “सबसे ज़्यादा फायदे” वाली puja recommend नहीं कर सकते। Seva चुनने या किसी विशेष सवाल पर टीम चैट पर मार्गदर्शन कर सकती है — “human agent” लिखें।"
+  },
+  {
+    "id": "how_to_book",
+    "tags": ["book", "booking", "link"],
+    "keywords": ["how to book", "book puja", "booking link", "get puja done", "want puja", "want to get puja", "कैसे बुक", "बुकिंग", "puja karwana", "puja karawu", "mane puja", "karawu che", "puja karavu"],
+    "en": "You can book Mandir Puja or Chadhava from the LifeGuru app or the booking link shared on our website/WhatsApp campaigns. If payment is pending, complete payment to confirm the booking.",
+    "hi": "LifeGuru app या website/WhatsApp पर मिलने वाले booking link से Mandir Puja या Chadhava book कर सकते हैं। Payment pending हो तो confirm करने के लिए payment पूरा करें।"
+  },
+  {
+    "id": "no_whatsapp_phone",
+    "tags": ["_system"],
+    "keywords": [],
+    "en": "I don't have your WhatsApp number on this chat. Please share the 10-digit mobile number you used when you booked on LifeGuru.",
+    "hi": "इस चैट पर आपका WhatsApp नंबर नहीं मिला। कृपया वह 10 अंकों का मोबाइल नंबर भेजें जिससे आपने LifeGuru पर बुकिंग की थी।"
+  },
+  {
+    "id": "no_booking_on_whatsapp",
+    "tags": ["_system"],
+    "keywords": [],
+    "en": "I couldn't find a LifeGuru booking for this WhatsApp number.",
+    "hi": "इस WhatsApp नंबर पर कोई LifeGuru बुकिंग नहीं मिली।"
+  },
+  {
+    "id": "ask_booking_phone_for_team",
+    "tags": ["_system"],
+    "keywords": [],
+    "en": "Share the mobile number you used at checkout. Our team will verify it and help you on chat.",
+    "hi": "चेकआउट पर जो मोबाइल नंबर इस्तेमाल किया था वह भेजें — टीम जाँच कर चैट पर मदद करेगी।"
+  },
+  {
+    "id": "phone_received_forward",
+    "tags": ["_system"],
+    "keywords": [],
+    "en": "Thanks. Connecting you to the LifeGuru team with your message.",
+    "hi": "धन्यवाद। आपका संदेश के साथ आपको LifeGuru टीम से जोड़ रहा हूँ।"
+  },
+  {
+    "id": "video_timeline",
+    "tags": ["video", "when", "timeline"],
+    "keywords": ["when video", "video kab", "video kitne din", "3-4", "timeline"],
+    "en": "Puja video is usually sent on WhatsApp within 3–4 days after the puja is completed. You can also check the LifeGuru app order page.",
+    "hi": "Puja video आमतौर पर puja complete होने के 3–4 दिन में WhatsApp पर भेजा जाता है। LifeGuru app के order page पर भी देख सकते हैं।"
+  }
+]

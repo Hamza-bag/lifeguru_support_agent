@@ -1,0 +1,9 @@
+[
+  {
+    "id": "welcome_query_first",
+    "category": "opening",
+    "en": "Hi — how can we help with your LifeGuru Mandir Puja or Chadhava booking?",
+    "hi": "नमस्ते — लाइफगुरु मंदिर पूजा / चढ़ावा बुकिंग में कैसे मदद करें?",
+    "_note": "Scaffold only — bot still uses src/conversation/copy.js until wired (Phase A)."
+  }
+]
