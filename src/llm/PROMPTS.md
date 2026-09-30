@@ -29,11 +29,14 @@ CS edits those files; no change to `classify.js` / `polish.js` required for poli
   "language": "en" | "hi",
   "route": "admin" | "faq" | "human" | "clarify",
   "intent": "puja" | "video" | "prasad" | "both" | null,
+  "faqId": "<catalog id>" | null,
   "reason": "short internal note"
 }
 ```
 
-**Prompt body (after rules block):** Router-only instructions; scope in/out; route definitions; optional recent conversation; current user message JSON-stringified.
+**Prompt body (after rules block):** Router-only instructions; scope in/out; route definitions; knowledge-base catalog when `SUPPORT_LLM_FAQ_SELECT` is on (the id is chosen in this same call); optional recent conversation; current user message JSON-stringified.
+
+There is no separate knowledge-base Gemini call. Mirror runs only when the user's language is not already English or Hindi (Hinglish, Gujarati, and other registers). Plain English and Devanagari replies stay on the template.
 
 **Not LLM:** Shortcuts via `routingGate.js`; rules-first via `rulesRoute.js`; fallbacks in `normalizeClassifyResult` + `intent.js`.
 
@@ -57,7 +60,7 @@ CS edits those files; no change to `classify.js` / `polish.js` required for poli
 { "replies": ["...", "..."] }
 ```
 
-**Prompt intent:** Same language/register as user (Hinglish, Eng–Gujarati Roman, native scripts, US English); civil tone per guardrails; do not invent facts.
+**Prompt intent:** Rewrite into the user's register when templates are the wrong language (Hinglish, Eng–Gujarati, Eng–Marathi, other Indic scripts). Plain English and Hindi stay on the template. Civil tone per guardrails; do not invent facts.
 
 ---
 
@@ -77,5 +80,5 @@ CS edits those files; no change to `classify.js` / `polish.js` required for poli
 ## Debugging
 
 - `logs/chats.jsonl` — `usedLlmPolish`, `llmReplyMode`, `classify` object  
-- `GET /health` — classify/mirror flags, usage month  
+- Startup log — classify/mirror flags. `/health` returns `{ "ok": true }` only.  
 - `npm run chat` — local stdin loop with same finalize path as webhook  

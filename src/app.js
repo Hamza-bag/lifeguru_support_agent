@@ -16,6 +16,7 @@ const {
   isWebhookFailure,
   buildFailureResponse,
   visitorPhone,
+  salesIqRequestId,
   toSalesIqBody,
 } = require('./salesiq/payload');
 const { maybeCaptureWebhookSample } = require('./salesiq/captureSample');
@@ -24,25 +25,33 @@ const { parseConversationEvent } = require('./salesiq/shadow');
 const { createChatLogger } = require('./logging/chatLog');
 const { processIncomingTurn } = require('./salesiq/processTurn');
 const { createCallbackClient } = require('./salesiq/callbackClient');
+const { createConversationNotesClient } = require('./salesiq/conversationNotes');
+const { createOAuthTokenProvider } = require('./salesiq/oauthToken');
+const { scheduleHandoffNote } = require('./salesiq/handoffNotes');
 const { shouldUseAsyncWebhook, pendingWaitReply } = require('./salesiq/asyncWebhook');
-const { salesIqRequestId } = require('./salesiq/requestId');
-const { getMonthUsage, getLimits } = require('./llm/usageLimit');
 
 function createApp(overrides = {}) {
-  const factsClient = overrides.factsClient || createFactsClient({
-    mode: config.factsMode,
-    apiUrl: config.factsApiUrl,
-    apiSecret: config.factsApiSecret,
-    timeoutMs: config.factsApiTimeoutMs,
-  });
+  const appConfig = overrides.config ? { ...config, ...overrides.config } : config;
+  const factsClient = overrides.factsClient || createFactsClient();
   const store = overrides.store || createSessionStore();
   const failureLogDedupe = new Map();
   const FAILURE_LOG_DEDUPE_MS = 60_000;
   const logger = overrides.logger || createChatLogger({
-    enabled: config.logPayloads && process.env.NODE_ENV !== 'test',
+    enabled: appConfig.logPayloads && process.env.NODE_ENV !== 'test',
   });
-  const callbackClient = overrides.callbackClient || createCallbackClient(config);
+  const salesIqTokenProvider =
+    overrides.salesIqTokenProvider || createOAuthTokenProvider(appConfig);
+  const callbackClient =
+    overrides.callbackClient || createCallbackClient(appConfig, salesIqTokenProvider);
+  const notesClient =
+    overrides.notesClient ||
+    createConversationNotesClient(appConfig, salesIqTokenProvider);
   const pendingQueues = new Map();
+
+  const failOpenForwardReply = {
+    action: 'forward',
+    replies: ['Connecting you to a LifeGuru team member.'],
+  };
 
   function enqueuePending(key, work) {
     const previous = pendingQueues.get(key) || Promise.resolve();
@@ -59,8 +68,8 @@ function createApp(overrides = {}) {
     enqueuePending(key, async () => {
       const prev = fresh ? null : await store.get(key);
       try {
-        const { response } = await processIncomingTurn({
-          config,
+        const { state, response } = await processIncomingTurn({
+          config: appConfig,
           store,
           factsClient,
           logger,
@@ -71,9 +80,30 @@ function createApp(overrides = {}) {
           prev,
           chatPhone,
           webhookStartedAt: Date.now(),
-          mirrorBudgetMs: config.asyncMirrorTimeoutMs,
+          mirrorBudgetMs: appConfig.asyncMirrorTimeoutMs,
+          notesClient,
         });
-        const sent = await callbackClient.sendResponse(requestId, response);
+        let sent = await callbackClient.sendResponse(requestId, response);
+        if (!sent.ok && appConfig.supportFailOpenForward) {
+          const handoff =
+            response.action === 'forward' ? response : failOpenForwardReply;
+          sent = await callbackClient.sendResponse(requestId, handoff, {
+            forceForward: true,
+          });
+          if (response.action !== 'forward') {
+            scheduleHandoffNote({
+              config: appConfig,
+              notesClient,
+              logger,
+              payload,
+              conversationKey: key,
+              state,
+              userText: text,
+              response: handoff,
+              escalationReason: 'fail_open:callback_failed',
+            });
+          }
+        }
         if (!sent.ok) {
           console.error('[salesiq] callback failed', sent.status, sent.reason);
           logger.write({
@@ -81,9 +111,24 @@ function createApp(overrides = {}) {
             conversation: key,
             handler: 'callback',
             user: text,
-            action: 'reply',
+            action: response.action,
+            bot: response.replies,
             note: 'callback_failed',
+            requestId,
+            callbackAction: sent.body?.action,
             error: sent.reason || String(sent.status),
+          });
+        } else {
+          logger.write({
+            source: 'salesiq',
+            conversation: key,
+            handler: 'callback',
+            user: text,
+            action: response.action,
+            bot: response.replies,
+            note: 'callback_ok',
+            requestId,
+            callbackAction: sent.body?.action,
           });
         }
       } catch (err) {
@@ -97,10 +142,23 @@ function createApp(overrides = {}) {
           error: String(err.message || err),
           note: 'async_turn_failed',
         });
-        await callbackClient.sendResponse(requestId, {
-          action: 'forward',
-          replies: ['Connecting you to a LifeGuru team member.'],
-        });
+        if (appConfig.supportFailOpenForward) {
+          const prevState = await store.get(key);
+          scheduleHandoffNote({
+            config: appConfig,
+            notesClient,
+            logger,
+            payload,
+            conversationKey: key,
+            state: prevState || {},
+            userText: text,
+            response: failOpenForwardReply,
+            escalationReason: 'fail_open:async_turn_failed',
+          });
+          await callbackClient.sendResponse(requestId, failOpenForwardReply, {
+            forceForward: true,
+          });
+        }
       }
     });
   }
@@ -115,42 +173,14 @@ function createApp(overrides = {}) {
   );
 
   app.get('/health', (_req, res) => {
-    res.json({
-      ok: true,
-      service: 'lifeguru-support-agent',
-      factsMode: config.factsMode,
-      llmClassify: Boolean(config.llmClassifyEnabled && config.geminiApiKey),
-      llmMirrorLanguage: Boolean(config.llmMirrorLanguage && config.geminiApiKey),
-      sessionStore: config.sessionStore,
-      llmUsageMonth: getMonthUsage(),
-      llmLimits: getLimits(),
-    });
+    res.json({ ok: true });
   });
 
-  app.get('/dev/chats', (_req, res) => {
-    res.json({ file: logger.filePath, chats: logger.readLast(100) });
-  });
-
-  app.get('/dev/step5', (_req, res) => {
-    res.json({
-      ok: true,
-      step5: {
-        factsMode: config.factsMode,
-        factsApiConfigured: Boolean(config.factsApiUrl && config.factsApiSecret),
-        classify: Boolean(config.llmClassifyEnabled && config.geminiApiKey),
-        mirrorLanguage: Boolean(config.llmMirrorLanguage && config.geminiApiKey),
-        salesIqPending: Boolean(config.salesIqPendingEnabled && callbackClient.isConfigured()),
-        signatureVerify: config.verifySignature,
-        captureSample: config.captureSalesIqSample,
-        endpoints: {
-          webhook: '/salesiq/webhook',
-          shadow: '/salesiq/shadow',
-          health: '/health',
-        },
-        doc: 'docs/support-agent-step5-ngrok-salesiq-safe.md',
-      },
+  if (process.env.SUPPORT_DEV_CHATS === 'true') {
+    app.get('/dev/chats', (_req, res) => {
+      res.json({ file: logger.filePath, chats: logger.readLast(100) });
     });
-  });
+  }
 
   const webhook = async (req, res) => {
     if (req.method === 'HEAD' || req.method === 'GET') {
@@ -158,7 +188,7 @@ function createApp(overrides = {}) {
     }
 
     const payload = normalizeWebhookPayload(req.body || {});
-    maybeCaptureWebhookSample(payload, { enabled: config.captureSalesIqSample });
+    maybeCaptureWebhookSample(payload, { enabled: appConfig.captureSalesIqSample });
     const key = conversationKey(payload);
 
     if (isWebhookFailure(payload)) {
@@ -196,7 +226,7 @@ function createApp(overrides = {}) {
 
       if (
         shouldUseAsyncWebhook({
-          config,
+          config: appConfig,
           callbackClient,
           payload,
           text,
@@ -206,11 +236,22 @@ function createApp(overrides = {}) {
       ) {
         const lang = sessionForRoute.language || 'en';
         const waitLine = pendingWaitReply(lang);
+        const requestId = salesIqRequestId(payload);
+        logger.write({
+          source: 'salesiq',
+          conversation: key,
+          handler: 'pending',
+          user: text,
+          action: 'pending',
+          bot: [waitLine],
+          note: 'pending_accepted',
+          requestId,
+        });
         deliverPending({
           key,
           text,
           payload,
-          requestId: salesIqRequestId(payload),
+          requestId,
           chatPhone,
           fresh,
         });
@@ -219,7 +260,7 @@ function createApp(overrides = {}) {
 
       const webhookStartedAt = Date.now();
       const { response } = await processIncomingTurn({
-        config,
+        config: appConfig,
         store,
         factsClient,
         logger,
@@ -230,6 +271,7 @@ function createApp(overrides = {}) {
         prev,
         chatPhone,
         webhookStartedAt,
+        notesClient,
       });
       return res.json(response);
     } catch (err) {
@@ -249,8 +291,8 @@ function createApp(overrides = {}) {
   };
 
   const signatureGate = requireSalesIqSignature({
-    enabled: config.verifySignature,
-    publicKeyPem: config.salesIqPublicKey,
+    enabled: appConfig.verifySignature,
+    publicKeyPem: appConfig.salesIqPublicKey,
   });
 
   app.head('/salesiq/webhook', webhook);
@@ -258,6 +300,9 @@ function createApp(overrides = {}) {
   app.post('/salesiq/webhook', signatureGate, webhook);
 
   const shadow = (req, res) => {
+    if (!appConfig.supportDevShadow) {
+      return res.status(404).json({ ok: false });
+    }
     if (req.method === 'HEAD' || req.method === 'GET') {
       return res.status(200).end();
     }

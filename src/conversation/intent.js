@@ -10,7 +10,14 @@ function hasOtherIndicScript(raw) {
 }
 
 const HINDI_ROMAN_MARKERS =
-  /\b(meri|mera|mere|mujhe|mujhpe|kab|kya|hai|hain|nahi|nhi|aayegi|aayega|chahiye|batao|bataiye|kal|aaj|dhanyavad|milega|aaya)\b/;
+  /\b(meri|mera|mere|mujhe|mujhpe|kab|kya|hai|hain|nahi|nhi|aayegi|aayega|chahiye|batao|bataiye|batawo|kal|aaj|dhanyavad|milega|aaya|chahida)\b/;
+
+/** Roman Punjabi (often mixed with English). */
+function isRomanPunjabi(lower) {
+  return /\b(meye|maine|kidi|kithe|kadon|ehno|ihno|daso|batawo|chahida|chahidi|karda|kardi|karna|schedule batawo)\b/.test(
+    lower,
+  );
+}
 
 /** Roman script Gujarati (often mixed with English words). Check before Hindi — "puja" alone is not Hindi. */
 function isRomanGujarati(lower) {
@@ -45,6 +52,9 @@ function detectReplyLanguage(text) {
   }
   if (isRomanMarathi(lower)) {
     return { locale: 'en', mirror: true, register: 'eng_marathi' };
+  }
+  if (isRomanPunjabi(lower)) {
+    return { locale: 'en', mirror: true, register: 'punjabi_roman' };
   }
   if (HINDI_ROMAN_MARKERS.test(lower)) {
     return { locale: 'en', mirror: true, register: 'hinglish_or_roman_hi' };
@@ -95,12 +105,87 @@ function textContainsExternalLink(text) {
   return false;
 }
 
+/** Sankalp / gotra / name on booking — always human (MVP rules path). */
+function isSankalpOrGotraChangeRequest(text) {
+  const raw = String(text || '').trim();
+  if (!raw) return false;
+  if (!/(naam|name|gotra|sankalp|snakalp|संकल्प|नाम|गोत्र)/i.test(raw)) return false;
+  const lower = raw.toLowerCase();
+  return (
+    /\b(change|changes|changing|update|correct|edit|fix|wrong|badal|badlo|badalna|karna|karni|kqrna|chahiye|galat)\b/i.test(
+      lower,
+    ) || /बदल|सही|गलत|अपडेट|बदलना|करना|चाहिए|गलत/i.test(raw)
+  );
+}
+
+/** Upset tone on any topic — not tied to autopay, video, or one product. */
+function isIrritatedOrAngry(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  return (
+    /\b(angry|anger|irritated|irritating|furious|scam|fraud|cheat|cheated|cheating|thug|bakwas|bakwaas|worst|useless|pathetic|disgusting|shame)\b/.test(
+      lower,
+    ) ||
+    /\b(gussa|pagal|bewakoof|dhoka|thagi|bekar)\b/.test(lower) ||
+    /धोखा|ठगी|गुस्सा|बेकार|बकवास|फ्रॉड/.test(raw)
+  );
+}
+
+/** Calm “how do I stop autopay” — the word cancel here is not a puja cancellation. */
+function isCalmAutopayHelp(text) {
+  const raw = String(text || '');
+  if (!raw.trim() || isIrritatedOrAngry(raw)) return false;
+  if (/\b(refund|money back|paisa wapas)\b/i.test(raw) || /पैस[ाे].*वाप|वापस.*पैस/.test(raw)) {
+    return false;
+  }
+  return (
+    /\b(autopay|auto[\s-]?pay|upi\s*mandate|\bmandate\b)\b/i.test(raw) ||
+    /ऑटोपे|ऑटो\s*पे|मंडेट/.test(raw)
+  );
+}
+
+function autopayFaqId(text) {
+  if (!isCalmAutopayHelp(text)) return null;
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  const whyCharged =
+    /\b(kyu|why|kata|charged|deduct|deducted|501|301|701)\b/.test(lower) ||
+    /क्यों|कट\s*ग/.test(raw);
+  const wantsSteps =
+    /\b(stop|cancel|band|kaise|how|steps)\b/.test(lower) || /कैसे|रोक|बंद/.test(raw);
+  if (whyCharged && !wantsSteps) return 'autopay_501';
+  return 'sub_autopay_cancel_steps';
+}
+
+function mentionsLive(text) {
+  const raw = String(text || '');
+  return /\blive\b/i.test(raw) || /लाइव/.test(raw);
+}
+
+function mentionsOwnBooking(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  return /\b(my|meri|mera|mere|link|opted|included)\b/.test(lower) || /मेरी|मेरा|लिंक/.test(raw);
+}
+
+/** Any “is this puja live?” that is not about their booking. Never answer from the puja name. */
+function isCatalogueLiveQuestion(text) {
+  return mentionsLive(text) && !mentionsOwnBooking(text);
+}
+
+/** Their own booking’s live add-on. Confirmed only from the LivePuja line item. */
+function isOwnLiveBookingQuestion(text) {
+  return mentionsLive(text) && mentionsOwnBooking(text);
+}
+
 /**
- * Payment dispute, autopay, call request, screenshot/media mention — forward without FAQ or classify.
+ * Call request, screenshot, upset tone, or a payment dispute that is not a calm autopay how-to.
  */
 function requiresDirectHumanHandoffText(text) {
   const raw = String(text || '').trim();
   if (!raw) return false;
+  if (isIrritatedOrAngry(raw)) return true;
+  if (isSankalpOrGotraChangeRequest(raw)) return true;
   if (textContainsExternalLink(raw)) return true;
   const lower = raw.toLowerCase();
 
@@ -127,13 +212,11 @@ function requiresDirectHumanHandoffText(text) {
   }
 
   if (
-    /\b(autopay|auto\s*pay|auto-pay|upi\s*mandate|mandate|subscription\s*plan|stop\s*autopay|cancel\s*mandate|501)\b/i.test(
+    !isCalmAutopayHelp(raw) &&
+    (/\b(money\s*deduct|deducted|deduction|amount\s*deduct|wrong\s*deduct|charged|charge\s*cut|paise\s*kat|paisa\s*kat|money\s*cut|cut\s*gaya|cut\s*gayi|kat\s*gaya|kat\s*gayi|amount\s*cut)\b/i.test(
       lower,
     ) ||
-    /\b(money\s*deduct|deducted|deduction|amount\s*deduct|wrong\s*deduct|charged|charge\s*cut|paise\s*kat|paisa\s*kat|money\s*cut|cut\s*gaya|cut\s*gayi|kat\s*gaya|kat\s*gayi|amount\s*cut)\b/i.test(
-      lower,
-    ) ||
-    /ऑटो\s*पे|ऑटोपे|कट\s*गया|कट\s*गय|पैस[ेा]\s*कट|राशि\s*कट|मंडेट/i.test(raw)
+      /कट\s*गया|कट\s*गय|पैस[ेा]\s*कट|राशि\s*कट/i.test(raw))
   ) {
     return true;
   }
@@ -154,6 +237,7 @@ function wantsHuman(text) {
   const raw = String(text || '').trim().toLowerCase();
   if (!raw) return false;
   if (requiresDirectHumanHandoffText(text)) return true;
+  if (isCalmAutopayHelp(text)) return false;
   if (
     /\b(human agent|talk to (a )?(human|agent|someone|person)|customer care|operator|refund|cancel|complaint|manager)\b/.test(
       raw,
@@ -266,7 +350,40 @@ function isClearPostBookingStatusQuery(text) {
   return false;
 }
 
+function isSpiritualPujaRecommendationQuery(text) {
+  const raw = String(text || '').trim();
+  if (!raw || wordCount(raw) > 45) return false;
+  if (isClearPostBookingStatusQuery(raw)) return false;
+  const lower = raw.toLowerCase();
+  if (
+    /\b(money return|max return|maximum return|guarantee|guaranteed|profit|labh|returns|financial)\b/i.test(
+      lower,
+    )
+  ) {
+    return false;
+  }
+  const lifeTopic =
+    /\b(marriage|shaadi|shadi|vivah|wedding|health|bemar|bimar|sick|court|case|debt|rin|money|job|career|black magic|negative|problem|pareshani|tension)\b/i.test(
+      lower,
+    ) || /शादी|बीमार|कोर्ट|कर्ज|परेशानी/.test(raw);
+  const asksPuja =
+    /\b(which puja|kaunsi puja|konsi puja|kayi puja|recommend|suggest|best puja|puja karu|puja karni|chadhava karu|seva karu)\b/i.test(
+      lower,
+    ) || /कौन\s*सी\s*पूजा|कौनसी\s*पूजा/.test(raw);
+  return lifeTopic && (asksPuja || /\b(puja|chadhava|seva)\b/i.test(lower));
+}
+
+function isPujaGuideQuery(text) {
+  const raw = String(text || '').toLowerCase();
+  return (
+    /\b(dos and dont|do's and don't|dos dont|donts|do and dont|mantra|mantras|chant|jap|guideline|puja guide|recommended practice)\b/.test(
+      raw,
+    ) || /मंत्र|जाप|डू|डोंट|क्या कर|क्या न कर/.test(text)
+  );
+}
+
 function needsEmpatheticHumanHandoff(text) {
+  if (isSpiritualPujaRecommendationQuery(text)) return false;
   return isComplexSupportMessage(text);
 }
 
@@ -305,8 +422,10 @@ function isNewBookingQuery(text) {
 }
 
 function classifyIntent(text) {
+  if (isOwnLiveBookingQuestion(text)) return 'live';
   if (isNewBookingQuery(text)) return null;
   if (isComplexSupportMessage(text)) return null;
+  if (isPujaGuideQuery(text)) return 'guide';
   if (!isClearPostBookingStatusQuery(text)) return null;
   const raw = String(text || '').toLowerCase();
   const video =
@@ -327,7 +446,14 @@ function classifyIntent(text) {
 }
 
 function isOrderIntent(intent) {
-  return intent === 'puja' || intent === 'video' || intent === 'prasad' || intent === 'both';
+  return (
+    intent === 'puja' ||
+    intent === 'video' ||
+    intent === 'prasad' ||
+    intent === 'both' ||
+    intent === 'guide' ||
+    intent === 'live'
+  );
 }
 
 function intentFromTopicChoice(text) {
@@ -342,8 +468,8 @@ function intentFromTopicChoice(text) {
 
 function topicSuggestions(lang) {
   return lang === 'hi'
-    ? ['पूजा समय', 'वीडियो', 'प्रसाद', 'एजेंट']
-    : ['Puja schedule', 'Video', 'Prasad', 'Agent'];
+    ? ['पूजा समय', 'वीडियो', 'प्रसाद']
+    : ['Puja schedule', 'Video', 'Prasad'];
 }
 
 module.exports = {
@@ -351,7 +477,15 @@ module.exports = {
   detectReplyLanguage,
   isPureSocialGreeting,
   isPureThanks,
+  isIrritatedOrAngry,
+  isCalmAutopayHelp,
+  autopayFaqId,
+  isCatalogueLiveQuestion,
+  isOwnLiveBookingQuestion,
   requiresDirectHumanHandoffText,
+  isSankalpOrGotraChangeRequest,
+  isSpiritualPujaRecommendationQuery,
+  isPujaGuideQuery,
   hasOtherIndicScript,
   isRomanGujarati,
   isRomanMarathi,

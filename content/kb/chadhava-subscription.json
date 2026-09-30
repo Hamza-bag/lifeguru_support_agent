@@ -1,0 +1,12 @@
+[
+  {
+    "id": "chadhava_sub_nonrefund_completed",
+    "domain": "chadhava_subscription",
+    "status": "published",
+    "owner": "Subscriptions CS",
+    "keywords": ["chadhava subscription refund", "subscription refund", "chadhava paisa wapas"],
+    "tags": ["refund", "subscription"],
+    "en": "Namaste 🙏 If this week’s/month’s Chadhava is already done or scheduled, the amount is offered to the temple — it is usually non-refundable. Future debits can be stopped by cancelling the mandate in your UPI app. For a specific case, say “human agent”.",
+    "hi": "Namaste 🙏 Agar is cycle ki chadhava ho chuki ya schedule hai to rashi mandir ko arpit hoti hai — refund aam taur par nahi hota. Aage ki katauti mandate cancel karke rok sakte hain. Case ke liye “human agent” likhein."
+  }
+]

@@ -39,6 +39,7 @@ async function finalizeBotReplies({
       apiKey: config.geminiApiKey,
       model: config.geminiModel,
       lang,
+      replyRegister: state?.replyRegister,
       userText,
       drafts,
       action: response.action,

@@ -1,4 +1,3 @@
-const policy = require('../config/policy');
 const {
   appendTurn,
   normalizeUserText,
@@ -28,7 +27,12 @@ async function handleTurn(input, factsClient) {
   }
 
   if (text) {
-    state = { ...state, language: detectReplyLanguage(text).locale };
+    const detected = detectReplyLanguage(text);
+    state = {
+      ...state,
+      language: detected.locale,
+      replyRegister: detected.register,
+    };
   }
 
   let routeText = text;
@@ -45,7 +49,13 @@ async function handleTurn(input, factsClient) {
     }
     routeText = burst.combined;
     clearedBurstBuffer = true;
-    state = { ...state, language: detectReplyLanguage(routeText).locale, userBurstBuffer: null };
+    const burstLang = detectReplyLanguage(routeText);
+    state = {
+      ...state,
+      language: burstLang.locale,
+      replyRegister: burstLang.register,
+      userBurstBuffer: null,
+    };
   }
 
   const turnInputWithPayload = { ...turnInput, salesIqPayload: input.salesIqPayload };

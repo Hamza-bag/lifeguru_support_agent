@@ -1,6 +1,7 @@
 function emptyState() {
   return {
     language: null,
+    replyRegister: null,
     stage: 'await_query',
     pendingText: null,
     pendingIntent: null,
@@ -16,8 +17,9 @@ function emptyState() {
 }
 
 const WELCOME_QUERY =
-  'Hi — how can we help with your LifeGuru booking? Type your question (puja time, video, prasad, etc.).\n' +
-  'नमस्ते — लाइफगुरु बुकिंग में कैसे मदद करें? अपना सवाल लिखें (पूजा समय, वीडियो, प्रसाद, आदि)।';
+  'Namaste! Welcome to LifeGuru support 🙏\n' +
+  'Ask us anything about your Mandir Puja or Chadhava booking — schedule, video, prasad, or refund.\n' +
+  'नमस्ते! लाइफगुरु सपोर्ट में आपका स्वागत है 🙏 पूजा समय, वीडियो, प्रसाद या किसी भी सवाल के लिए यहाँ लिखें।';
 
 module.exports = {
   emptyState,

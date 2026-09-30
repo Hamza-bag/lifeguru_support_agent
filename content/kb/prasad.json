@@ -1,0 +1,171 @@
+[
+  {
+    "id": "prasad_delivery_timeline",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad delivery",
+      "prasad kab",
+      "when prasad",
+      "prasad milega",
+      "prasad timeline",
+      "8-10 days",
+      "8–10",
+      "prasad dispatch",
+      "प्रसाद"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 The Prasad box is dispatched after puja completes and usually reaches your registered address in 8–10 days — only if you selected Prasad at booking. Updates come on WhatsApp from {{PUJA_UPDATES_SENDER}}. For your booking status, share Order ID or open the order in app.",
+    "hi": "Namaste 🙏 Puja complete hone ke baad Prasad box bheja jata hai aur aam taur par 8–10 din mein registered address par pahunchta hai — sirf tab jab booking par Prasad select kiya ho. Updates {{PUJA_UPDATES_SENDER}} se WhatsApp par aate hain."
+  },
+  {
+    "id": "prasad_not_selected",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad not selected",
+      "prasad nahi mila",
+      "why no prasad",
+      "prasad option nahi",
+      "251 prasad",
+      "prasad select nahi"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 If Prasad was not selected at booking (and the ₹251 add-on was not paid), we cannot dispatch a box for that order. Please choose Prasad on your next puja booking if you would like delivery 🙏",
+    "hi": "Namaste 🙏 Agar booking par Prasad select nahi tha (₹251 add-on nahi hua), to is order par box nahi bheja ja sakta. Agli booking par Prasad option choose kar sakte hain 🙏"
+  },
+  {
+    "id": "prasad_add_after_booking",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "add prasad",
+      "forgot prasad",
+      "prasad add karna",
+      "prasad ab add",
+      "missed prasad"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 If Prasad was not selected at booking, we may add it manually only while the puja booking window is still open (add-on ₹251). Say “human agent” with your Order ID — we will check and share payment steps if possible.",
+    "hi": "Namaste 🙏 Agar booking window abhi khuli hai to team ₹251 add-on ke saath Prasad manually add kar sakti hai. Order ID ke saath “human agent” likhein — hum check karenge."
+  },
+  {
+    "id": "prasad_how_to_use_items",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "what to do with prasad",
+      "rudraksha",
+      "gangajal",
+      "panchmeva",
+      "kalava",
+      "kumkum",
+      "bhasma",
+      "vibhuti",
+      "prasad use",
+      "prasad kaise use"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 Items are blessed during puja — use with devotion (items vary by puja): Panchmeva — eat or share reverently; Rudraksha — home temple or wear after simple puja; Gangajal — sprinkle at home or in daily puja; Kalava — tie while praying; Kumkum / Bhasma — forehead or home puja as per your tradition 🙏",
+    "hi": "Namaste 🙏 Prasad vastu puja mein bless hoti hain — shraddha se use karein (puja ke hisaab se alag ho sakta hai): Panchmeva — khayein/share karein; Rudraksha — mandir ya pehen sakte hain; Gangajal — ghar mein; Kalava — haath par bandhein; Kumkum/Bhasma — tradition ke mutabik 🙏"
+  },
+  {
+    "id": "prasad_box_damaged",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad damaged",
+      "box damaged",
+      "prasad tuta",
+      "prasad kharab",
+      "damaged package"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 We are sorry the Prasad box arrived damaged. Please share a clear photo of the package. Our team will check it with the courier and tell you the next step. This chat cannot promise a replacement — say “human agent” and send the photo. 🙏",
+    "hi": "Namaste 🙏 Prasad box damage ke liye maafi. Package ki clear photo bhejein. Team courier se check karke agla step batayegi. Yahan replacement ka promise nahi — photo ke saath “human agent” likhein. 🙏"
+  },
+  {
+    "id": "prasad_outside_india",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad outside india",
+      "prasad abroad",
+      "international prasad",
+      "foreign delivery",
+      "usa prasad",
+      "prasad india ke bahar"
+    ],
+    "tags": ["prasad"],
+    "en": "Currently we deliver Prasad only within India. The puja’s spiritual benefit and your video are still shared with you wherever you are 🙏",
+    "hi": "Abhi Prasad sirf India ke andar deliver hota hai. Puja aur video aapko kahin se bhi share ki jaati hai 🙏"
+  },
+  {
+    "id": "prasad_address_change",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "change prasad address",
+      "prasad address",
+      "delivery address change",
+      "address badalna prasad"
+    ],
+    "tags": ["prasad"],
+    "en": "Prasad delivery address can be changed only before the box is dispatched. Once dispatched, we cannot change it. Say “human agent” with Order ID — we will check dispatch status and help if still possible 😊",
+    "hi": "Prasad address tabhi badal sakte hain jab box dispatch nahi hua ho. Dispatch ke baad change nahi hota. Order ID ke saath “human agent” likhein — status check karenge."
+  },
+  {
+    "id": "prasad_delisted",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad unavailable",
+      "prasad delisted",
+      "no prasad this puja",
+      "temple prasad nahi"
+    ],
+    "tags": ["prasad"],
+    "en": "Namaste 🙏 Sometimes Prasad is temporarily unavailable from the temple for a specific puja — we cannot offer it until availability returns. We apologize for the inconvenience and thank you for your patience 🙏",
+    "hi": "Namaste 🙏 Kabhi-kabhi mandir ki taraf se kisi puja ke liye Prasad temporarily unavailable hota hai — tab hum provide nahi kar paate. Asuvidha ke liye maafi 🙏"
+  },
+  {
+    "id": "prasad_quality_purity",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "prasad quality",
+      "prasad fresh",
+      "prasad purity",
+      "dry prasad",
+      "shelf life prasad"
+    ],
+    "tags": ["prasad"],
+    "en": "We pack dry items such as Panchmeva for safer transit (typically 8–10 days). Prasad is prepared and packed with care and devotion 🙏",
+    "hi": "Transit ke liye dry items jaise Panchmeva pack karte hain (8–10 din). Prasad care aur shraddha se taiyar hota hai 🙏"
+  },
+  {
+    "id": "prasad_box_contents",
+    "domain": "prasad",
+    "status": "published",
+    "owner": "Puja CS",
+    "keywords": [
+      "what is in prasad box",
+      "prasad box contents",
+      "prasad mein kya",
+      "box mein kya hai",
+      "prasad items list"
+    ],
+    "tags": ["prasad"],
+    "en": "Contents vary by puja. Common items: Thank You card, Panchmeva, Kalawa, Gangajal, Kumkum or Bhasma, and sometimes Rudraksha, Morpankh, or murti (e.g. Santan/Baal Gopal pujas). Exact list matches your booked puja — check your booking summary or ask “human agent” if unsure 🙏",
+    "hi": "Prasad box puja ke hisaab se alag hota hai. Aam cheezen: Thank You card, Panchmeva, Kalawa, Gangajal, Kumkum/Bhasma, kabhi Rudraksha/Morpankh/murti. Booking summary par dekhein ya “human agent” se confirm karein 🙏"
+  }
+]

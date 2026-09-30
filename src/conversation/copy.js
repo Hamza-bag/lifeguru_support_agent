@@ -4,7 +4,7 @@ const COPY = {
       'Welcome to LifeGuru support. Which language do you prefer?',
     languageSuggestions: ['English', 'Hindi'],
     welcomeQuery:
-      'Hi — how can we help with your LifeGuru booking? Type your question (puja time, video, prasad, etc.).',
+      'Namaste! Welcome to LifeGuru support 🙏 Ask us anything about your Mandir Puja or Chadhava booking — schedule, video, prasad, or refund.',
     thanksAck:
       "You're welcome. If you need anything about your LifeGuru booking, just type your question here.",
     askQuery:
@@ -31,10 +31,24 @@ const COPY = {
     factsPuja: 'Your {product} is scheduled for {when}. Current status: {status}.',
     factsPujaUnknown: 'I have {product} (status: {status}), but no puja time is set yet.',
     factsVideoReady:
-      'The video for {product} is ready. It should already be on WhatsApp, or on your order page in the app.',
+      'The video for {product} is ready. It should already be on WhatsApp from {{PUJA_UPDATES_SENDER}}, or on your order page in the app.',
+    factsVideoReadyWithLink:
+      'The video for {product} is ready. Open: {link}\nYou may also have it on WhatsApp from {{PUJA_UPDATES_SENDER}} or in the app: https://lifeguru.app/profile',
     factsVideoPending:
       'The video for {product} is not published yet. It is usually shared on WhatsApp within 3–4 days after the puja. If you need urgent help, I can connect you to the team.',
-    factsNoPrasad: 'This booking does not include prasad delivery.',
+    factsLiveIncluded:
+      'Your {product} booking includes Live Puja. The link is sent on your registered WhatsApp when the puja starts. This chat does not have that link, and I will not guess a live URL.',
+    factsLiveNotIncluded:
+      'Your {product} booking does not include Live Puja. I only know that from this order, not from the puja name. The puja is still performed in your name and gotra, and the recorded video is shared within 3–4 days.',
+    factsPujaGuideFallback:
+      'Namaste 🙏 Do\'s, Don\'ts and mantras for your specific puja are on your order page in the app (Profile → booking). We also send a PDF on WhatsApp when scheduled — save our LifeGuru Puja Updates WhatsApp sender. Open: https://lifeguru.app/profile',
+    factsNoPrasad: 'This booking does not include home prasad delivery.',
+    factsPrasadNotOnOrderAddons:
+      'This booking does not include home prasad delivery for {product}. You did add: {addons} — those are puja add-ons, not the Prasad box shipped to your address. For general Prasad policy, ask anytime; for changes say “human agent”.',
+    factsPrasadLineNotHomeDelivery:
+      'For {product} you have Prasad add-on line item(s): {prasadItems}. That is not the same as selecting home Prasad delivery (shipped box) — there is no home-delivery tracking for this order unless home Prasad was selected at checkout. Say “human agent” if you expected a shipped box.',
+    factsPrasadLineAndAddonsNoHome:
+      'For {product}: home Prasad delivery is not on this order. Line items — Prasad SKU: {prasadItems}; other add-ons: {addons}. Only home Prasad (Yes at checkout) gets box tracking. Say “human agent” to confirm your booking.',
     factsPrasadPending:
       'Prasad for {product} is being prepared (status: pending). We will share tracking when it is dispatched.',
     factsPrasadDispatched:
@@ -72,7 +86,7 @@ const COPY = {
       'लाइफगुरु सपोर्ट में आपका स्वागत है। आप किस भाषा में बात करना चाहेंगे?',
     languageSuggestions: ['English', 'Hindi'],
     welcomeQuery:
-      'नमस्ते — लाइफगुरु बुकिंग में कैसे मदद करें? अपना सवाल लिखें (पूजा समय, वीडियो, प्रसाद, आदि)।',
+      'नमस्ते! लाइफगुरु सपोर्ट में आपका स्वागत है 🙏 पूजा समय, वीडियो, प्रसाद, रिफंड — जो भी सवाल हो, यहाँ लिखें।',
     thanksAck:
       'आपका स्वागत है। लाइफगुरु बुकिंग से जुड़ा कोई भी सवाल यहाँ लिखें — हम मदद करेंगे।',
     askQuery:
@@ -100,9 +114,23 @@ const COPY = {
     factsPujaUnknown: '{product} मिली है (स्थिति: {status}), लेकिन पूजा का समय अभी सेट नहीं है।',
     factsVideoReady:
       '{product} का वीडियो तैयार है। यह व्हाट्सऐप पर आ चुका होना चाहिए, या ऐप में ऑर्डर पेज पर उपलब्ध है।',
+    factsVideoReadyWithLink:
+      '{product} का वीडियो तैयार है। लिंक: {link}\nWhatsApp ({{PUJA_UPDATES_SENDER}}) या ऐप: https://lifeguru.app/profile',
     factsVideoPending:
       '{product} का वीडियो अभी पब्लिश नहीं हुआ है। पूजा के 3–4 दिन बाद आमतौर पर व्हाट्सऐप पर भेजा जाता है। जरूरी हो तो टीम से जोड़ सकता हूँ।',
-    factsNoPrasad: 'इस बुकिंग में प्रसाद डिलीवरी शामिल नहीं है।',
+    factsLiveIncluded:
+      'Aapki {product} booking mein Live Puja shamil hai. Link puja start par registered WhatsApp par aata hai. Is chat mein woh link nahi hai, aur main koi live URL guess nahi karunga.',
+    factsLiveNotIncluded:
+      'Aapki {product} booking mein Live Puja shamil nahi hai. Yeh sirf is order se pata chalta hai, puja ke naam se nahi. Puja aapke naam aur gotra se hoti hai, aur recording 3–4 din mein aati hai.',
+    factsPujaGuideFallback:
+      'Namaste 🙏 Aapki puja ke Do\'s, Don\'ts aur mantra app ke order page par hain (Profile → booking). WhatsApp par PDF bhi bheja ja sakta hai — LifeGuru Puja Updates sender save karein. https://lifeguru.app/profile',
+    factsNoPrasad: 'इस बुकिंग में होम प्रसाद डिलीवरी शामिल नहीं है।',
+    factsPrasadNotOnOrderAddons:
+      '{product} पर होम प्रसाद डिलीवरी नहीं है। Add-ons: {addons} — ye puja add-ons hain, ghar bheja hua Prasad box nahi. “human agent” likh sakte hain.',
+    factsPrasadLineNotHomeDelivery:
+      '{product}: Prasad line {prasadItems} — ye home delivery box nahi hai jab tak checkout par home Prasad select na ho. Tracking nahi milegi. “human agent” likhein agar box expect karte the.',
+    factsPrasadLineAndAddonsNoHome:
+      '{product}: home Prasad delivery nahi hai. Prasad SKU: {prasadItems}; add-ons: {addons}. Shipped box sirf home Prasad (Yes) par. “human agent” se confirm karein.',
     factsPrasadPending:
       '{product} का प्रसाद तैयार हो रहा है (स्थिति: pending)। डिस्पैच होने पर ट्रैकिंग साझा करेंगे।',
     factsPrasadDispatched:

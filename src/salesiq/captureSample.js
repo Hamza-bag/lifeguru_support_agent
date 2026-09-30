@@ -34,8 +34,4 @@ function maybeCaptureWebhookSample(payload, { enabled, dir }) {
   console.log(`[salesiq] saved webhook sample → ${file}`);
 }
 
-function resetCaptureForTests() {
-  captured = false;
-}
-
-module.exports = { maybeCaptureWebhookSample, resetCaptureForTests, redactPayload };
+module.exports = { maybeCaptureWebhookSample };

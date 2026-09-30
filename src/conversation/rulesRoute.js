@@ -1,16 +1,19 @@
 const policy = require('../config/policy');
-const { matchFaq } = require('../faq/matchFaq');
+const { whichPujaFaqId } = require('../faq/whichPuja');
 const {
   detectLanguage,
   classifyIntent,
   isOrderIntent,
   isNewBookingQuery,
   isComplexSupportMessage,
+  isSpiritualPujaRecommendationQuery,
   needsEmpatheticHumanHandoff,
   intentFromTopicChoice,
   isPureSocialGreeting,
   isPureThanks,
   requiresDirectHumanHandoffText,
+  autopayFaqId,
+  isCatalogueLiveQuestion,
 } = require('./intent');
 
 function isVagueHelpOnly(text) {
@@ -32,6 +35,30 @@ function resolveRulesIntent(state, queryText) {
  */
 function tryRulesRoute(state, queryText) {
   const lang = state.language || detectLanguage(queryText);
+
+  const whichPuja = whichPujaFaqId(queryText);
+  if (whichPuja && policy.faqEnabled) {
+    return {
+      language: lang,
+      route: 'faq',
+      intent: null,
+      faqId: whichPuja,
+      reason: `rules_${whichPuja}`,
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
+  if (isSpiritualPujaRecommendationQuery(queryText) && policy.faqEnabled) {
+    return {
+      language: lang,
+      route: 'faq',
+      intent: null,
+      reason: 'rules_spiritual_faq',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
 
   if (needsEmpatheticHumanHandoff(queryText)) {
     return {
@@ -73,6 +100,31 @@ function tryRulesRoute(state, queryText) {
     };
   }
 
+  const autopayId = autopayFaqId(queryText);
+  if (autopayId && policy.faqEnabled) {
+    return {
+      language: lang,
+      route: 'faq',
+      intent: null,
+      faqId: autopayId,
+      reason: `rules_${autopayId}`,
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
+  if (isCatalogueLiveQuestion(queryText) && policy.faqEnabled) {
+    return {
+      language: lang,
+      route: 'faq',
+      intent: null,
+      faqId: 'live_puja_not_available',
+      reason: 'rules_live_catalogue',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
   if (isNewBookingQuery(queryText)) {
     return {
       language: lang,
@@ -90,17 +142,6 @@ function tryRulesRoute(state, queryText) {
       route: 'admin',
       intent,
       reason: 'rules_intent',
-      usedLlm: false,
-      llmError: false,
-    };
-  }
-
-  if (policy.faqEnabled && matchFaq(queryText, lang)) {
-    return {
-      language: lang,
-      route: 'faq',
-      intent: null,
-      reason: 'rules_faq',
       usedLlm: false,
       llmError: false,
     };

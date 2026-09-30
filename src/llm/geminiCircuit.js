@@ -52,18 +52,9 @@ function resetGeminiCircuitForTests() {
   openUntil = 0;
 }
 
-function circuitSnapshot() {
-  return {
-    open: isGeminiCircuitOpen(),
-    consecutiveFailures,
-    openUntil: openUntil || null,
-  };
-}
-
 module.exports = {
   isGeminiCircuitOpen,
   recordGeminiFailure,
   recordGeminiSuccess,
   resetGeminiCircuitForTests,
-  circuitSnapshot,
 };

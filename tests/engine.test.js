@@ -1,8 +1,10 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { handleTurn, WELCOME_QUERY } = require('../src/pipeline/turn');
-const { createFactsClient } = require('../src/orders/factsClient');
+const { createStubFactsClient } = require('./helpers/stubFactsClient');
+const { Op } = require('sequelize');
 const { normalizePhoneDigits, extractPhoneCandidate } = require('../src/orders/phone');
+const { phoneEqualityValues, userPhoneWhere } = require('../src/services/supportFacts/orderListHelpers');
 const {
   wantsHuman,
   detectLanguage,
@@ -10,14 +12,34 @@ const {
   topicSuggestions,
 } = require('../src/conversation/intent');
 
-const facts = createFactsClient({ mode: 'mock' });
+const facts = createStubFactsClient();
 const CHAT = '9876543210';
 
 describe('phone', () => {
   it('strips 91 and leading 0 like admin listing', () => {
     assert.equal(normalizePhoneDigits('919876543210'), '9876543210');
     assert.equal(normalizePhoneDigits('09876543210'), '9876543210');
+    assert.equal(normalizePhoneDigits('+14155551212'), '14155551212');
     assert.equal(extractPhoneCandidate('my number is 98765-43210'), '9876543210');
+  });
+
+  it('keeps the Indian phone match and adds country_code for international', () => {
+    const indian = userPhoneWhere('9876543210');
+    assert.equal(indian.is_delete, false);
+    assert.equal(indian[Op.or], undefined);
+    assert.deepEqual(indian.phone[Op.in], phoneEqualityValues('9876543210'));
+
+    const us = userPhoneWhere('14155551212');
+    const branches = us[Op.or];
+    assert.equal(branches.length, 2);
+    assert.deepEqual(branches[0].phone[Op.in].slice(0, 4), phoneEqualityValues('14155551212'));
+    assert.equal(branches[0].phone[Op.in][4], '+14155551212');
+    assert.equal(branches[1].phone, '4155551212');
+    assert.deepEqual(branches[1].country_code[Op.in], ['1', '+1']);
+
+    const uk = userPhoneWhere('447911123456');
+    assert.equal(uk[Op.or][1].phone, '7911123456');
+    assert.deepEqual(uk[Op.or][1].country_code[Op.in], ['44', '+44']);
   });
 });
 
@@ -37,6 +59,10 @@ describe('intent', () => {
     assert.equal(engGuj.locale, 'en');
     assert.equal(engGuj.register, 'eng_gujarati');
     assert.equal(detectReplyLanguage('meri puja kab hai').register, 'hinglish_or_roman_hi');
+    assert.equal(
+      detectReplyLanguage('Meye pooja book kidi , ehno schedule batawo').register,
+      'punjabi_roman',
+    );
   });
 
   it('detects human / refund', () => {
@@ -88,7 +114,7 @@ describe('conversation (query-first, chat phone lookup)', () => {
       facts,
     ));
     assert.equal(state.stage, 'await_query');
-    assert.match(response.replies.join(' '), /help with your LifeGuru booking/i);
+    assert.match(response.replies.join(' '), /LifeGuru support|Namaste/i);
     assert.equal(response.suggestions, undefined);
   });
 
@@ -96,7 +122,7 @@ describe('conversation (query-first, chat phone lookup)', () => {
     let { state, response } = await handleTurn({ text: '', isNewChat: true }, facts);
     ({ state, response } = await handleTurn({ state, text: 'hi', chatPhone: CHAT }, facts));
     assert.equal(state.stage, 'await_query');
-    assert.match(response.replies.join(' '), /LifeGuru booking/i);
+    assert.match(response.replies.join(' '), /LifeGuru support|नमस्ते/i);
   });
 
   it('thanks ack without ending chat in await_query', async () => {
@@ -132,13 +158,14 @@ describe('conversation (query-first, chat phone lookup)', () => {
     assert.equal(handoff.state.stage, 'await_query');
   });
 
-  it('forwards autopay and call requests without FAQ or Admin', async () => {
+  it('shares autopay cancel steps and still forwards a call request', async () => {
     let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
     const autopay = await handleTurn(
       { state, text: 'stop autopay money deducted', chatPhone: CHAT },
       facts,
     );
-    assert.equal(autopay.response.action, 'forward');
+    assert.equal(autopay.response.action, 'reply');
+    assert.match(autopay.response.replies.join('\n'), /PhonePe|youtube\.com\/shorts/i);
     const call = await handleTurn(
       { state, text: 'How can I call you', chatPhone: CHAT },
       facts,

@@ -5,7 +5,8 @@ const { shouldSkipLlmClassify } = require('../conversation/routingGate');
 const { tryRulesRoute } = require('../conversation/rulesRoute');
 const { isGeminiCircuitOpen } = require('../llm/geminiCircuit');
 const { formatRecentForClassify } = require('../conversation/chatContext');
-const { matchFaq, faqById } = require('../faq/matchFaq');
+const { faqById, resolveFaq } = require('../faq/matchFaq');
+const { whichPujaFaqId } = require('../faq/whichPuja');
 const {
   detectLanguage,
   isNewBookingQuery,
@@ -14,6 +15,7 @@ const {
   isOrderIntent,
   intentFromTopicChoice,
   needsEmpatheticHumanHandoff,
+  isSpiritualPujaRecommendationQuery,
 } = require('../conversation/intent');
 const { t } = require('../conversation/copy');
 const { reply, forward, askMoreSuggestions } = require('./responses');
@@ -40,6 +42,7 @@ function classifyMetaFrom(c, fallbackReason) {
     usedLlmClassify: Boolean(c.usedLlm && !c.llmError),
     route: c.route,
     intent: c.intent ?? null,
+    faqId: c.faqId || null,
     reason: c.reason || fallbackReason || '',
     llmError: Boolean(c.llmError),
     geminiStatus: c.geminiStatus ?? null,
@@ -81,10 +84,23 @@ function withClassifyMeta(response, meta) {
   return { ...response, classifyMeta: meta };
 }
 
-function replyFromFaq(state, userText) {
+async function replyFromFaq(state, userText, faqId = null) {
   const lang = state.language || 'en';
+  const whichId = whichPujaFaqId(userText) || (String(faqId || '').startsWith('which_puja_') ? faqId : null);
+  if (whichId) {
+    const picked = faqById(whichId, lang);
+    if (picked) {
+      return {
+        state: { ...state, stage: 'ask_more', askMoreAttempts: 0 },
+        response: withClassifyMeta(
+          reply([picked.text, t(lang, 'askMore')], { suggestions: askMoreSuggestions(lang) }),
+          { route: 'faq', intent: null, reason: `faq:${picked.id}`, usedLlmClassify: false },
+        ),
+      };
+    }
+  }
   if (isNewBookingQuery(userText)) {
-    const hit = matchFaq(userText, lang) || faqById('how_to_book', lang);
+    const hit = faqById('how_to_book', lang);
     if (hit) {
       return {
         state: { ...state, stage: 'ask_more', askMoreAttempts: 0 },
@@ -98,15 +114,29 @@ function replyFromFaq(state, userText) {
   if (!policy.faqEnabled) {
     return { state, response: withClassifyMeta(forward(lang), { route: 'faq', reason: 'faq_disabled' }) };
   }
-  const hit = matchFaq(userText, lang);
+  if (isSpiritualPujaRecommendationQuery(userText)) {
+    const spiritual = faqById('spiritual_choose_puja_devotion', lang);
+    if (spiritual) {
+      return {
+        state: { ...state, stage: 'ask_more', askMoreAttempts: 0 },
+        response: withClassifyMeta(
+          reply([spiritual.text, t(lang, 'askMore')], { suggestions: askMoreSuggestions(lang) }),
+          { route: 'faq', intent: null, reason: `faq:${spiritual.id}`, usedLlmClassify: false },
+        ),
+      };
+    }
+  }
+  const hit = resolveFaq(userText, lang, faqId);
   if (!hit) {
     return { state, response: withClassifyMeta(forward(lang), { route: 'faq', reason: 'no_faq_match' }) };
   }
+  const reason =
+    hit.matchMethod === 'llm' ? hit.reason || `llm_faq:${hit.id}` : `faq:${hit.id}`;
   return {
     state: { ...state, stage: 'ask_more', askMoreAttempts: 0 },
     response: withClassifyMeta(
       reply([hit.text, t(lang, 'askMore')], { suggestions: askMoreSuggestions(lang) }),
-      { route: 'faq', intent: null, reason: `faq:${hit.id}`, usedLlmClassify: false },
+      { route: 'faq', intent: null, reason, usedLlmClassify: hit.matchMethod === 'llm' },
     ),
   };
 }

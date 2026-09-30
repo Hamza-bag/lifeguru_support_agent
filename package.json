@@ -9,18 +9,18 @@
     "dev": "node --watch src/index.js",
     "test": "NODE_ENV=test node --test tests/*.js",
     "chat": "node scripts/local-chat.js",
-    "smoke:admin": "node scripts/smoke-admin-facts.js",
+    "smoke:db": "node scripts/smoke-db-facts.js",
     "test:gemini": "node scripts/test-gemini-key.js",
     "test:gemini-mirror": "node scripts/test-gemini-mirror.js",
-    "preflight:step5": "node scripts/preflight-step5.js",
-    "parse:pdf-chats": "python3 scripts/parse-pdf-chats.py",
-    "replay:pdf-chats": "node scripts/replay-pdf-chats.js logs/pdf-50-chats-parsed.json"
+    "preflight:step5": "node scripts/preflight-step5.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "sequelize": "^6.37.7"
   }
 }

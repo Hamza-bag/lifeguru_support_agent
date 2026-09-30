@@ -35,9 +35,10 @@ describe('rules-first routing', () => {
     assert.equal(r.reason, 'rules_help');
   });
 
-  it('returns null for ambiguous text needing LLM', () => {
+  it('routes sankalp name change to human without LLM', () => {
     const r = tryRulesRoute({ stage: 'await_query' }, 'naam change karna hai sankalp mein');
-    assert.equal(r, null);
+    assert.equal(r.route, 'human');
+    assert.equal(r.reason, 'rules_direct_human');
   });
 
   it('routes new booking intent to faq not admin', () => {
@@ -52,10 +53,9 @@ describe('rules-first routing', () => {
     assert.equal(r.reason, 'rules_new_booking');
   });
 
-  it('routes money-return puja question to policy faq not admin', () => {
+  it('leaves policy questions for the LLM KB pick instead of keyword FAQ or admin', () => {
     const r = tryRulesRoute({ stage: 'await_query' }, 'best puja with max money returns');
-    assert.equal(r.route, 'faq');
-    assert.equal(r.reason, 'rules_faq');
+    assert.equal(r, null);
   });
 
   it('routes messages with links to human', () => {
@@ -64,12 +64,44 @@ describe('rules-first routing', () => {
     assert.equal(r.reason, 'rules_direct_human');
   });
 
-  it('routes autopay and deduction questions to human not FAQ', () => {
-    const autopay = tryRulesRoute({ stage: 'await_query' }, '501 autopay kyu kata');
-    assert.equal(autopay.route, 'human');
-    assert.equal(autopay.reason, 'rules_direct_human');
+  it('shares autopay steps, and hands anger or a call to a human', () => {
+    const why = tryRulesRoute({ stage: 'await_query' }, '501 autopay kyu kata');
+    assert.equal(why.route, 'faq');
+    assert.equal(why.faqId, 'autopay_501');
+    const stop = tryRulesRoute({ stage: 'await_query' }, 'please cancel my autopay');
+    assert.equal(stop.faqId, 'sub_autopay_cancel_steps');
+    const angry = tryRulesRoute({ stage: 'await_query' }, 'this video is useless, I am furious');
+    assert.equal(angry.route, 'human');
     const call = tryRulesRoute({ stage: 'await_query' }, 'Can u call me??');
     assert.equal(call.route, 'human');
+  });
+
+  it('does not name a puja as live, and checks only the customer booking', () => {
+    const catalogue = tryRulesRoute({ stage: 'await_query' }, 'which puja is live?');
+    assert.equal(catalogue.route, 'faq');
+    assert.equal(catalogue.faqId, 'live_puja_not_available');
+    const mine = tryRulesRoute({ stage: 'await_query' }, 'meri puja live hai kya');
+    assert.equal(mine.route, 'admin');
+    assert.equal(mine.intent, 'live');
+  });
+
+  it('names the catalogue seva for shaadi, karz, Hanuman, and Ganpati', () => {
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'shaadi ke liye konsi puja hai?').faqId,
+      'which_puja_marriage',
+    );
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'Mujhe karz mukti ke liye aur puja karani hai').faqId,
+      'which_puja_debt',
+    );
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'how about any hanuman puja for great success?').faqId,
+      'which_puja_hanuman',
+    );
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'any puja for ganpati bappa?').faqId,
+      'which_puja_not_in_catalogue',
+    );
   });
 
   it('does not treat the word puja alone as an existing booking', () => {

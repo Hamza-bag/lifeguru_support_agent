@@ -7,18 +7,19 @@ describe('async webhook', () => {
 
   const pendingConfig = {
     salesIqPendingEnabled: true,
+    salesIqPendingMode: 'always',
     llmMirrorLanguage: true,
     llmClassifyEnabled: true,
     policy: { routingStrategy: 'rules_first' },
   };
 
-  it('uses pending for an ambiguous turn that needs classify + mirror', () => {
+  it('uses pending for admin lookup + mirror (always mode)', () => {
     assert.equal(
       shouldUseAsyncWebhook({
         config: pendingConfig,
         callbackClient: callbackOk,
         payload: { handler: 'message', request: { id: 'req-1' } },
-        text: 'naam change karna hai sankalp mein',
+        text: 'meri puja kab hai',
         state: { stage: 'await_query' },
         isNewChat: false,
       }),
@@ -26,17 +27,23 @@ describe('async webhook', () => {
     );
   });
 
-  it('keeps a fast rules-first booking-status turn synchronous', () => {
+  it('auto mode uses pending for rules admin (facts + mirror over budget)', () => {
     assert.equal(
       shouldUseAsyncWebhook({
-        config: pendingConfig,
+        config: {
+          ...pendingConfig,
+          salesIqPendingMode: 'auto',
+          db: { queryTimeoutMs: 3000 },
+          webhookBudgetMs: 5000,
+          webhookReserveMs: 250,
+        },
         callbackClient: callbackOk,
         payload: { handler: 'message', request: { id: 'req-fast' } },
         text: 'mari puja keware awse',
         state: { stage: 'await_query' },
         isNewChat: false,
       }),
-      false,
+      true,
     );
   });
 
@@ -47,6 +54,26 @@ describe('async webhook', () => {
         callbackClient: callbackOk,
         payload: { handler: 'message', request: {} },
         text: 'hello',
+        state: { stage: 'await_query' },
+        isNewChat: false,
+      }),
+      false,
+    );
+  });
+
+  it('auto mode keeps human handoff synchronous when under budget', () => {
+    assert.equal(
+      shouldUseAsyncWebhook({
+        config: {
+          ...pendingConfig,
+          salesIqPendingMode: 'auto',
+          db: { queryTimeoutMs: 3000 },
+          webhookBudgetMs: 5000,
+          webhookReserveMs: 250,
+        },
+        callbackClient: callbackOk,
+        payload: { handler: 'message', request: { id: 'req-auto' } },
+        text: 'naam change karna hai sankalp mein',
         state: { stage: 'await_query' },
         isNewChat: false,
       }),

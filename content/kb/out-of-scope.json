@@ -1,0 +1,69 @@
+[
+  {
+    "id": "astrology_discontinued",
+    "domain": "policy",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "kundli",
+      "astrology",
+      "astrologer",
+      "horoscope",
+      "rashifal",
+      "jyotish",
+      "kundali"
+    ],
+    "tags": ["astrology"],
+    "en": "Namaste 🙏 Astrology consultations on the LifeGuru app have been discontinued. We continue to offer Mandir Puja, Chadhava, and other devotional sevas: https://lifeguru.app/mandir-puja and https://lifeguru.app/mandir-chadhava — thank you for your understanding 🙏",
+    "hi": "Namaste 🙏 LifeGuru app par astrology band ho chuki hai. Mandir Puja / Chadhava ab bhi uplabdh: https://lifeguru.app/mandir-puja — https://lifeguru.app/mandir-chadhava 🙏"
+  },
+  {
+    "id": "payment_no_qr_direct",
+    "domain": "policy",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "qr code",
+      "scan qr",
+      "upi id",
+      "pay on whatsapp",
+      "send upi",
+      "payment link whatsapp only"
+    ],
+    "tags": ["payment"],
+    "en": "Namaste 🙏 Please pay through our official app or website so booking updates in real time: Puja https://lifeguru.app/mandir-puja — Chadhava https://lifeguru.app/mandir-chadhava. If you face issues, say “human agent” 🙏",
+    "hi": "Namaste 🙏 Official app/website se payment karein taaki booking turant update ho: mandir-puja / mandir-chadhava links. Issue ho to “human agent” 🙏"
+  },
+  {
+    "id": "live_puja_not_available",
+    "domain": "puja",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "live puja",
+      "live darshan",
+      "watch live",
+      "live stream puja",
+      "live dekhna"
+    ],
+    "tags": ["live"],
+    "en": "Namaste 🙏 I cannot say which puja is live from its name. Live Puja is an add-on on a booking, and I only confirm it after I see that booking's Live Puja line. I do not have a live stream URL in this chat. Ask about your own booking (for example “meri puja live hai?”) and I will check that order only. 🙏",
+    "hi": "Namaste 🙏 Puja ke naam se main nahi bata sakta ki woh live hai. Live Puja booking par ek add-on hai, aur main tabhi confirm karta hoon jab us order par Live Puja line dikhe. Is chat mein live stream ka URL nahi hai. Apni booking ke baare mein poochhein, jaise “meri puja live hai?”, tab sirf woh order check hoga. 🙏"
+  },
+  {
+    "id": "booking_count_private",
+    "domain": "policy",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "how many people booked",
+      "kitne logo ne book",
+      "how many bookings",
+      "participant count",
+      "kitne log"
+    ],
+    "tags": ["privacy"],
+    "en": "Namaste 🙏 We cannot share how many people booked a puja, or anyone else's name. Your own booking is shared only on the WhatsApp number used at checkout. 🙏",
+    "hi": "Namaste 🙏 Kitne logo ne book kiya, ya kisi aur ka naam, yeh nahi bata sakte. Aapki booking sirf us WhatsApp number par share hoti hai jisse checkout hua tha. 🙏"
+  }
+]

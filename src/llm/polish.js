@@ -18,16 +18,64 @@ function parsePolishedReplies(text, fallback) {
   return cleaned.length ? cleaned : fallback;
 }
 
-function buildPrompt({ userText, drafts, action, rulesBlock = '' }) {
+function registerHint(register) {
+  const map = {
+    devanagari: 'User writes Hindi in Devanagari — use polite Hindi (Devanagari).',
+    hinglish_or_roman_hi: 'User writes Roman Hinglish — reply in Roman Hinglish, not formal English.',
+    punjabi_roman: 'User writes Roman Punjabi / Punjabi-English mix — reply in that mix (e.g. batawo, schedule, chahiye).',
+    eng_gujarati: 'User writes English–Gujarati in Roman — match that mix.',
+    eng_marathi: 'User writes English–Marathi in Roman — match that mix.',
+    indic_regional: 'User uses a regional Indic script — reply in the same script/register.',
+    en: 'User writes standard English — English is OK.',
+  };
+  return map[register] || map.en;
+}
+
+function protectUrls(drafts) {
+  const urls = [];
+  const safe = (drafts || []).map((draft) =>
+    String(draft || '').replace(/https?:\/\/[^\s)]+/gi, (url) => {
+      const token = `⟦U${urls.length}⟧`;
+      urls.push(url);
+      return token;
+    }),
+  );
+  return { safe, urls };
+}
+
+function restoreUrls(replies, urls) {
+  const used = new Set();
+  const restored = (replies || []).map((reply) =>
+    String(reply || '')
+      .replace(/⟦U(\d+)⟧/g, (token, index) => {
+        const url = urls[Number(index)];
+        if (!url) return '';
+        used.add(Number(index));
+        return url;
+      })
+      .replace(/https?:\/\/[^\s)]+/gi, (url) => (urls.includes(url) ? url : '')),
+  );
+  const missing = urls.filter((_, index) => !used.has(index));
+  if (missing.length && restored.length) {
+    restored[restored.length - 1] = `${restored[restored.length - 1]}\n${missing.join('\n')}`.trim();
+  }
+  return restored;
+}
+
+function buildPrompt({ userText, drafts, action, rulesBlock = '', replyRegister }) {
+  const registerLine = replyRegister ? `\nLanguage hint: ${registerHint(replyRegister)}` : '';
   return `${rulesBlock}You are a WhatsApp support agent for LifeGuru (Mandir Puja and Chadhava only).
 
 Rewrite the DRAFT replies so they sound natural for THIS user — same language and mix they use. Short messages. Follow SAFETY & TONE GUARDRAILS above (polite, never abusive, no insults even if the user is rude).
+${registerLine}
 
 Rules:
-- MATCH the user's language from their message: US/Indian English, Hindi, Hinglish (Roman), English–Gujarati mix in Roman (e.g. "mari puja kyare avse"), English–Marathi in Roman, or native script (Gujarati, Bengali, Tamil, etc.). Reply in the **same mix and spelling style** (Roman vs native script). Do not switch to formal Hindi/Devanagari if they wrote Eng-Gujarati or Hinglish.
+- MATCH the user's language from their message: US/Indian English, Hindi, Hinglish (Roman), Punjabi Roman, English–Gujarati mix in Roman (e.g. "mari puja kyare avse"), English–Marathi in Roman, or native script (Gujarati, Bengali, Tamil, etc.). Reply in the **same mix and spelling style** (Roman vs native script). Do not switch to formal Hindi/Devanagari if they wrote Eng-Gujarati or Hinglish.
+- If the user's latest message is mostly Hindi/Punjabi/Hinglish (even after they said "Hi" earlier), **ignore English drafts** — rewrite in their current message language.
 - Example: user "meri puja kab hai" → reply in polite Roman Hinglish (e.g. "Aapki puja 31 Oct ko schedule hai…"), NOT full English unless they wrote English.
 - ONLY LifeGuru bookings/support.
 - Drafts are the source of truth for facts (dates, status, product names, video/prasad). Do not add, guess, or change facts.
+- Keep every ⟦U0⟧ style token exactly as written. Do not rewrite links.
 - Do not invent order IDs, prices, refunds, or ETAs.
 - Do not say you are an AI.
 - Keep the same number of reply bubbles as the draft when possible.
@@ -48,6 +96,7 @@ async function polishReplies({
   action,
   timeoutMs = 2500,
   rulesBlock = '',
+  replyRegister,
 }) {
   if (!apiKey || !drafts?.length) {
     return { replies: drafts, usedLlm: false, skipReason: 'no_api_key_or_drafts' };
@@ -57,26 +106,35 @@ async function polishReplies({
     console.error('[llm] monthly usage limit reached (polish skipped)');
     return { replies: drafts, usedLlm: false, skipReason: 'usage_limit' };
   }
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const { safe: safeDrafts, urls } = protectUrls(drafts);
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
       signal: controller.signal,
       body: JSON.stringify({
         contents: [
           {
             role: 'user',
             parts: [
-              { text: buildPrompt({ userText, drafts, action, rulesBlock }) },
+              {
+                text: buildPrompt({
+                  userText,
+                  drafts: safeDrafts,
+                  action,
+                  rulesBlock: String(rulesBlock || '').slice(0, 700),
+                  replyRegister,
+                }),
+              },
             ],
           },
         ],
         generationConfig: {
-          temperature: 0.45,
-          maxOutputTokens: 2048,
+          temperature: 0.2,
+          maxOutputTokens: 512,
           responseMimeType: 'application/json',
         },
       }),
@@ -93,7 +151,7 @@ async function polishReplies({
       Number(usage.promptTokenCount || 0) + Number(usage.candidatesTokenCount || 0);
     recordUsage({ calls: 1, tokens });
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    const parsed = parsePolishedReplies(text, drafts);
+    const parsed = restoreUrls(parsePolishedReplies(text, safeDrafts), urls);
     if (!text.trim()) {
       return { replies: drafts, usedLlm: false, skipReason: 'empty_gemini_response' };
     }

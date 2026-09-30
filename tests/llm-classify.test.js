@@ -27,6 +27,28 @@ describe('llm classify normalize', () => {
     assert.equal(r.language, 'hi');
   });
 
+  it('keeps a catalog faq id only on the faq route', () => {
+    const r = normalizeClassifyResult(
+      { language: 'en', route: 'faq', intent: null, faqId: 'how_to_book', reason: 'book' },
+      'how do I book a puja',
+    );
+    assert.equal(r.route, 'faq');
+    assert.equal(r.faqId, 'how_to_book');
+  });
+
+  it('drops an invented or off-route faq id', () => {
+    const invented = normalizeClassifyResult(
+      { language: 'en', route: 'faq', intent: null, faqId: 'not_a_real_card', reason: 'x' },
+      'something',
+    );
+    assert.equal(invented.faqId, null);
+    const admin = normalizeClassifyResult(
+      { language: 'en', route: 'admin', intent: 'video', faqId: 'how_to_book', reason: 'x' },
+      'video',
+    );
+    assert.equal(admin.faqId, null);
+  });
+
   it('routes human for refund-like LLM route', () => {
     const r = normalizeClassifyResult(
       { language: 'en', route: 'human', intent: null, reason: 'refund' },

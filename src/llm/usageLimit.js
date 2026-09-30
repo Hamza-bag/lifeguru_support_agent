@@ -2,6 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 const USAGE_FILE = path.join(__dirname, '..', '..', 'logs', 'llm-usage.json');
+const FLUSH_MS = 2000;
+
+let cache = null;
+let dirty = false;
+let flushTimer = null;
 
 function monthKey() {
   const d = new Date();
@@ -16,10 +21,39 @@ function loadUsage() {
   }
 }
 
+function ensureCache() {
+  if (!cache) cache = loadUsage();
+  return cache;
+}
+
 function saveUsage(data) {
   const dir = path.dirname(USAGE_FILE);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(USAGE_FILE, JSON.stringify(data, null, 2));
+}
+
+function flushUsageSync() {
+  if (!dirty || !cache) return;
+  saveUsage(cache);
+  dirty = false;
+}
+
+function scheduleFlush() {
+  if (flushTimer) return;
+  flushTimer = setTimeout(() => {
+    flushTimer = null;
+    const snapshot = cache;
+    if (!dirty || !snapshot) return;
+    dirty = false;
+    fs.promises
+      .mkdir(path.dirname(USAGE_FILE), { recursive: true })
+      .then(() => fs.promises.writeFile(USAGE_FILE, JSON.stringify(snapshot, null, 2)))
+      .catch((err) => {
+        dirty = true;
+        console.error('[llm] usage flush failed', err.message || err);
+      });
+  }, FLUSH_MS);
+  if (typeof flushTimer.unref === 'function') flushTimer.unref();
 }
 
 function getLimits() {
@@ -30,7 +64,7 @@ function getLimits() {
 }
 
 function getMonthUsage() {
-  const all = loadUsage();
+  const all = ensureCache();
   const key = monthKey();
   return all[key] || { calls: 0, tokens: 0 };
 }
@@ -43,15 +77,20 @@ function isOverLimit() {
   return false;
 }
 
-function recordUsage({ calls = 1, tokens = 0 }) {
-  const all = loadUsage();
+function recordUsage({ calls = 1, tokens = 0 } = {}) {
+  const all = ensureCache();
   const key = monthKey();
   const row = all[key] || { calls: 0, tokens: 0 };
   row.calls += calls;
   row.tokens += tokens;
   all[key] = row;
-  saveUsage(all);
+  dirty = true;
+  scheduleFlush();
   return row;
+}
+
+if (!process.listenerCount('beforeExit')) {
+  process.on('beforeExit', flushUsageSync);
 }
 
 module.exports = {
@@ -59,5 +98,6 @@ module.exports = {
   recordUsage,
   getMonthUsage,
   getLimits,
+  flushUsageSync,
   USAGE_FILE,
 };

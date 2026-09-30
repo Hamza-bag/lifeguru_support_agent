@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sub_autopay_cancel_steps",
+    "domain": "puja_subscription",
+    "status": "published",
+    "owner": "Subscriptions CS",
+    "keywords": [
+      "cancel autopay",
+      "stop autopay",
+      "band karo",
+      "mandate cancel",
+      "autopay band",
+      "subscription cancel",
+      "upi mandate"
+    ],
+    "tags": ["autopay"],
+    "en": "Namaste 🙏 To stop AutoPay: open PhonePe / Google Pay → Profile → AutoPay / Mandates → select LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls",
+    "hi": "Namaste 🙏 AutoPay band karne ke liye PhonePe / Google Pay → Profile → AutoPay / Mandates → LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls"
+  },
+  {
+    "id": "sub_rs1_intro_then_full",
+    "domain": "puja_subscription",
+    "status": "published",
+    "owner": "Subscriptions CS",
+    "keywords": ["rs 1", "rs.1", "1 rupee", "ek rupaye", "intro offer", "pehle 1", "why charged more"],
+    "tags": ["billing"],
+    "en": "The ₹1 (or intro) charge is often the first cycle offer; from the next cycle your plan amount applies (₹301 / ₹501 / ₹701 or as shown at booking). To stop future debits, cancel the UPI mandate in your payment app.",
+    "hi": "Pehle cycle par intro/₹1 ho sakta hai; uske baad plan amount (₹301/₹501/₹701 ya jo booking par tha) lagta hai. Mandate cancel karke aage ki katauti rok sakte hain."
+  }
+]

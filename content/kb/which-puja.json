@@ -1,0 +1,42 @@
+[
+  {
+    "id": "which_puja_debt",
+    "domain": "catalogue",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [],
+    "tags": ["which-puja"],
+    "en": "Namaste 🙏 For debt, loans, or EMI, please open the puja list and the chadhava list. Those pages show only what is open for booking right now — the list changes from our admin panel, so I will not send a direct link to one puja that might not be happening. Puja: https://lifeguru.app/mandir-puja — Chadhava: https://lifeguru.app/mandir-chadhava. This is a devotional offering. We cannot promise that a loan or EMI will be cleared. 🙏",
+    "hi": "Namaste 🙏 Karz, loan ya EMI ke liye puja list aur chadhava list kholein. Wahan sirf wahi dikhta hai jo abhi booking ke liye khula hai — list admin panel se badalti hai, isliye main kisi ek puja ka seedha link nahi bhejunga jo shayad chal hi nahi rahi. Puja: https://lifeguru.app/mandir-puja — Chadhava: https://lifeguru.app/mandir-chadhava. Yeh seva hai. Loan khatam hone ki guarantee nahi dete. 🙏"
+  },
+  {
+    "id": "which_puja_marriage",
+    "domain": "catalogue",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [],
+    "tags": ["which-puja"],
+    "en": "Namaste 🙏 For marriage delay, please open the puja list. It shows only the pujas open for booking right now. The list changes from our admin panel, so I will not send a direct link to one puja that might not be happening: https://lifeguru.app/mandir-puja. We pray for your wish. We cannot promise that a marriage will happen. 🙏",
+    "hi": "Namaste 🙏 Shaadi mein der ke liye puja list kholein. Wahan sirf wahi puja dikhti hai jo abhi booking ke liye khuli hai. List admin panel se badalti hai, isliye main kisi ek puja ka seedha link nahi bhejunga: https://lifeguru.app/mandir-puja. Hum prarthna karte hain. Shaadi hone ki guarantee nahi dete. 🙏"
+  },
+  {
+    "id": "which_puja_hanuman",
+    "domain": "catalogue",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [],
+    "tags": ["which-puja"],
+    "en": "Namaste 🙏 I cannot name one Hanuman puja, because what is bookable changes from the admin panel. Please check the chadhava list — only sevas that are actually open appear there: https://lifeguru.app/mandir-chadhava. We cannot promise success or any result. 🙏",
+    "hi": "Namaste 🙏 Main kisi ek Hanuman puja ka naam nahi bata sakta, kyunki jo book ho sakti hai woh admin panel se badalta hai. Chadhava list dekhein — wahan sirf wahi seva dikhti hai jo abhi khuli hai: https://lifeguru.app/mandir-chadhava. Kisi result ki guarantee nahi dete. 🙏"
+  },
+  {
+    "id": "which_puja_not_in_catalogue",
+    "domain": "catalogue",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [],
+    "tags": ["which-puja"],
+    "en": "Namaste 🙏 I cannot confirm a Ganpati puja from here, because the list changes from the admin panel. Open https://lifeguru.app/mandir-puja — if it is not on that page, it is not open for booking right now. 🙏",
+    "hi": "Namaste 🙏 Main yahan se Ganpati puja confirm nahi kar sakta, kyunki list admin panel se badalti hai. https://lifeguru.app/mandir-puja kholein — agar us page par nahi hai, to abhi booking ke liye khuli nahi hai. 🙏"
+  }
+]

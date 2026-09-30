@@ -10,20 +10,30 @@ const {
 } = require('../src/salesiq/payload');
 
 describe('salesiq payload', () => {
-  it('reads visitor phone from webhook and entity shapes', () => {
+  it('reads only visitor.phone, not form or custom fields', () => {
     assert.equal(
       visitorPhone({ visitor: { phone: '919876543210' } }),
       '919876543210',
     );
     assert.equal(
       visitorPhone({
-        entity: { visitor: { mobile: '9876543210' } },
+        entity: { visitor: { phone: '9876543210' } },
       }),
       '9876543210',
     );
     assert.equal(
+      visitorPhone({
+        entity: { visitor: { mobile: '9876543210' } },
+      }),
+      '',
+    );
+    assert.equal(
       visitorPhone({ visitor_info: { phone: '9826312985' } }),
-      '9826312985',
+      '',
+    );
+    assert.equal(
+      visitorPhone({ visitor: { custom_info: { phone: '9826312985' } } }),
+      '',
     );
   });
 

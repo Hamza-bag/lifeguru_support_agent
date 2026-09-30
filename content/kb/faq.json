@@ -1,10 +1,33 @@
 [
   {
     "id": "autopay_501",
-    "tags": ["autopay", "501", "subscription", "mandate", "deduct"],
-    "keywords": ["501", "autopay", "auto pay", "subscription", "mandate", "deduct", "कट", "ऑटो"],
-    "en": "If ₹501 was deducted for a subscription plan: the first puja/chadhava may be at ₹1, then the plan amount is used for seva over the following months. This is usually non-refundable once transferred for seva. To stop future auto-debits, cancel the UPI mandate in PhonePe/Google Pay. For disputes, our team can review your case.",
-    "hi": "अगर ₹501 subscription/autopay से कटा है: पहली puja/chadhava अक्सर ₹1 में होती है, फिर plan की राशि अगले महीनों की seva के लिए उपयोग होती है। Seva transfer के बाद refund आमतौर पर संभव नहीं। आगे की कटौती रोकने के लिए PhonePe/Google Pay में UPI mandate बंद करें। विवाद हो तो टीम case देख सकती है।"
+    "tags": ["autopay", "subscription", "mandate", "deduct", "301", "501", "701"],
+    "keywords": [
+      "501",
+      "301",
+      "701",
+      "autopay",
+      "auto pay",
+      "subscription",
+      "mandate",
+      "deduct",
+      "deducted",
+      "amount cut",
+      "kata",
+      "कट",
+      "ऑटो",
+      "unexpected payment",
+      "why charged"
+    ],
+    "en": "Namaste 🙏 If an amount was auto-debited (e.g. ₹301 / ₹501 / ₹701 or your plan amount): it is usually your active Chadhava/Puja subscription cycle — often after a ₹1 intro on the first cycle. To stop future debits, cancel the UPI mandate in PhonePe/Google Pay. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. We cannot promise refunds once seva is scheduled or done; if you are upset, say “human agent”.",
+    "hi": "Namaste 🙏 Agar subscription se amount kata (₹301/₹501/₹701 ya plan amount): yeh active plan ki cycle hoti hai — pehli baar kabhi ₹1 intro ho sakta hai. Aage ki katauti rokne ke liye PhonePe/Google Pay mein mandate cancel karein. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. Scheduled/done seva par refund guarantee nahi; pareshani ho to “human agent” likhein."
+  },
+  {
+    "id": "spiritual_choose_puja_devotion",
+    "tags": ["spiritual", "recommend", "policy"],
+    "keywords": [],
+    "en": "Namaste 🙏 We are sorry you are going through this. Mandir Puja and Chadhava are offerings of faith and devotion — we choose seva with a sincere heart, not to “guarantee” marriage, health, court, or financial outcomes. We do not recommend one puja as a promise for a specific result. You may browse sevas on https://lifeguru.app/mandir-puja or https://lifeguru.app/mandir-chadhava, or say “human agent” if you want gentle guidance from our team.",
+    "hi": "Namaste 🙏 Jo pareshani hai uske liye hamari saanjhedari hai. Puja/Chadhava shraddha ki seva hai — shaadi, swasthya, court ya paisa ki guarantee nahi dete. Kisi ek puja ko “result pakka” ke taur par recommend nahi karte. https://lifeguru.app/mandir-puja ya mandir-chadhava dekhein, ya “human agent” likhein."
   },
   {
     "id": "no_money_guarantee",
@@ -16,7 +39,6 @@
       "guarantee",
       "guaranteed",
       "best puja",
-      "which puja",
       "profit",
       "financial",
       "returns",
@@ -64,12 +86,5 @@
     "keywords": [],
     "en": "Thanks. Connecting you to the LifeGuru team with your message.",
     "hi": "धन्यवाद। आपका संदेश के साथ आपको LifeGuru टीम से जोड़ रहा हूँ।"
-  },
-  {
-    "id": "video_timeline",
-    "tags": ["video", "when", "timeline"],
-    "keywords": ["when video", "video kab", "video kitne din", "3-4", "timeline"],
-    "en": "Puja video is usually sent on WhatsApp within 3–4 days after the puja is completed. You can also check the LifeGuru app order page.",
-    "hi": "Puja video आमतौर पर puja complete होने के 3–4 दिन में WhatsApp पर भेजा जाता है। LifeGuru app के order page पर भी देख सकते हैं।"
   }
 ]

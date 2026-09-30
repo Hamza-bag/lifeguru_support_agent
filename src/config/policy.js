@@ -11,6 +11,8 @@ module.exports = {
   routingStrategy,
   faqEnabled: parseBool(process.env.SUPPORT_FAQ_ENABLED, true),
   maxClarifyAttempts: Number(process.env.SUPPORT_MAX_CLARIFY) || 2,
+  /** Unclear replies in ask_more — then handoff to human (not end chat). */
+  maxAskMoreAttempts: Number(process.env.SUPPORT_MAX_ASK_MORE) || 3,
   /**
    * Optional simulated WhatsApp phone for local-chat only.
    * Off by default — production and ngrok use visitor.phone only.

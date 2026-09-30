@@ -23,6 +23,7 @@ const {
 } = require('./responses');
 const { applyRouting, withClassifyMeta, replyFromFaq } = require('./router');
 const { resolveChatPhone } = require('./phoneContext');
+const { parseWebSupportPrefill } = require('../lib/webSupportPrefill');
 const {
   handleAwaitBookingNumber,
   lookupAndShowOrders,
@@ -63,7 +64,7 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
     };
   }
   if (routed.route === 'faq') {
-    const faq = replyFromFaq(state, queryText);
+    const faq = await replyFromFaq(state, queryText, routed.classifyMeta?.faqId);
     faq.response = withClassifyMeta(faq.response, routed.classifyMeta);
     return faq;
   }
@@ -73,7 +74,27 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
     return picked;
   }
 
-  const { phone, source: phoneSource } = resolveChatPhone(input, state);
+  let { phone, source: phoneSource } = resolveChatPhone(input, state);
+  const prefill = parseWebSupportPrefill(queryText);
+  if (
+    phone &&
+    prefill.registeredMobile &&
+    prefill.registeredMobile !== phone
+  ) {
+    return {
+      state: {
+        ...state,
+        chatPhone: phone,
+        chatPhoneSource: 'visitor',
+        claimedBookingPhone: prefill.registeredMobile,
+        stage: 'await_query',
+      },
+      response: withClassifyMeta(forwardForHuman(lang, queryText, {
+        route: 'human',
+        reason: 'booking_phone_differs_from_visitor',
+      }), { route: 'human', reason: 'booking_phone_differs_from_visitor' }),
+    };
+  }
   if (!phone) {
     return {
       state: {
@@ -115,7 +136,7 @@ async function handlePickTopic(state, text, factsClient, input) {
     };
   }
   if (routed.route === 'faq') {
-    const faq = replyFromFaq(state, text);
+    const faq = await replyFromFaq(state, text, routed.classifyMeta?.faqId);
     faq.response = withClassifyMeta(faq.response, routed.classifyMeta);
     return faq;
   }
@@ -158,7 +179,7 @@ async function handleAskMore(state, text, factsClient, input) {
     };
   }
   if (routed.route === 'faq') {
-    const faq = replyFromFaq(routed.state, text);
+    const faq = await replyFromFaq(routed.state, text, routed.classifyMeta?.faqId);
     faq.response = withClassifyMeta(faq.response, routed.classifyMeta);
     return faq;
   }
@@ -184,8 +205,14 @@ async function handleAskMore(state, text, factsClient, input) {
     };
   }
   const attempts = (state.askMoreAttempts || 0) + 1;
-  if (attempts >= 2) {
-    return { state: emptyState(), response: endChat(lang) };
+  if (attempts >= policy.maxAskMoreAttempts) {
+    return {
+      state: { ...state, askMoreAttempts: 0 },
+      response: withClassifyMeta(forwardForHuman(lang, text, { route: 'human', reason: 'ask_more_unresolved' }), {
+        route: 'human',
+        reason: 'ask_more_unresolved',
+      }),
+    };
   }
   return {
     state: { ...state, askMoreAttempts: attempts },

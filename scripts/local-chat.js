@@ -28,11 +28,7 @@ async function maybePolish(state, text, response) {
 }
 
 async function main() {
-  const factsClient = createFactsClient({
-    mode: config.factsMode,
-    apiUrl: config.factsApiUrl,
-    apiSecret: config.factsApiSecret,
-  });
+  const factsClient = createFactsClient();
   const logger = createChatLogger({ enabled: true });
   let state = emptyState();
   let isNewChat = false;
@@ -42,10 +38,9 @@ async function main() {
     config.policy.allowDefaultChatPhone && config.policy.defaultChatPhone
       ? config.policy.defaultChatPhone
       : null;
-  const factsLabel =
-    config.factsMode === 'http'
-      ? `http → ${config.factsApiUrl || '(set FACTS_API_URL)'}`
-      : 'mock (9876543210 demo orders)';
+  const factsLabel = config.db.host
+    ? `postgres read-only → ${config.db.host}/${config.db.database}`
+    : '(set SUPPORT_DB_* — same values as admin dev DB)';
   console.log(
     'LifeGuru support agent (local).\n' +
       `Facts: ${factsLabel}\n` +

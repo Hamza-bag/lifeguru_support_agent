@@ -1,10 +1,10 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const { handleTurn } = require('../src/pipeline/turn');
-const { createFactsClient } = require('../src/orders/factsClient');
+const { createStubFactsClient } = require('./helpers/stubFactsClient');
 
 const CHAT = '9876543210';
-const facts = createFactsClient({ mode: 'mock' });
+const facts = createStubFactsClient();
 
 describe('burst buffer (split messages)', () => {
   it('holds fragments then routes once on combined puja question', async () => {
@@ -32,5 +32,29 @@ describe('burst buffer (split messages)', () => {
     const t3 = await handleTurn({ state: t2.state, text: 'kab hai', chatPhone: CHAT }, facts);
     assert.match(t3.response.replies.join(' '), /scheduled|Satyanarayan|निर्धारित/i);
     assert.equal(t3.state.userBurstBuffer, null);
+  });
+
+  it('does not hold complete sentences (sankalp name change → handoff)', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+    await handleTurn({ state, text: 'Hi', chatPhone: CHAT }, facts);
+    const r = await handleTurn(
+      {
+        state: { ...state, stage: 'await_query', language: 'hi' },
+        text: 'Snakalp mei naam change kqrna hai',
+        chatPhone: CHAT,
+      },
+      facts,
+    );
+    assert.ok(r.response.replies.length > 0);
+    assert.equal(r.response.action, 'forward');
+  });
+
+  it('does not burst-merge punctuation-only follow-ups alone', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+    const r = await handleTurn(
+      { state: { ...state, stage: 'await_query' }, text: '?', chatPhone: CHAT },
+      facts,
+    );
+    assert.ok(r.response.replies.length > 0);
   });
 });

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Step 5 preflight — env + optional Admin smoke + local /health.
+ * Step 5 preflight — env + optional DB smoke + local /health.
  * Usage: npm run preflight:step5
- * Start admin + agent first for full checks.
  */
 require('dotenv').config();
 const http = require('http');
 const config = require('../src/config');
 const { createFactsClient } = require('../src/orders/factsClient');
+const { closeSequelize } = require('../src/db/sequelize');
 
 function check(label, ok, detail = '') {
   const mark = ok ? 'OK' : 'FAIL';
@@ -46,9 +46,9 @@ async function main() {
     if (check(label, ok, detail)) pass += 1;
   };
 
-  run('FACTS_MODE=http', config.factsMode === 'http', config.factsMode);
-  run('FACTS_API_URL set', Boolean(config.factsApiUrl), config.factsApiUrl || 'missing');
-  run('FACTS_API_SECRET set', Boolean(config.factsApiSecret));
+  run('SUPPORT_DB_HOST set', Boolean(config.db.host), config.db.host || 'missing');
+  run('SUPPORT_DB_NAME set', Boolean(config.db.database), config.db.database || 'missing');
+  run('SUPPORT_DB_USER set', Boolean(config.db.user));
   run(
     'Gemini classify ready',
     Boolean(config.geminiApiKey && config.llmClassifyEnabled),
@@ -67,32 +67,29 @@ async function main() {
       : 'set SUPPORT_LLM_MIRROR_LANGUAGE=true for Hinglish/Gujarati replies',
   );
 
-  if (config.factsMode === 'http' && config.factsApiUrl && config.factsApiSecret) {
+  if (config.db.host && config.db.database && config.db.user) {
     const phone =
       config.policy.defaultChatPhone ||
       (process.env.SUPPORT_SMOKE_PHONE || '').trim() ||
-      '9876543210';
-    const phoneSource = config.policy.defaultChatPhone
-      ? 'DEFAULT_CHAT_PHONE'
-      : process.env.SUPPORT_SMOKE_PHONE
-        ? 'SUPPORT_SMOKE_PHONE'
-        : 'built-in smoke (9876543210)';
-    try {
-      const client = createFactsClient({
-        mode: config.factsMode,
-        apiUrl: config.factsApiUrl,
-        apiSecret: config.factsApiSecret,
-      });
-      const lookup = await client.lookupByPhone(phone);
-      run(
-        'Admin lookup',
-        true,
-        lookup.matched
-          ? `${phoneSource} → matched customerId=${lookup.customerId} orders=${lookup.orders.length}`
-          : `${phoneSource} → no orders (404 matched:false is OK — API auth works)`,
-      );
-    } catch (err) {
-      run('Admin lookup', false, err.message || String(err));
+      '';
+    if (phone) {
+      try {
+        const client = createFactsClient();
+        const lookup = await client.lookupByPhone(phone);
+        run(
+          'DB lookup',
+          true,
+          lookup.matched
+            ? `orders=${lookup.orders.length} customerId=${lookup.customerId}`
+            : 'no orders (connection OK)',
+        );
+      } catch (err) {
+        run('DB lookup', false, err.message || String(err));
+      } finally {
+        await closeSequelize();
+      }
+    } else {
+      run('DB lookup', true, 'skipped — set SUPPORT_SMOKE_PHONE or DEFAULT_CHAT_PHONE');
     }
   }
 
@@ -104,26 +101,22 @@ async function main() {
     health.ok ? '' : `in another terminal: npm start (port ${port})`,
   );
 
-  const step5 = await getJson(`http://127.0.0.1:${port}/dev/step5`);
-  run('Agent /dev/step5', step5.ok);
-
   console.log(`\n${pass}/${total} checks passed.`);
 
   if (pass < total) {
     console.log('\nNext:');
     if (!health.ok) {
-      console.log('  Terminal A: cd lifeguru_admin_backend && npm start');
-      console.log('  Terminal B: cd lifeguru_support_agent && npm start');
+      console.log('  Terminal: cd lifeguru_support_agent && npm start');
     }
-    if (config.factsMode !== 'http') console.log('  Set FACTS_MODE=http and Admin URL/secret in .env');
-    console.log('  Terminal C: ngrok http 3080');
+    if (!config.db.host) {
+      console.log('  Copy SUPPORT_DB_* (or DB_*) from lifeguru_admin_backend .env into agent .env');
+    }
+    console.log('  Terminal: ngrok http 3080');
     console.log('  Doc: docs/support-agent-step5-ngrok-salesiq-safe.md');
     process.exit(1);
   }
 
-  console.log('\nReady for ngrok + SalesIQ (Mode A shadow or Mode B website webhook).');
-  console.log('  ngrok URL → https://….ngrok-free.app/salesiq/shadow OR /salesiq/webhook');
-  console.log('  Browser: https://YOUR-NGROK/health and /dev/step5');
+  console.log('\nReady for ngrok + SalesIQ webhook tests.');
 }
 
 main().catch((err) => {

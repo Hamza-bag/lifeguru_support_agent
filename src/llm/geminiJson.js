@@ -3,24 +3,30 @@ const { isOverLimit, recordUsage } = require('./usageLimit');
 const { recordGeminiFailure, recordGeminiSuccess } = require('./geminiCircuit');
 
 /** Default 4.5s — must stay below SalesIQ ~5s webhook budget (Admin lookup follows). */
-async function geminiGenerateJson({ apiKey, model, prompt, timeoutMs = 4500 }) {
+async function geminiGenerateJson({
+  apiKey,
+  model,
+  prompt,
+  timeoutMs = 4500,
+  maxOutputTokens = 256,
+}) {
   if (isOverLimit()) {
     console.error('[llm] monthly usage limit reached');
     return { ok: false, status: 429, reason: 'usage_limit' };
   }
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
       signal: controller.signal,
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.2,
-          maxOutputTokens: 256,
+          maxOutputTokens,
           responseMimeType: 'application/json',
         },
       }),

@@ -1,0 +1,155 @@
+[
+  {
+    "id": "payment_done_not_confirmed",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "payment done",
+      "booking not confirmed",
+      "paid but not confirmed",
+      "amount debited",
+      "payment success booking nahi"
+    ],
+    "tags": ["payment"],
+    "en": "We’re sorry for the trouble. Successful payments usually confirm in real time. If payment failed but money was debited, it often reverses automatically — contact your bank if not reversed in the usual time. Check status: https://lifeguru.app/profile — or say “human agent” with registered mobile.",
+    "hi": "Asuvidha ke liye maafi. Payment success par booking real time confirm hoti hai. Fail par debit ho to aksar auto-reverse hota hai — nahi ho to bank se poochhein. Status: https://lifeguru.app/profile — ya registered mobile ke saath “human agent”."
+  },
+  {
+    "id": "no_confirmation_after_payment",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "no confirmation",
+      "no email",
+      "no update after booking",
+      "confirmation nahi",
+      "booking confirm nahi"
+    ],
+    "tags": ["booking"],
+    "en": "This can happen due to a brief technical issue. Please check booking history: https://lifeguru.app/profile — if nothing appears, say “human agent” with your payment time and registered mobile 🙏",
+    "hi": "Kabhi technical issue se confirmation delay ho sakta hai. https://lifeguru.app/profile par dekhein — na mile to payment time + mobile ke saath “human agent” likhein 🙏"
+  },
+  {
+    "id": "booking_family_members_limit",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "add family member",
+      "more names",
+      "extra name",
+      "family package",
+      "couple package",
+      "kitne naam"
+    ],
+    "tags": ["booking"],
+    "en": "Names allowed depend on package: Single — 1; Couple — up to 2; Family — up to 6. To add beyond the limit, book the same puja again with a suitable package. To update names while the window is open, say “human agent” 🙏",
+    "hi": "Package ke hisaab se naam: Single — 1; Couple — 2; Family — 6 tak. Zyada naam ke liye dubara book karein. Window khuli ho to update ke liye “human agent” likhein 🙏"
+  },
+  {
+    "id": "update_details_before_puja",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "update details",
+      "update wish",
+      "update whatsapp",
+      "change details",
+      "details update karna"
+    ],
+    "tags": ["booking"],
+    "en": "You can update devotee name, gotra, wishes, or WhatsApp number before the booking window closes. Share exact updates — if the window is open, say “human agent” and we will confirm after changing.",
+    "hi": "Booking window band hone se pehle naam, gotra, manokamna ya WhatsApp update ho sakte hain. Sahi details bhejein — “human agent” likhein agar window khuli ho."
+  },
+  {
+    "id": "gst_on_puja",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": ["gst", "tax on puja", "government tax", "tax kyu", "gst charge"],
+    "tags": ["billing"],
+    "en": "Namaste 🙏 LifeGuru complies with applicable laws; GST on puja-related services is mandatory as per government norms. Thank you for your understanding 🙏",
+    "hi": "Namaste 🙏 Sarkari norms ke mutabik puja services par GST lagta hai — yeh mandatory hai. Dhanyawad 🙏"
+  },
+  {
+    "id": "ask_puja_details_for_help",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "share puja name",
+      "puja name and date",
+      "puja ka naam batao",
+      "registered mobile number share"
+    ],
+    "tags": [],
+    "en": "Namaste 🙏 To help quickly, please share puja name, puja date, and registered mobile number (or Order ID from the app).",
+    "hi": "Namaste 🙏 Jaldi madad ke liye puja ka naam, date aur registered mobile (ya Order ID) bhejein."
+  },
+  {
+    "id": "gotra_unknown_kashyap",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "gotra nahi pata",
+      "don't know gotra",
+      "gotra unknown",
+      "kashyap gotra"
+    ],
+    "tags": ["gotra"],
+    "en": "If gotra is not known, tradition often uses Kashyap Gotra for the sankalp. You may enter that at booking or tell the team when updating details 🙏",
+    "hi": "Agar gotra nahi pata ho to sankalp ke liye aksar Kashyap Gotra use hota hai — booking par ya team ko batayein 🙏"
+  },
+  {
+    "id": "booking_name_gotra_change",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "change name booking",
+      "change gotra",
+      "update name gotra",
+      "name gotra change",
+      "correct name gotra",
+      "naam badalna booking",
+      "gotra badalna"
+    ],
+    "tags": ["booking", "gotra"],
+    "en": "Name and gotra can be updated only before the booking window closes. Share the correct name and gotra — say “human agent” and we will update if the window is still open.",
+    "hi": "Naam/gotra sirf booking window band hone se pehle update ho sakte hain. Sahi naam-gotra bhejein — “human agent” likhein, window khuli ho to update karenge."
+  },
+  {
+    "id": "agent_reviewing_details_hold",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "reviewing my details",
+      "checking my booking",
+      "any update",
+      "status update please"
+    ],
+    "tags": [],
+    "en": "We are reviewing your details. Please give us a moment — we will get back to you shortly 🙏",
+    "hi": "Aapki details review ho rahi hain. Thoda samay dein — jald jawab denge 🙏"
+  },
+  {
+    "id": "duplicate_booking_failed_message",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "booking failed",
+      "failed message",
+      "duplicate booking",
+      "payment success failed message"
+    ],
+    "tags": ["payment"],
+    "en": "Sorry for the confusion — a “failed” message sometimes appears on a duplicate booking attempt when the same seva was booked twice; your first booking may still be confirmed. Check https://lifeguru.app/profile or say “human agent” with registered mobile.",
+    "hi": "Kabhi same seva dubara book karne par “failed” message aata hai jabki pehli booking confirm ho — profile check karein: https://lifeguru.app/profile ya “human agent”."
+  }
+]

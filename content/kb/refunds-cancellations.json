@@ -1,0 +1,65 @@
+[
+  {
+    "id": "puja_no_benefit_no_guarantee",
+    "domain": "refunds",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "no benefit",
+      "puja ka fayda nahi",
+      "no effect",
+      "kuch nahi hua",
+      "puja bekar",
+      "result nahi mila"
+    ],
+    "tags": ["puja"],
+    "en": "Namaste 🙏 Your puja was performed as per Vedic rituals. Effects vary by faith, devotion, and individual circumstances — some see change quickly, others gradually. We pray your wishes are fulfilled soon 🙏 We do not guarantee specific outcomes; say “human agent” if you need to discuss further.",
+    "hi": "Namaste 🙏 Puja vidhi ke mutabik hui. Parinaam shraddha aur samay par nirbhar karte hain — kisi ko jaldi, kisi ko dheere. Hamari prarthna aapke saath hai 🙏 Koi specific guarantee nahi; aur baat ke liye “human agent”."
+  },
+  {
+    "id": "refund_name_video_issue_repuja",
+    "domain": "refunds",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "refund name not taken",
+      "name not in video refund",
+      "sankalp missing refund",
+      "video not shared refund"
+    ],
+    "tags": ["video"],
+    "en": "Namaste 🙏 We understand how important Sankalp is. We can usually arrange the same puja again (or another puja) in the next schedule at no extra cost. If you still prefer a refund, tell us — say “human agent” to process with the team 🙏",
+    "hi": "Namaste 🙏 Sankalp bahut mahatvapurn hai. Aam taur par agle schedule par dubara puja bina extra charge ke arrange hoti hai. Refund chahiye ho to batayein — “human agent” likhein 🙏"
+  },
+  {
+    "id": "cancel_puja_booking",
+    "domain": "refunds",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "cancel puja",
+      "cancel booking",
+      "puja cancel karna",
+      "booking cancel"
+    ],
+    "tags": ["cancel"],
+    "en": "Each puja is scheduled on an auspicious date — we encourage proceeding as planned. If you still wish to cancel, share your reason; the team can help with refund or reschedule. Say “human agent” with Order ID 🙏",
+    "hi": "Puja shubh date par schedule hoti hai — jaane dena behtar hota hai. Phir bhi cancel karna ho to reason batayein; team refund/reschedule mein madad karegi. Order ID ke saath “human agent” 🙏"
+  },
+  {
+    "id": "reschedule_puja_earlier",
+    "domain": "refunds",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "reschedule puja",
+      "earlier puja",
+      "date change puja",
+      "puja jaldi",
+      "date badalna puja"
+    ],
+    "tags": ["puja"],
+    "en": "Namaste 🙏 Dates follow the pandit’s auspicious muhurat — we recommend keeping the current schedule. Alternatively we can cancel with refund and rebook the next available date. Say “human agent” with how you’d like to proceed 🙏",
+    "hi": "Namaste 🙏 Date pandit ke shubh muhurat par hoti hai — current schedule par chalna behtar. Ya refund karke agli date par dubara book kar sakte hain. “human agent” likhein 🙏"
+  }
+]

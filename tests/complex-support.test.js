@@ -8,7 +8,7 @@ const {
 const { tryRulesRoute } = require('../src/conversation/rulesRoute');
 const { normalizeClassifyResult } = require('../src/llm/classify');
 const { handleTurn } = require('../src/pipeline/turn');
-const { createFactsClient } = require('../src/orders/factsClient');
+const { createStubFactsClient } = require('./helpers/stubFactsClient');
 
 const DISTRESS =
   'Mera karobaar me koi sale nahi ho pa raha hai Main 51 charaunga toh mera karobaar ko khol de sakenge plz ' +
@@ -36,7 +36,7 @@ describe('complex emotional support', () => {
   });
 
   it('engine forwards instead of listing bookings on chat phone', async () => {
-    const facts = createFactsClient({ mode: 'mock' });
+    const facts = createStubFactsClient();
     let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
     const result = await handleTurn(
       { state, text: DISTRESS, chatPhone: '9876543210' },

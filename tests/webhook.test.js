@@ -1,7 +1,7 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
-const { createApp } = require('../src/app');
+const { createTestApp } = require('./helpers/testApp');
 const { WELCOME_QUERY } = require('../src/pipeline/turn');
 
 function listen(app) {
@@ -43,7 +43,7 @@ function request(port, { method, path, body, headers }) {
 
 describe('salesiq webhook', () => {
   it('HEAD returns 200 for Zoho URL validation', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp();
     const { server, port } = await listen(app);
     try {
       const res = await request(port, { method: 'HEAD', path: '/salesiq/webhook' });
@@ -54,7 +54,7 @@ describe('salesiq webhook', () => {
   });
 
   it('trigger asks language; English then stays in English', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp();
     const { server, port } = await listen(app);
     const visitor = { id: 'v-poc-1', phone: '9999999999' };
     try {
@@ -90,8 +90,24 @@ describe('salesiq webhook', () => {
     }
   });
 
+  it('shadow is off unless SUPPORT_DEV_SHADOW is enabled', async () => {
+    const { app } = createTestApp();
+    const { server, port } = await listen(app);
+    try {
+      const res = await request(port, {
+        method: 'POST',
+        path: '/salesiq/shadow',
+        body: { visitor: { phone: '9876543210' }, message: { text: 'hi' } },
+      });
+      assert.equal(res.status, 404);
+      assert.equal(res.json.ok, false);
+    } finally {
+      server.close();
+    }
+  });
+
   it('shadow unwraps workflow entity payloads and never returns action', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp({ config: { supportDevShadow: true } });
     const { server, port } = await listen(app);
     try {
       const res = await request(port, {
@@ -116,7 +132,7 @@ describe('salesiq webhook', () => {
   });
 
   it('failure handler returns agent-busy reply (not forward retry loop)', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp();
     const { server, port } = await listen(app);
     try {
       const res = await request(port, {
@@ -138,7 +154,7 @@ describe('salesiq webhook', () => {
   });
 
   it('webhook accepts entity-wrapped visitor message', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp();
     const { server, port } = await listen(app);
     try {
       const res = await request(port, {
@@ -162,7 +178,7 @@ describe('salesiq webhook', () => {
   });
 
   it('shadow endpoint logs and does not return a bot reply', async () => {
-    const { app } = createApp();
+    const { app } = createTestApp({ config: { supportDevShadow: true } });
     const { server, port } = await listen(app);
     try {
       const res = await request(port, {

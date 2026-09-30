@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { shouldSkipLlmClassify } = require('../src/conversation/routingGate');
+const { shouldSkipLlmClassify, shouldSkipLlmMirror } = require('../src/conversation/routingGate');
 const {
   normalizeUserText,
   mergeRecentUserForRouting,
@@ -19,6 +19,37 @@ describe('routingGate', () => {
 
   it('does not skip open question', () => {
     assert.equal(shouldSkipLlmClassify({ stage: 'await_query' }, 'video kab aayega'), false);
+  });
+
+  it('still mirrors refund / handoff lines', () => {
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'Refund chahiye'), false);
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'human agent'), false);
+  });
+
+  it('skips mirror when the template language already matches', () => {
+    assert.equal(
+      shouldSkipLlmMirror({ stage: 'await_query', replyRegister: 'en' }, 'when is my puja'),
+      true,
+    );
+    assert.equal(
+      shouldSkipLlmMirror({ stage: 'await_query', replyRegister: 'devanagari' }, 'पूजा कब है'),
+      true,
+    );
+    assert.equal(
+      shouldSkipLlmMirror(
+        { stage: 'await_query', replyRegister: 'hinglish_or_roman_hi' },
+        'video kab aayega',
+      ),
+      false,
+    );
+  });
+
+  it('skips mirror for hello and order pick', () => {
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'Hi'), true);
+    assert.equal(
+      shouldSkipLlmMirror({ stage: 'select_order', orders: [{ id: '1' }] }, '1'),
+      true,
+    );
   });
 });
 

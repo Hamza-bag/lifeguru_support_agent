@@ -1,3 +1,4 @@
+const config = require('../config');
 const { t } = require('../conversation/copy');
 const { classifyIntent } = require('../conversation/intent');
 const { extractPhoneCandidate } = require('../orders/phone');
@@ -5,6 +6,8 @@ const { formatOrderLine } = require('../conversation/format');
 const { kbLines } = require('../faq/matchFaq');
 const { reply, forwardAfterPhoneCollected } = require('./responses');
 const { answerForOrder } = require('./factsReplies');
+const { failOpenHandoff } = require('../lib/failOpen');
+const { parseWebSupportPrefill, routingTextAfterPrefill } = require('../lib/webSupportPrefill');
 
 async function handleAwaitBookingNumber(state, text) {
   const lang = state.language;
@@ -21,7 +24,11 @@ async function handleAwaitBookingNumber(state, text) {
     };
   }
   return {
-    state: { ...state, chatPhone: phone, stage: 'await_query' },
+    state: {
+      ...state,
+      claimedBookingPhone: phone,
+      stage: 'await_query',
+    },
     response: forwardAfterPhoneCollected(lang),
   };
 }
@@ -30,7 +37,12 @@ async function showOrders(state, factsClient, followUpText) {
   const lang = state.language;
   const orders = state.orders || [];
   if (orders.length === 1) {
-    const next = { ...state, orderId: String(orders[0].id), stage: 'answer' };
+    const next = {
+      ...state,
+      orderId: String(orders[0].id),
+      customerId: String(orders[0].customerId || state.customerId),
+      stage: 'answer',
+    };
     const intro = t(lang, 'onlyOrder', {
       title: orders[0].title,
       bookedOn: orders[0].bookedOn || '',
@@ -56,10 +68,55 @@ async function showOrders(state, factsClient, followUpText) {
 
 async function lookupAndShowOrders(state, factsClient, queryText, phone) {
   const lang = state.language;
-  const found = await factsClient.lookupByPhone(phone);
+  const prefill = parseWebSupportPrefill(queryText);
+  const intentText = routingTextAfterPrefill(queryText);
+
+  if (prefill.orderId && phone && factsClient.lookupByOrderAndPhone) {
+    try {
+      const direct = await factsClient.lookupByOrderAndPhone(prefill.orderId, phone);
+      if (direct?.matched && direct.orders?.length) {
+        const next = {
+          ...state,
+          chatPhone: phone,
+          chatPhoneSource: 'visitor',
+          customerName: direct.name || null,
+          customerId: direct.customerId,
+          orders: direct.orders,
+          orderId: String(direct.orders[0].id),
+          stage: 'answer',
+          pendingText: intentText,
+          pendingIntent: classifyIntent(intentText) || null,
+          webPrefillOrderId: prefill.orderId,
+        };
+        return answerForOrder(next, factsClient, intentText);
+      }
+    } catch (err) {
+      console.error('[support] admin lookupByOrderAndPhone failed', err.message || err);
+      if (config.supportFailOpenForward) {
+        return failOpenHandoff(state, lang, queryText, 'admin_order_lookup_failed');
+      }
+    }
+  }
+
+  let found;
+  try {
+    found = await factsClient.lookupByPhone(phone);
+  } catch (err) {
+    console.error('[support] admin lookupByPhone failed', err.message || err);
+    if (config.supportFailOpenForward) {
+      return failOpenHandoff(state, lang, queryText, 'admin_lookup_failed');
+    }
+    throw err;
+  }
   if (!found?.matched || !(found.orders || []).length) {
     return {
-      state: { ...state, stage: 'await_booking_number', chatPhone: phone, pendingText: queryText },
+      state: {
+        ...state,
+        stage: 'await_booking_number',
+        chatPhone: phone,
+        chatPhoneSource: 'visitor',
+        pendingText: queryText,
+      },
       response: reply(
         kbLines(
           lang,
@@ -73,6 +130,7 @@ async function lookupAndShowOrders(state, factsClient, queryText, phone) {
   const next = {
     ...state,
     chatPhone: phone,
+    chatPhoneSource: 'visitor',
     customerName: found.name || null,
     customerId: found.customerId,
     orders: found.orders || [],
@@ -90,7 +148,12 @@ async function handleSelectOrder(state, text, factsClient) {
     return { state, response: reply(t(lang, 'invalidPick')) };
   }
   const order = state.orders[index - 1];
-  const next = { ...state, orderId: String(order.id), pendingText: null };
+  const next = {
+    ...state,
+    orderId: String(order.id),
+    customerId: String(order.customerId || state.customerId),
+    pendingText: null,
+  };
   return answerForOrder(next, factsClient, state.pendingText || text);
 }
 

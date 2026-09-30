@@ -40,8 +40,10 @@ function welcomePrompt() {
 }
 
 function greetingReply(lang) {
-  const locale = lang === 'hi' ? 'hi' : 'en';
-  return reply(t(locale, 'welcomeQuery'));
+  if (lang === 'hi') {
+    return reply(t('hi', 'welcomeQuery'));
+  }
+  return reply(WELCOME_QUERY);
 }
 
 function thanksReply(lang) {

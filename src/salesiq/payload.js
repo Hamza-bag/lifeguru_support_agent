@@ -20,6 +20,20 @@ function normalizeWebhookPayload(body) {
   return payload;
 }
 
+/** SalesIQ REST conversation id for notes API (not bot preview). */
+function salesIqConversationId(payload) {
+  const request = payload?.request || {};
+  const visitor = payload?.visitor || {};
+  const id =
+    request.conversation_id ||
+    visitor.active_conversation_id ||
+    null;
+  if (!id) return null;
+  const s = String(id);
+  if (s.startsWith('botpreview_')) return null;
+  return s;
+}
+
 function conversationKey(payload) {
   const request = payload.request || {};
   const visitor = payload.visitor || {};
@@ -115,23 +129,20 @@ function firstNonEmptyPhone(...candidates) {
   return '';
 }
 
-/** WhatsApp channel sends booking identity on visitor.phone; website preview often does not. */
+/**
+ * Only the channel-verified visitor.phone. Pre-chat form and page fields
+ * (custom_info, visitor_info, mobile) can be typed by the visitor and are ignored.
+ */
 function visitorPhone(payload) {
   const visitor = payload.visitor || {};
   const entityVisitor = payload.entity?.visitor || {};
-  const visitorInfo = payload.visitor_info || visitor.visitor_info || entityVisitor.visitor_info || {};
-  const custom = visitor.custom_info || visitor.custominfo || {};
-  return firstNonEmptyPhone(
-    visitor.phone,
-    visitor.mobile,
-    visitor.whatsapp,
-    entityVisitor.phone,
-    entityVisitor.mobile,
-    visitorInfo.phone,
-    custom.phone,
-    custom.mobile,
-    custom.whatsapp,
-  );
+  return firstNonEmptyPhone(visitor.phone, entityVisitor.phone);
+}
+
+function salesIqRequestId(payload) {
+  const request = payload?.request || {};
+  const id = request.id || payload.request_id || payload.requestId;
+  return id != null && String(id).trim() ? String(id).trim() : null;
 }
 
 function toSalesIqBody(response) {
@@ -147,6 +158,7 @@ function toSalesIqBody(response) {
 
 module.exports = {
   normalizeWebhookPayload,
+  salesIqConversationId,
   conversationKey,
   messageText,
   messageHasNonTextMedia,
@@ -154,5 +166,6 @@ module.exports = {
   isWebhookFailure,
   buildFailureResponse,
   visitorPhone,
+  salesIqRequestId,
   toSalesIqBody,
 };

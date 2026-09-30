@@ -19,6 +19,9 @@ function requireSalesIqSignature({ enabled, publicKeyPem }) {
   return (req, res, next) => {
     if (req.method === 'HEAD' || req.method === 'GET') return next();
     if (!enabled) return next();
+    if (!publicKeyPem) {
+      return res.status(503).json({ error: 'SalesIQ signature key is not configured' });
+    }
     const signature = req.headers['x-siqsignature'];
     const raw = req.rawBody;
     if (!raw || !verifySalesIqSignature(raw, signature, publicKeyPem)) {
