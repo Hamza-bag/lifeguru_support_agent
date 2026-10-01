@@ -5,6 +5,7 @@ const {
   buildVideoReply,
   buildPrasadReply,
   buildLiveReply,
+  answerForOrder,
 } = require('../src/pipeline/factsReplies');
 
 describe('parseIsPrasadFlag', () => {
@@ -43,7 +44,27 @@ describe('buildVideoReply', () => {
       scheduledAt: old,
     });
     assert.match(out, /3–4 days|3-4 days/i);
-    assert.match(out, /human agent/i);
+    assert.doesNotMatch(out, /5 days/i);
+    assert.doesNotMatch(out, /human agent/i);
+  });
+
+  it('hands a late missing video to the team without mentioning the cutoff', async () => {
+    const old = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString();
+    const result = await answerForOrder(
+      { language: 'en', orderId: '1', customerId: '1' },
+      {
+        getOrderFacts: async () => ({
+          productName: 'Puja',
+          videoReady: false,
+          scheduledAt: old,
+          orderStatus: 'paid',
+        }),
+      },
+      'please share the video',
+    );
+    assert.equal(result.response.action, 'forward');
+    assert.equal(result.state.handoffEscalation, 'video_overdue');
+    assert.doesNotMatch(result.response.replies.join(' '), /5 days/i);
   });
 });
 

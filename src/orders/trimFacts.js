@@ -5,10 +5,18 @@ function trimProductName(name) {
     .replace(/\s+/g, ' ')
     .trim();
   if (!s) return 'booking';
-  if (s.length > MAX_PRODUCT_NAME) {
-    return `${s.slice(0, MAX_PRODUCT_NAME - 1)}…`;
+  const beforeTitle = s.split(/\s+title\s+/i)[0].trim();
+  if (beforeTitle.length >= 3 && beforeTitle.length < s.length) s = beforeTitle;
+  if (s.length > 48) {
+    const sentence = s.split(/[.!?।]/)[0].trim();
+    if (sentence.length >= 8 && sentence.length < s.length) s = sentence;
   }
-  return s;
+  if (s.length > 48) {
+    const slice = s.slice(0, 47);
+    const word = slice.lastIndexOf(' ');
+    s = `${(word > 16 ? slice.slice(0, word) : slice).trim()}…`;
+  }
+  return s || 'booking';
 }
 
 function normalizeFactsPayload(data) {

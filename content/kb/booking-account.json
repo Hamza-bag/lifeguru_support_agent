@@ -11,9 +11,14 @@
       "amount debited",
       "payment success booking nahi"
     ],
-    "tags": ["payment"],
-    "en": "We’re sorry for the trouble. Successful payments usually confirm in real time. If payment failed but money was debited, it often reverses automatically — contact your bank if not reversed in the usual time. Check status: https://lifeguru.app/profile — or say “human agent” with registered mobile.",
-    "hi": "Asuvidha ke liye maafi. Payment success par booking real time confirm hoti hai. Fail par debit ho to aksar auto-reverse hota hai — nahi ho to bank se poochhein. Status: https://lifeguru.app/profile — ya registered mobile ke saath “human agent”."
+    "example": "Payment ho gaya par booking confirm nahi hui.",
+    "tags": [
+      "payment"
+    ],
+    "handoff": true,
+    "en": "I am sorry for the trouble. A successful payment usually confirms straight away. If the payment failed but money left your account, it often returns on its own. If it has not, the team will check it with you.",
+    "hi": "असुविधा के लिए क्षमा करें। भुगतान सफल होने पर बुकिंग तुरंत पक्की हो जाती है। भुगतान असफल हो और राशि कट जाए तो अक्सर वापस आ जाती है। न आई हो तो टीम आपके साथ जाँच करेगी।",
+    "hinglish": "Asuvidha ke liye maafi. Payment safal hone par booking turant confirm ho jaati hai. Payment fail ho aur paisa kat jaye to aksar wapas aa jata hai. Nahi aaya ho to team aapke saath check karegi."
   },
   {
     "id": "no_confirmation_after_payment",
@@ -27,9 +32,14 @@
       "confirmation nahi",
       "booking confirm nahi"
     ],
-    "tags": ["booking"],
-    "en": "This can happen due to a brief technical issue. Please check booking history: https://lifeguru.app/profile — if nothing appears, say “human agent” with your payment time and registered mobile 🙏",
-    "hi": "Kabhi technical issue se confirmation delay ho sakta hai. https://lifeguru.app/profile par dekhein — na mile to payment time + mobile ke saath “human agent” likhein 🙏"
+    "example": "Payment ke baad koi confirmation nahi aaya.",
+    "tags": [
+      "booking"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I am sorry the confirmation has not come through. This is sometimes a short technical delay. The team will check the payment time with you.",
+    "hi": "नमस्ते 🙏 पुष्टि न आने के लिए क्षमा करें। कभी यह थोड़ी तकनीकी देरी होती है। टीम भुगतान का समय आपके साथ जाँच करेगी।",
+    "hinglish": "Namaste 🙏 Confirmation na aane ke liye maafi. Kabhi yeh thodi technical der hoti hai. Team payment ka samay aapke saath check karegi."
   },
   {
     "id": "booking_family_members_limit",
@@ -44,9 +54,13 @@
       "couple package",
       "kitne naam"
     ],
-    "tags": ["booking"],
-    "en": "Names allowed depend on package: Single — 1; Couple — up to 2; Family — up to 6. To add beyond the limit, book the same puja again with a suitable package. To update names while the window is open, say “human agent” 🙏",
-    "hi": "Package ke hisaab se naam: Single — 1; Couple — 2; Family — 6 tak. Zyada naam ke liye dubara book karein. Window khuli ho to update ke liye “human agent” likhein 🙏"
+    "example": "Family package mein kitne naam add kar sakte hain?",
+    "tags": [
+      "booking"
+    ],
+    "en": "Namaste 🙏 A Single package includes 1 name, a Couple package up to 2, and a Family package up to 6. For more names, the same puja can be booked again. If a name needs updating while the window is open, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 सिंगल पैकेज में 1 नाम, कपल में 2 तक, और फ़ैमिली में 6 तक। अधिक नामों के लिए वही पूजा दोबारा बुक कर सकते हैं। अवधि खुली हो और नाम बदलना हो तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Single package mein 1 naam, Couple mein 2 tak, aur Family mein 6 tak. Zyada naam ke liye wahi puja dubara book kar sakte hain. Window khuli ho aur naam badalna ho to bataiye, main aapko team se jod deta hoon."
   },
   {
     "id": "update_details_before_puja",
@@ -60,19 +74,34 @@
       "change details",
       "details update karna"
     ],
-    "tags": ["booking"],
-    "en": "You can update devotee name, gotra, wishes, or WhatsApp number before the booking window closes. Share exact updates — if the window is open, say “human agent” and we will confirm after changing.",
-    "hi": "Booking window band hone se pehle naam, gotra, manokamna ya WhatsApp update ho sakte hain. Sahi details bhejein — “human agent” likhein agar window khuli ho."
+    "example": "Puja se pehle naam aur WhatsApp number badalna hai.",
+    "tags": [
+      "booking"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 Devotee name, gotra, wishes, and WhatsApp number can be updated before the booking window closes. Please keep the correct details ready. The team will check whether the window is still open.",
+    "hi": "नमस्ते 🙏 बुकिंग की अवधि बंद होने से पहले नाम, गोत्र, मनोकामना और व्हाट्सऐप नंबर बदल सकते हैं। सही विवरण तैयार रखिए। टीम देखेगी कि अवधि अभी खुली है या नहीं।",
+    "hinglish": "Namaste 🙏 Booking window band hone se pehle naam, gotra, manokamna aur WhatsApp number badal sakte hain. Sahi details taiyar rakhiye. Team dekhegi ki window abhi khuli hai ya nahi."
   },
   {
     "id": "gst_on_puja",
     "domain": "booking",
     "status": "published",
     "owner": "CS",
-    "keywords": ["gst", "tax on puja", "government tax", "tax kyu", "gst charge"],
-    "tags": ["billing"],
+    "keywords": [
+      "gst",
+      "tax on puja",
+      "government tax",
+      "tax kyu",
+      "gst charge"
+    ],
+    "example": "Puja par GST kyun laga hai?",
+    "tags": [
+      "billing"
+    ],
     "en": "Namaste 🙏 LifeGuru complies with applicable laws; GST on puja-related services is mandatory as per government norms. Thank you for your understanding 🙏",
-    "hi": "Namaste 🙏 Sarkari norms ke mutabik puja services par GST lagta hai — yeh mandatory hai. Dhanyawad 🙏"
+    "hi": "नमस्ते 🙏 सरकारी नियमों के अनुसार पूजा सेवाओं पर जीएसटी लगता है — यह अनिवार्य है। धन्यवाद 🙏",
+    "hinglish": "Namaste 🙏 Sarkari norms ke mutabik puja services par GST lagta hai — yeh mandatory hai. Dhanyawad 🙏"
   },
   {
     "id": "ask_puja_details_for_help",
@@ -85,9 +114,11 @@
       "puja ka naam batao",
       "registered mobile number share"
     ],
+    "example": "Jaldi madad chahiye, kya details bhejun?",
     "tags": [],
     "en": "Namaste 🙏 To help quickly, please share puja name, puja date, and registered mobile number (or Order ID from the app).",
-    "hi": "Namaste 🙏 Jaldi madad ke liye puja ka naam, date aur registered mobile (ya Order ID) bhejein."
+    "hi": "नमस्ते 🙏 जल्दी मदद के लिए पूजा का नाम, तारीख और पंजीकृत मोबाइल (या ऑर्डर आईडी) भेजें।",
+    "hinglish": "Namaste 🙏 Jaldi madad ke liye puja ka naam, date aur registered mobile (ya Order ID) bhejein."
   },
   {
     "id": "gotra_unknown_kashyap",
@@ -100,9 +131,13 @@
       "gotra unknown",
       "kashyap gotra"
     ],
-    "tags": ["gotra"],
+    "example": "Mera gotra pata nahi hai, kya likhun?",
+    "tags": [
+      "gotra"
+    ],
     "en": "If gotra is not known, tradition often uses Kashyap Gotra for the sankalp. You may enter that at booking or tell the team when updating details 🙏",
-    "hi": "Agar gotra nahi pata ho to sankalp ke liye aksar Kashyap Gotra use hota hai — booking par ya team ko batayein 🙏"
+    "hi": "यदि गोत्र नहीं पता हो तो संकल्प के लिए अक्सर कश्यप गोत्र लिखा जाता है — बुकिंग पर या टीम को बताएँ 🙏",
+    "hinglish": "Agar gotra nahi pata ho to sankalp ke liye aksar Kashyap Gotra use hota hai — booking par ya team ko batayein 🙏"
   },
   {
     "id": "booking_name_gotra_change",
@@ -118,9 +153,15 @@
       "naam badalna booking",
       "gotra badalna"
     ],
-    "tags": ["booking", "gotra"],
-    "en": "Name and gotra can be updated only before the booking window closes. Share the correct name and gotra — say “human agent” and we will update if the window is still open.",
-    "hi": "Naam/gotra sirf booking window band hone se pehle update ho sakte hain. Sahi naam-gotra bhejein — “human agent” likhein, window khuli ho to update karenge."
+    "example": "Booking mein naam aur gotra galat hai, change karna hai.",
+    "tags": [
+      "booking",
+      "gotra"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 Name and gotra can be updated only before the booking window closes. Please keep the correct name and gotra ready. The team will check whether it can still be changed.",
+    "hi": "नमस्ते 🙏 नाम और गोत्र केवल बुकिंग की अवधि बंद होने से पहले बदल सकते हैं। सही नाम और गोत्र तैयार रखिए। टीम देखेगी कि अभी बदलाव हो सकता है या नहीं।",
+    "hinglish": "Namaste 🙏 Naam aur gotra sirf booking window band hone se pehle badal sakte hain. Sahi naam aur gotra taiyar rakhiye. Team dekhegi ki abhi badlav ho sakta hai ya nahi."
   },
   {
     "id": "agent_reviewing_details_hold",
@@ -133,9 +174,11 @@
       "any update",
       "status update please"
     ],
+    "example": "Aap meri details check kar rahe ho?",
     "tags": [],
     "en": "We are reviewing your details. Please give us a moment — we will get back to you shortly 🙏",
-    "hi": "Aapki details review ho rahi hain. Thoda samay dein — jald jawab denge 🙏"
+    "hi": "आपका विवरण जाँचा जा रहा है। थोड़ा समय दीजिए — जल्द उत्तर देंगे 🙏",
+    "hinglish": "Aapki details review ho rahi hain. Thoda samay dein — jald jawab denge 🙏"
   },
   {
     "id": "duplicate_booking_failed_message",
@@ -148,8 +191,34 @@
       "duplicate booking",
       "payment success failed message"
     ],
-    "tags": ["payment"],
-    "en": "Sorry for the confusion — a “failed” message sometimes appears on a duplicate booking attempt when the same seva was booked twice; your first booking may still be confirmed. Check https://lifeguru.app/profile or say “human agent” with registered mobile.",
-    "hi": "Kabhi same seva dubara book karne par “failed” message aata hai jabki pehli booking confirm ho — profile check karein: https://lifeguru.app/profile ya “human agent”."
+    "example": "Payment successful tha, phir bhi booking failed message aa gaya.",
+    "tags": [
+      "payment"
+    ],
+    "handoff": true,
+    "en": "I am sorry for the confusion. A failed message can appear when the same seva is booked twice, even if the first booking is already confirmed. The team will check it with you.",
+    "hi": "भ्रम के लिए क्षमा करें। कभी वही सेवा दोबारा बुक करने पर असफल संदेश आ जाता है, जबकि पहली बुकिंग पक्की होती है। टीम आपके साथ जाँच करेगी।",
+    "hinglish": "Confusion ke liye maafi. Kabhi wahi seva dubara book karne par failed message aa jata hai, jabki pehli booking confirm ho. Team aapke saath check karegi."
+  },
+  {
+    "id": "payment_not_authorized",
+    "domain": "booking",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "unauthorized payment",
+      "fraud",
+      "I did not pay",
+      "paisa kat gaya bina",
+      "someone else paid"
+    ],
+    "example": "Maine payment nahi kiya, phir bhi paisa kat gaya.",
+    "tags": [
+      "payment"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 If this payment was not made by you, please keep the amount, time, and a screenshot ready. I am connecting you to the LifeGuru team so they can check it with you.",
+    "hi": "नमस्ते 🙏 यदि यह भुगतान आपने नहीं किया, तो राशि, समय और स्क्रीनशॉट तैयार रखिए। मैं आपको लाइफगुरु टीम से जोड़ रहा हूँ, ताकि वे आपके साथ जाँच करें।",
+    "hinglish": "Namaste 🙏 Agar yeh payment aapne nahi kiya, to rashi, samay, aur screenshot taiyar rakhiye. Main aapko LifeGuru team se jod raha hoon, taaki woh aapke saath check karein."
   }
 ]

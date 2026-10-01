@@ -1,6 +1,5 @@
 /**
  * SalesIQ webhook: session load → handleTurn (engine) → finalizeBotReplies → log → JSON.
- * @see docs/support-agent-architecture.md
  */
 const express = require('express');
 const config = require('./config');
@@ -83,7 +82,9 @@ function createApp(overrides = {}) {
           mirrorBudgetMs: appConfig.asyncMirrorTimeoutMs,
           notesClient,
         });
-        let sent = await callbackClient.sendResponse(requestId, response);
+        let sent = await callbackClient.sendResponse(requestId, response, {
+          forceForward: response.action === 'forward',
+        });
         if (!sent.ok && appConfig.supportFailOpenForward) {
           const handoff =
             response.action === 'forward' ? response : failOpenForwardReply;

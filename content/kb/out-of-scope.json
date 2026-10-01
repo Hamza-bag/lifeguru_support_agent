@@ -13,9 +13,13 @@
       "jyotish",
       "kundali"
     ],
-    "tags": ["astrology"],
-    "en": "Namaste 🙏 Astrology consultations on the LifeGuru app have been discontinued. We continue to offer Mandir Puja, Chadhava, and other devotional sevas: https://lifeguru.app/mandir-puja and https://lifeguru.app/mandir-chadhava — thank you for your understanding 🙏",
-    "hi": "Namaste 🙏 LifeGuru app par astrology band ho chuki hai. Mandir Puja / Chadhava ab bhi uplabdh: https://lifeguru.app/mandir-puja — https://lifeguru.app/mandir-chadhava 🙏"
+    "example": "Mujhe kundli dekhni hai.",
+    "tags": [
+      "astrology"
+    ],
+    "en": "Namaste 🙏 Astrology consultations on the LifeGuru app have been discontinued. We continue to offer Mandir Puja, Chadhava, and other devotional sevas: {{LINK_MANDIR_PUJA}} and {{LINK_MANDIR_CHADHAVA}} — thank you for your understanding 🙏",
+    "hi": "नमस्ते 🙏 LifeGuru पर ज्योतिष परामर्श बंद हो चुका है। मंदिर पूजा और चढ़ावा अब भी उपलब्ध हैं: {{LINK_MANDIR_PUJA}} — {{LINK_MANDIR_CHADHAVA}} 🙏",
+    "hinglish": "Namaste 🙏 LifeGuru par jyotish paramarsh band ho chuka hai. Mandir Puja aur Chadhava ab bhi uplabdh hain: {{LINK_MANDIR_PUJA}} — {{LINK_MANDIR_CHADHAVA}} 🙏"
   },
   {
     "id": "payment_no_qr_direct",
@@ -30,9 +34,13 @@
       "send upi",
       "payment link whatsapp only"
     ],
-    "tags": ["payment"],
-    "en": "Namaste 🙏 Please pay through our official app or website so booking updates in real time: Puja https://lifeguru.app/mandir-puja — Chadhava https://lifeguru.app/mandir-chadhava. If you face issues, say “human agent” 🙏",
-    "hi": "Namaste 🙏 Official app/website se payment karein taaki booking turant update ho: mandir-puja / mandir-chadhava links. Issue ho to “human agent” 🙏"
+    "example": "WhatsApp par UPI ID ya QR bhej do, main pay kar dunga.",
+    "tags": [
+      "payment"
+    ],
+    "en": "Namaste 🙏 Please pay on the LifeGuru website so the booking updates in real time: Puja {{LINK_MANDIR_PUJA}} — Chadhava {{LINK_MANDIR_CHADHAVA}}.",
+    "hi": "नमस्ते 🙏 भुगतान LifeGuru वेबसाइट पर करें, ताकि बुकिंग तुरंत अपडेट हो: {{LINK_MANDIR_PUJA}} — {{LINK_MANDIR_CHADHAVA}}।",
+    "hinglish": "Namaste 🙏 Payment LifeGuru website par karein, taaki booking turant update ho: {{LINK_MANDIR_PUJA}} — {{LINK_MANDIR_CHADHAVA}}."
   },
   {
     "id": "live_puja_not_available",
@@ -46,9 +54,13 @@
       "live stream puja",
       "live dekhna"
     ],
-    "tags": ["live"],
+    "example": "Yeh puja live hai kya? Link bhejo.",
+    "tags": [
+      "live"
+    ],
     "en": "Namaste 🙏 I cannot say which puja is live from its name. Live Puja is an add-on on a booking, and I only confirm it after I see that booking's Live Puja line. I do not have a live stream URL in this chat. Ask about your own booking (for example “meri puja live hai?”) and I will check that order only. 🙏",
-    "hi": "Namaste 🙏 Puja ke naam se main nahi bata sakta ki woh live hai. Live Puja booking par ek add-on hai, aur main tabhi confirm karta hoon jab us order par Live Puja line dikhe. Is chat mein live stream ka URL nahi hai. Apni booking ke baare mein poochhein, jaise “meri puja live hai?”, tab sirf woh order check hoga. 🙏"
+    "hi": "नमस्ते 🙏 पूजा के नाम से मैं नहीं बता सकता कि वह लाइव है। लाइव पूजा बुकिंग पर एक अतिरिक्त सेवा है, और मैं तभी पुष्टि करता हूँ जब उस ऑर्डर पर लाइव पूजा दिखे। इस चैट में लाइव प्रसारण का लिंक नहीं है। अपनी बुकिंग के बारे में पूछें, तब केवल वही ऑर्डर देखा जाएगा। 🙏",
+    "hinglish": "Namaste 🙏 Puja ke naam se main nahi bata sakta ki woh live hai. Live Puja booking par ek add-on hai, aur main tabhi confirm karta hoon jab us order par Live Puja line dikhe. Is chat mein live stream ka URL nahi hai. Apni booking ke baare mein poochhein, jaise “meri puja live hai?”, tab sirf woh order check hoga. 🙏"
   },
   {
     "id": "booking_count_private",
@@ -62,8 +74,12 @@
       "participant count",
       "kitne log"
     ],
-    "tags": ["privacy"],
+    "example": "Is puja mein kitne logon ne book kiya hai?",
+    "tags": [
+      "privacy"
+    ],
     "en": "Namaste 🙏 We cannot share how many people booked a puja, or anyone else's name. Your own booking is shared only on the WhatsApp number used at checkout. 🙏",
-    "hi": "Namaste 🙏 Kitne logo ne book kiya, ya kisi aur ka naam, yeh nahi bata sakte. Aapki booking sirf us WhatsApp number par share hoti hai jisse checkout hua tha. 🙏"
+    "hi": "नमस्ते 🙏 कितने लोगों ने बुक किया, या किसी और का नाम, यह नहीं बता सकते। आपकी बुकिंग केवल उस व्हाट्सऐप नंबर पर साझा होती है जिससे भुगतान हुआ था। 🙏",
+    "hinglish": "Namaste 🙏 Kitne logo ne book kiya, ya kisi aur ka naam, yeh nahi bata sakte. Aapki booking sirf us WhatsApp number par share hoti hai jisse checkout hua tha. 🙏"
   }
 ]

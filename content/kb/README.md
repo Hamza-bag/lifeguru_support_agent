@@ -1,7 +1,7 @@
 # Knowledge base (CS-editable answers)
 
 **Audience:** Customer support + product.  
-**Plan & web entry points:** [docs/support-agent-knowledge-base-plan.md](../../../docs/support-agent-knowledge-base-plan.md)
+**CS review file:** [LifeGuru-Support-KB-CS-Review.docx](../../../docs/LifeGuru-Support-KB-CS-Review.docx)
 
 **Not here:** Order dates, video URLs, or per-customer status — those come from the booking lookup at reply time.
 
@@ -31,13 +31,11 @@ Draft entries (`"status": "draft"`) are ignored. Welcome and handoff lines live 
 2. **One Gemini call** picks a catalog **`id`** when `SUPPORT_LLM_FAQ_SELECT=true`. Reply text is still the fixed JSON.
 3. **Order lookup** for this customer’s booking. Live Puja is confirmed only from that order’s Live Puja line. **Human** for refunds, naam/gotra change, and an upset message on any topic. Calm autopay questions use the subscription cards (steps and links).
 
-Placeholders in JSON: `{{PUJA_UPDATES_SENDER}}` = transactional WhatsApp (**not** support chat `8147560485`). Override via `PUJA_UPDATES_SENDER_LABEL` in `.env`.
-
-Full CS doc row map: [docs/support-agent-kb-cs-audit.md](../../../docs/support-agent-kb-cs-audit.md).
+Placeholders in JSON: `{{PUJA_UPDATES_SENDER}}` = transactional WhatsApp (**not** support chat `8147560485`). Override via `PUJA_UPDATES_SENDER_LABEL` in `.env`. Website links live in `content/links/site.json`.
 
 ### What the bot actually uses
 
-- All published entries merge into **one catalog**. The bot picks an **`id`**, then sends that entry’s **en** or **hi** text.
+- All published entries merge into **one catalog**. The bot picks an **`id`**, then sends that entry’s **en**, **hi**, or **hinglish** text.
 - **`keywords` are not used for routing.** Short words were matching the wrong card. Leave them empty on new cards.
 - Order date, video link, and prasad tracking come from the booking, not from these files.
 
@@ -50,14 +48,17 @@ Full CS doc row map: [docs/support-agent-kb-cs-audit.md](../../../docs/support-a
   "status": "draft",
   "owner": "Puja CS",
   "keywords": [],
+  "example": "What the customer might type",
   "tags": ["optional"],
   "en": "English answer…",
-  "hi": "Hindi answer…"
+  "hi": "Hindi in Devanagari…",
+  "hinglish": "Roman Hinglish answer…"
 }
 ```
 
 - Set `"status": "published"` when the card should be used. Leave `keywords` empty. They are not used for routing.
-- Always provide **`en`** and **`hi`**. Mirror LLM may rewrite into the user’s language when enabled.
+- Always provide **`en`**, **`hi`** (Devanagari), and **`hinglish`**. Other languages are rewritten from English.
+- **`example`** is a sample customer sentence for CS review. It is not used for routing.
 - Do **not** put order IDs, refund amounts, or specific dates in KB.
 
 ## How to change copy

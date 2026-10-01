@@ -15,9 +15,14 @@
       "app mein video",
       "वीडियो कहाँ"
     ],
-    "tags": ["video", "app"],
-    "en": "Namaste 🙏 Your puja/chadhava video is shared on your registered WhatsApp from {{PUJA_UPDATES_SENDER}}. You can also open LifeGuru → Profile / booking summary: https://lifeguru.app/profile — guide: https://youtube.com/shorts/x_rNUVPZ76s",
-    "hi": "Namaste 🙏 Puja/chadhava video aapke registered WhatsApp par {{PUJA_UPDATES_SENDER}} se bheja jata hai. LifeGuru app → Profile / booking summary par bhi dekh sakte hain: https://lifeguru.app/profile"
+    "example": "Mera puja video kahan milega?",
+    "tags": [
+      "video",
+      "app"
+    ],
+    "en": "Namaste 🙏 Your puja or chadhava video is shared on your registered WhatsApp from {{PUJA_UPDATES_SENDER}}. A short guide is here: https://youtube.com/shorts/x_rNUVPZ76s",
+    "hi": "नमस्ते 🙏 पूजा या चढ़ावा का वीडियो आपके पंजीकृत व्हाट्सऐप पर {{PUJA_UPDATES_SENDER}} से भेजा जाता है। छोटी गाइड: https://youtube.com/shorts/x_rNUVPZ76s",
+    "hinglish": "Namaste 🙏 Puja ya chadhava ka video aapke registered WhatsApp par {{PUJA_UPDATES_SENDER}} se bheja jata hai. Chhoti guide: https://youtube.com/shorts/x_rNUVPZ76s"
   },
   {
     "id": "video_not_received_sla",
@@ -42,29 +47,53 @@
       "3–4 days",
       "teen char din"
     ],
-    "tags": ["video", "delay"],
-    "en": "Namaste 🙏 After puja completes, the recorded video is usually shared on your registered WhatsApp within 3–4 days (quality check at our end). Please confirm your puja date — if it’s been more than 5 days after that date, say “human agent” and we’ll check.",
-    "hi": "Namaste 🙏 Puja complete hone ke baad video aam taur par 3–4 din mein registered WhatsApp par bheja jata hai. Agar puja date ke 5 din se zyada ho gaye hon to “human agent” likhein — hum check karenge."
+    "example": "Puja ho gayi, video abhi tak nahi aaya.",
+    "tags": [
+      "video",
+      "delay"
+    ],
+    "en": "Namaste 🙏 After the puja, the video is usually shared on your registered WhatsApp within 3–4 days, once it has been checked. Tell me which booking and I will look it up for you.",
+    "hi": "नमस्ते 🙏 पूजा के बाद वीडियो आमतौर पर जाँच के बाद 3–4 दिन में आपके पंजीकृत व्हाट्सऐप पर भेजा जाता है। कौन-सी बुकिंग है, बताइए, मैं देख लेता हूँ।",
+    "hinglish": "Namaste 🙏 Puja ke baad video aam taur par jaanch ke baad 3–4 din mein aapke registered WhatsApp par bheja jata hai. Kaunsi booking hai bataiye, main dekh leta hoon."
   },
   {
     "id": "video_delay_why",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["video delayed", "late video", "why delay", "der ho gayi", "itna late"],
-    "tags": ["video"],
+    "keywords": [
+      "video delayed",
+      "late video",
+      "why delay",
+      "der ho gayi",
+      "itna late"
+    ],
+    "example": "Video late kyun ho raha hai?",
+    "tags": [
+      "video"
+    ],
     "en": "After puja, the temple shares the recording the next day; we then verify puja details and Sankalp before sending — so up to 4 days is normal. Your video will be sent as soon as it’s ready 🙏",
-    "hi": "Puja ke baad recording temple se aati hai; phir details verify karke bhejte hain — isliye 4 din tak lag sakta hai. Video ready hote hi bhej diya jayega 🙏"
+    "hi": "पूजा के बाद रिकॉर्डिंग मंदिर से आती है, फिर विवरण जाँच कर भेजा जाता है — इसलिए 4 दिन तक लग सकते हैं। वीडियो तैयार होते ही भेज दिया जाएगा 🙏",
+    "hinglish": "Puja ke baad recording temple se aati hai; phir details verify karke bhejte hain — isliye 4 din tak lag sakta hai. Video ready hote hi bhej diya jayega 🙏"
   },
   {
     "id": "video_link_not_opening",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["link not working", "video not opening", "link open nahi", "broken link"],
-    "tags": ["video"],
+    "keywords": [
+      "link not working",
+      "video not opening",
+      "link open nahi",
+      "broken link"
+    ],
+    "example": "Video link open nahi ho raha.",
+    "tags": [
+      "video"
+    ],
     "en": "Please copy the video link and paste it in your browser. If it still fails, tell us — we can help further or connect you to the team.",
-    "hi": "Video link copy karke browser mein paste karein. Phir bhi na khule to batayein — team madad kar sakti hai."
+    "hi": "वीडियो लिंक कॉपी करके ब्राउज़र में चिपकाएँ। फिर भी न खुले तो बताइए — टीम मदद करेगी।",
+    "hinglish": "Video link copy karke browser mein paste karein. Phir bhi na khule to batayein — team madad kar sakti hai."
   },
   {
     "id": "video_name_check_sankalp",
@@ -78,9 +107,14 @@
       "gotra missing video",
       "sankalp mein naam"
     ],
-    "tags": ["video", "name"],
-    "en": "Namaste 🙏 Please check around 3–5 seconds into the video — name and gotra often appear in the Sankalp section. If still missing, share registered mobile or Order ID — say “human agent” to verify 🙏",
-    "hi": "Namaste 🙏 Video ke 3–5 second par dekhein — naam/gotra Sankalp mein aate hain. Phir bhi na ho to mobile/Order ID ke saath “human agent” likhein 🙏"
+    "example": "Video mein mera naam nahi dikha.",
+    "tags": [
+      "video",
+      "name"
+    ],
+    "en": "Namaste 🙏 Please check the first few seconds of the video. Name and gotra are usually in the Sankalp there. If they are still missing, tell me and I will connect you so the team can check the booking.",
+    "hi": "नमस्ते 🙏 वीडियो की शुरुआत के कुछ सेकंड देखिए। नाम और गोत्र अक्सर संकल्प में होते हैं। फिर भी न हों तो बताइए, मैं आपको टीम से जोड़ देता हूँ ताकि बुकिंग जाँची जा सके।",
+    "hinglish": "Namaste 🙏 Video ki shuruaat ke kuch second dekhiye. Naam aur gotra aksar sankalp mein hote hain. Phir bhi na hon to bataiye, main aapko team se jod deta hoon taaki booking check ho sake."
   },
   {
     "id": "video_gotra_not_audible",
@@ -94,89 +128,167 @@
       "gotra missing audio",
       "gotra clearly"
     ],
-    "tags": ["video", "gotra"],
-    "en": "Namaste 🙏 We regret if gotra was not clear in the video. We can verify and, if needed, arrange re-performance in the next schedule at no extra cost. Say “human agent” with your Order ID 🙏",
-    "hi": "Namaste 🙏 Agar gotra video mein clear nahi tha to maafi — verify karke agle schedule par dubara puja bina extra charge ho sakti hai. Order ID ke saath “human agent” likhein 🙏"
+    "example": "Video mein gotra saaf sunai nahi diya.",
+    "tags": [
+      "video",
+      "gotra"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I am sorry the gotra was not clear. Please listen once to the Sankalp near the start of the video. The team can check the booking and, if needed, arrange the puja again in the next schedule at no extra cost.",
+    "hi": "नमस्ते 🙏 गोत्र साफ़ न सुनाई देने के लिए क्षमा करें। एक बार वीडियो की शुरुआत का संकल्प सुन लीजिए। टीम बुकिंग जाँच कर, ज़रूरत हो तो अगली तिथि पर पूजा दोबारा करवा सकती है, बिना अतिरिक्त शुल्क।",
+    "hinglish": "Namaste 🙏 Gotra saaf na sunai dene ke liye maafi. Ek baar video ki shuruaat ka sankalp sun lijiye. Team booking check karke, zarurat ho to agli date par puja dubara karva sakti hai, bina extra charge."
   },
   {
     "id": "video_name_mispronounced",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["mispronounced", "galat naam", "wrong name video", "naam galat bola"],
-    "tags": ["video"],
-    "en": "Namaste 🙏 Sorry for the mispronunciation. We can arrange re-performance in the next schedule at no extra cost. Share correct name and gotra — say “human agent” 🙏",
-    "hi": "Namaste 🙏 Galat uccharan ke liye maafi. Agle schedule par dubara puja bina extra charge ke ho sakti hai. Sahi naam/gotra bhejein — “human agent” 🙏"
+    "keywords": [
+      "mispronounced",
+      "galat naam",
+      "wrong name video",
+      "naam galat bola"
+    ],
+    "example": "Pandit ji ne mera naam galat bola.",
+    "tags": [
+      "video"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I am sorry the name was not pronounced as you expected. Please keep the correct name and gotra ready. The team can arrange the puja again in the next schedule, at no extra cost.",
+    "hi": "नमस्ते 🙏 नाम जैसे आप चाहते थे वैसे न बोलने के लिए क्षमा करें। सही नाम और गोत्र तैयार रखिए। टीम अगली तिथि पर पूजा दोबारा करवा सकती है, बिना अतिरिक्त शुल्क।",
+    "hinglish": "Namaste 🙏 Naam jaise aap chahte the waise na bolne ke liye maafi. Sahi naam aur gotra taiyar rakhiye. Team agli date par puja dubara karva sakti hai, bina extra charge."
   },
   {
     "id": "video_wait_before_live_complaint",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["live puja name", "name not taken live", "live mein naam nahi"],
-    "tags": ["live"],
-    "en": "Please wait for the recorded video (usually 3–4 days after puja). You can verify your name there. If it is still missing, we will help with a suitable resolution — say “human agent” 🙏",
-    "hi": "Recording ka intezaar karein (3–4 din). Wahan naam verify karein. Na ho to “human agent” — upay karenge 🙏"
+    "keywords": [
+      "live puja name",
+      "name not taken live",
+      "live mein naam nahi"
+    ],
+    "example": "Live mein mera naam nahi liya gaya.",
+    "tags": [
+      "live"
+    ],
+    "en": "Namaste 🙏 Please wait for the recorded video, usually within 3–4 days of the puja, and check your name there. If it is still missing, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 रिकॉर्डिंग का इंतज़ार कीजिए, आमतौर पर पूजा के 3–4 दिन में, और वहाँ नाम देखिए। फिर भी न हो तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Recording ka intezaar kijiye, aam taur par puja ke 3–4 din mein, aur wahan naam dekhiye. Phir bhi na ho to bataiye, main aapko team se jod deta hoon."
   },
   {
     "id": "video_live_stream_name_inaudible",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["live stream", "network issue name", "sunai nahi diya naam", "couldn't hear name live"],
-    "tags": ["live"],
+    "keywords": [
+      "live stream",
+      "network issue name",
+      "sunai nahi diya naam",
+      "couldn't hear name live"
+    ],
+    "example": "Live stream mein naam clear nahi sunai diya.",
+    "tags": [
+      "live"
+    ],
     "en": "Network glitches can make live chanting hard to hear. Your name and gotra are taken during puja — please verify in the recorded video when you receive it 🙏",
-    "hi": "Live par network se naam kam sunai deta hai. Puja mein naam/gotra liya jata hai — recording mein verify karein 🙏"
+    "hi": "लाइव पर नेटवर्क की वजह से नाम कम सुनाई देता है। पूजा में नाम और गोत्र लिया जाता है — रिकॉर्डिंग में जाँच कीजिए 🙏",
+    "hinglish": "Live par network se naam kam sunai deta hai. Puja mein naam/gotra liya jata hai — recording mein verify karein 🙏"
   },
   {
     "id": "video_manokamna_silent",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["manokamna", "wish not mentioned", "personal wish video", "manokamna nahi"],
-    "tags": ["video"],
-    "en": "Namaste 🙏 Personal wishes are often offered silently in tradition; the pandit reviews submitted wishes before puja and includes them in the rituals. If you are still unhappy, say “human agent” 🙏",
-    "hi": "Namaste 🙏 Manokamna aksar man hi arpit hoti hai; pandit puja se pehle wishes dekhte hain. Phir bhi issue ho to “human agent” 🙏"
+    "keywords": [
+      "manokamna",
+      "wish not mentioned",
+      "personal wish video",
+      "manokamna nahi"
+    ],
+    "example": "Video mein meri manokamna nahi boli gayi.",
+    "tags": [
+      "video"
+    ],
+    "en": "Namaste 🙏 Your wish is offered in the ritual. The pandit reads what you submitted before the puja. If that still does not feel right, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 आपकी मनोकामना पूजा में शामिल होती है। पंडित पूजा से पहले आपकी इच्छा पढ़ते हैं। फिर भी ठीक न लगे तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Aapki manokamna puja mein shamil hoti hai. Pandit puja se pehle aapki wish padhte hain. Phir bhi theek na lage to bataiye, main aapko team se jod deta hoon."
   },
   {
     "id": "video_looks_fake_temple",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["fake video", "not real temple", "looks fake", "asli mandir nahi"],
-    "tags": ["video"],
+    "keywords": [
+      "fake video",
+      "not real temple",
+      "looks fake",
+      "asli mandir nahi"
+    ],
+    "example": "Yeh video asli mandir ka nahi lagta.",
+    "tags": [
+      "video"
+    ],
     "en": "Namaste 🙏 Pujas are at listed temples per Vedic rituals. Recording inside Garbh Griha is not permitted, so rituals happen in the authorized area on temple premises — not a different puja 🙏",
-    "hi": "Namaste 🙏 Puja listed mandir par hoti hai. Garbh Griha mein shoot allowed nahi — isliye authorized area mein recording hoti hai 🙏"
+    "hi": "नमस्ते 🙏 पूजा बताए गए मंदिर में होती है। गर्भगृह में फ़िल्म बनाने की अनुमति नहीं है — इसलिए अधिकृत स्थान पर रिकॉर्डिंग होती है 🙏",
+    "hinglish": "Namaste 🙏 Puja listed mandir par hoti hai. Garbh Griha mein shoot allowed nahi — isliye authorized area mein recording hoti hai 🙏"
   },
   {
     "id": "video_privacy_group",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["video private", "others see my name", "public video", "privacy video"],
-    "tags": ["video"],
+    "keywords": [
+      "video private",
+      "others see my name",
+      "public video",
+      "privacy video"
+    ],
+    "example": "Kya dusre log mera naam video mein dekh sakte hain?",
+    "tags": [
+      "video"
+    ],
     "en": "Group puja mentions all devotees in collective Sankalp. Links are unlisted — only people with the link can view; your details are not published publicly 🙏",
-    "hi": "Group puja mein sab ke naam Sankalp mein aate hain. Link unlisted hai — sirf link wale dekh sakte hain; public publish nahi hota 🙏"
+    "hi": "सामूहिक पूजा में सबके नाम संकल्प में आते हैं। लिंक असूचीबद्ध है — केवल लिंक वाले देख सकते हैं। सार्वजनिक रूप से प्रकाशित नहीं होता 🙏",
+    "hinglish": "Group puja mein sab ke naam Sankalp mein aate hain. Link unlisted hai — sirf link wale dekh sakte hain; public publish nahi hota 🙏"
   },
   {
     "id": "video_link_permanent_download",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["link expire", "how long link", "download video", "save video"],
-    "tags": ["video"],
+    "keywords": [
+      "link expire",
+      "how long link",
+      "download video",
+      "save video"
+    ],
+    "example": "Video link kitne din tak chalega?",
+    "tags": [
+      "video"
+    ],
     "en": "The link we share stays available; we still recommend downloading or saving to Google Drive for your records 🙏",
-    "hi": "Link active rehti hai; phir bhi download/Drive par save karna behtar hai 🙏"
+    "hi": "लिंक सक्रिय रहती है। फिर भी डाउनलोड करके या ड्राइव पर सहेजना बेहतर है 🙏",
+    "hinglish": "Link active rehti hai; phir bhi download/Drive par save karna behtar hai 🙏"
   },
   {
     "id": "video_different_from_sample",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["sample video", "website video different", "lighting different", "sample se alag"],
-    "tags": ["video"],
+    "keywords": [
+      "sample video",
+      "website video different",
+      "lighting different",
+      "sample se alag"
+    ],
+    "example": "Mera video website ke sample se alag kyun hai?",
+    "tags": [
+      "video"
+    ],
     "en": "Sample videos on the site are for illustration. Every live puja can differ in lighting, décor, or pandit — rituals follow Vedic procedure 🙏",
-    "hi": "Website sample sirf example hai. Har live puja thodi alag dikhe — vidhi Vedic rehti hai 🙏"
+    "hi": "वेबसाइट का नमूना केवल उदाहरण है। हर लाइव पूजा थोड़ी अलग दिखती है — विधि वैदिक रहती है 🙏",
+    "hinglish": "Website sample sirf example hai. Har live puja thodi alag dikhe — vidhi Vedic rehti hai 🙏"
   },
   {
     "id": "video_sankalp_wish_update_upcoming",
@@ -190,18 +302,51 @@
       "change manokamna",
       "sankalp badalna upcoming"
     ],
-    "tags": ["sankalp"],
-    "en": "Please share your updated Sankalp or wish — if the booking window is still open, we can update it for the puja. Say “human agent” with the exact text you want included 🙏",
-    "hi": "Updated sankalp/manokamna bhejein — booking window khuli ho to update ho sakta hai. Exact text ke saath “human agent” likhein 🙏"
+    "example": "Puja se pehle apni manokamna badalni hai.",
+    "tags": [
+      "sankalp"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 Please tell me the exact sankalp or wish you want. If the booking window is still open, the team can update it for the puja.",
+    "hi": "नमस्ते 🙏 जो संकल्प या मनोकामना चाहिए, वह ठीक वैसी बताइए। बुकिंग की अवधि खुली हो तो टीम पूजा के लिए उसे बदल सकती है।",
+    "hinglish": "Namaste 🙏 Jo sankalp ya manokamna chahiye, woh theek waisi bataiye. Booking ki avadhi khuli ho to team puja ke liye use badal sakti hai."
   },
   {
     "id": "video_under_review_status",
     "domain": "videos",
     "status": "published",
     "owner": "CS",
-    "keywords": ["under review", "video review mein", "review pipeline"],
-    "tags": ["video"],
+    "keywords": [
+      "under review",
+      "video review mein",
+      "review pipeline"
+    ],
+    "example": "Mera video review mein hai, kab aayega?",
+    "tags": [
+      "video"
+    ],
     "en": "Your video is in our quality review queue and will be sent on registered WhatsApp within 3–4 days of the puja date 🙏",
-    "hi": "Video review mein hai — puja date ke 3–4 din mein WhatsApp par bhej di jayegi 🙏"
+    "hi": "वीडियो समीक्षा में है — पूजा की तारीख के 3–4 दिन में व्हाट्सऐप पर भेज दिया जाएगा 🙏",
+    "hinglish": "Video review mein hai — puja date ke 3–4 din mein WhatsApp par bhej di jayegi 🙏"
+  },
+  {
+    "id": "sankalp_change_after_puja",
+    "domain": "videos",
+    "status": "published",
+    "owner": "CS",
+    "keywords": [
+      "sankalp after puja",
+      "puja ho chuki sankalp",
+      "change wish after puja",
+      "manokamna after puja done"
+    ],
+    "example": "Puja ho chuki hai, ab sankalp change karna hai.",
+    "tags": [
+      "sankalp"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 A sankalp or wish can be changed only while the booking window is open. If the puja has already been performed, I am connecting you to the team so they can see what is still possible.",
+    "hi": "नमस्ते 🙏 संकल्प या मनोकामना केवल बुकिंग की अवधि खुली होने पर बदल सकते हैं। यदि पूजा हो चुकी है, तो मैं आपको टीम से जोड़ रहा हूँ, ताकि वे देख सकें कि अब क्या संभव है।",
+    "hinglish": "Namaste 🙏 Sankalp ya manokamna sirf booking window khuli hone par badal sakte hain. Agar puja ho chuki hai, to main aapko team se jod raha hoon, taaki woh dekh saken ki ab kya mumkin hai."
   }
 ]

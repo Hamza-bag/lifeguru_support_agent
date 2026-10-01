@@ -21,11 +21,13 @@ function parsePolishedReplies(text, fallback) {
 function registerHint(register) {
   const map = {
     devanagari: 'User writes Hindi in Devanagari — use polite Hindi (Devanagari).',
+    hinglish: 'User writes Roman Hinglish — reply in Roman Hinglish, not formal English.',
     hinglish_or_roman_hi: 'User writes Roman Hinglish — reply in Roman Hinglish, not formal English.',
     punjabi_roman: 'User writes Roman Punjabi / Punjabi-English mix — reply in that mix (e.g. batawo, schedule, chahiye).',
     eng_gujarati: 'User writes English–Gujarati in Roman — match that mix.',
     eng_marathi: 'User writes English–Marathi in Roman — match that mix.',
     indic_regional: 'User uses a regional Indic script — reply in the same script/register.',
+    other: 'Reply in the same language as the user. Keep dates, links, names, and booking facts accurate.',
     en: 'User writes standard English — English is OK.',
   };
   return map[register] || map.en;
@@ -62,26 +64,23 @@ function restoreUrls(replies, urls) {
   return restored;
 }
 
-function buildPrompt({ userText, drafts, action, rulesBlock = '', replyRegister }) {
-  const registerLine = replyRegister ? `\nLanguage hint: ${registerHint(replyRegister)}` : '';
-  return `${rulesBlock}You are a WhatsApp support agent for LifeGuru (Mandir Puja and Chadhava only).
+function buildPrompt({ userText, drafts, action, rulesBlock = '', replyRegister, bookingContext = '' }) {
+  const registerLine = replyRegister ? `\nLanguage: ${registerHint(replyRegister)}` : '';
+  const bookingLine = bookingContext ? `\nBooking already chosen: ${bookingContext}` : '';
+  return `${rulesBlock}You are LifeGuru's customer support agent on WhatsApp. You help this customer with their Mandir Puja or Chadhava booking. You are not a general chatbot.
 
-Rewrite the DRAFT replies so they sound natural for THIS user — same language and mix they use. Short messages. Follow SAFETY & TONE GUARDRAILS above (polite, never abusive, no insults even if the user is rude).
-${registerLine}
+Rewrite the DRAFT into the customer's language. The draft is the answer. Keep its facts.
+${registerLine}${bookingLine}
 
 Rules:
-- MATCH the user's language from their message: US/Indian English, Hindi, Hinglish (Roman), Punjabi Roman, English–Gujarati mix in Roman (e.g. "mari puja kyare avse"), English–Marathi in Roman, or native script (Gujarati, Bengali, Tamil, etc.). Reply in the **same mix and spelling style** (Roman vs native script). Do not switch to formal Hindi/Devanagari if they wrote Eng-Gujarati or Hinglish.
-- If the user's latest message is mostly Hindi/Punjabi/Hinglish (even after they said "Hi" earlier), **ignore English drafts** — rewrite in their current message language.
-- Example: user "meri puja kab hai" → reply in polite Roman Hinglish (e.g. "Aapki puja 31 Oct ko schedule hai…"), NOT full English unless they wrote English.
-- ONLY LifeGuru bookings/support.
-- Drafts are the source of truth for facts (dates, status, product names, video/prasad). Do not add, guess, or change facts.
-- Keep every ⟦U0⟧ style token exactly as written. Do not rewrite links.
-- Do not invent order IDs, prices, refunds, or ETAs.
-- Do not say you are an AI.
-- Keep the same number of reply bubbles as the draft when possible.
+- Answer only what they just asked, about the booking in the draft.
+- Keep every date, status, product name, link token (⟦U0⟧), and numbered booking line. Do not drop a list. Do not switch to a different booking.
+- Do not add "human agent", "talk to the team", menus, or a new question they did not ask.
+- If their message is English, reply in English. If it is Hinglish or another language, match that language.
+- One reply bubble. Do not say you are an AI.
 - If action is "forward" or "end", keep that meaning.
 
-User just said: ${JSON.stringify(userText || '')}
+Customer said: ${JSON.stringify(userText || '')}
 Action: ${action}
 Draft replies: ${JSON.stringify(drafts)}
 
@@ -97,6 +96,7 @@ async function polishReplies({
   timeoutMs = 2500,
   rulesBlock = '',
   replyRegister,
+  bookingContext = '',
 }) {
   if (!apiKey || !drafts?.length) {
     return { replies: drafts, usedLlm: false, skipReason: 'no_api_key_or_drafts' };
@@ -127,6 +127,7 @@ async function polishReplies({
                   action,
                   rulesBlock: String(rulesBlock || '').slice(0, 700),
                   replyRegister,
+                  bookingContext,
                 }),
               },
             ],

@@ -12,9 +12,13 @@
       "when will i marry",
       "shaadi kab"
     ],
-    "tags": ["spiritual"],
-    "en": "Namaste 🙏 We understand how important this is. During puja, the pandit prays for peace, harmony, and fulfilment of your wishes — we cannot guarantee marriage or name any person. Our prayers are with you 🙏",
-    "hi": "Namaste 🙏 Yeh aapke liye bahut mahatvapurn hai. Puja mein shanti aur manokamna ke liye prarthna hoti hai — shaadi ki guarantee nahi dete. Hamari prarthna aapke saath hai 🙏"
+    "example": "Meri shaadi kab hogi, koi puja hai?",
+    "tags": [
+      "spiritual"
+    ],
+    "en": "Namaste 🙏 We understand how close this wish is to your heart. During the puja, the pandit prays for peace and for your wish. You can see what is open right now: {{LINK_MANDIR_PUJA}}. Our prayers are with you 🙏",
+    "hi": "नमस्ते 🙏 यह मनोकामना आपके दिल के बहुत करीब है। पूजा में शांति और आपकी मनोकामना के लिए प्रार्थना होती है। जो अभी खुला है: {{LINK_MANDIR_PUJA}}। हमारी प्रार्थना आपके साथ है 🙏",
+    "hinglish": "Namaste 🙏 Yeh manokamna aapke dil ke bahut kareeb hai. Puja mein shanti aur aapki manokamna ke liye prarthna hoti hai. Jo abhi khula hai: {{LINK_MANDIR_PUJA}}. Hamari prarthna aapke saath hai 🙏"
   },
   {
     "id": "spiritual_health_compassion",
@@ -30,9 +34,13 @@
       "bimari",
       "swasthya"
     ],
-    "tags": ["spiritual"],
+    "example": "Mere papa bimar hain, unke liye puja karni hai.",
+    "tags": [
+      "spiritual"
+    ],
     "en": "Namaste 🙏 We are sorry to hear this. We sincerely pray for health, strength, and recovery for your loved one. Please also follow medical advice from doctors — puja is devotion alongside care, not a substitute for treatment. Stay strong 🙏",
-    "hi": "Namaste 🙏 Sun kar dukh hua. Swasthya aur shanti ke liye prarthna karte hain. Doctor ki salah jaroor follow karein — puja shraddha hai, ilaj ki jagah nahi. Himmat rakhein 🙏"
+    "hi": "नमस्ते 🙏 सुनकर दुख हुआ। स्वास्थ्य और शांति के लिए प्रार्थना करते हैं। डॉक्टर की सलाह अवश्य मानें — पूजा श्रद्धा है, इलाज की जगह नहीं। हिम्मत रखें 🙏",
+    "hinglish": "Namaste 🙏 Sun kar dukh hua. Swasthya aur shanti ke liye prarthna karte hain. Doctor ki salah jaroor follow karein — puja shraddha hai, ilaj ki jagah nahi. Himmat rakhein 🙏"
   },
   {
     "id": "spiritual_court_baglamukhi",
@@ -47,9 +55,13 @@
       "case jeet",
       "court mein"
     ],
-    "tags": ["spiritual"],
-    "en": "Maa Baglamukhi puja is offered for divine support in difficult disputes — we pray truth and justice prevail; we cannot guarantee a court outcome. Browse: https://lifeguru.app/mandir-puja 🙏",
-    "hi": "Maa Baglamukhi puja mushkil vivad mein divine support ke liye hoti hai — court ka result guarantee nahi. Dekhein: https://lifeguru.app/mandir-puja 🙏"
+    "example": "Court case chal raha hai, kya karun?",
+    "tags": [
+      "spiritual"
+    ],
+    "en": "Namaste 🙏 We are with you in this difficult time. The puja is offered with a prayer that truth and justice stay with you. You can see what is open right now: {{LINK_MANDIR_PUJA}} 🙏",
+    "hi": "नमस्ते 🙏 इस कठिन समय में हम आपके साथ हैं। पूजा में यह प्रार्थना होती है कि सत्य और न्याय आपके साथ रहें। जो अभी खुला है: {{LINK_MANDIR_PUJA}} 🙏",
+    "hinglish": "Namaste 🙏 Is kathin samay mein hum aapke saath hain. Puja mein yeh prarthna hoti hai ki satya aur nyay aapke saath rahein. Jo abhi khula hai: {{LINK_MANDIR_PUJA}} 🙏"
   },
   {
     "id": "spiritual_black_magic_reassurance",
@@ -63,9 +75,13 @@
       "buri nazar",
       "tantra problem"
     ],
-    "tags": ["spiritual"],
+    "example": "Mujhe lagta hai kisi ne nazar ya black magic kiya hai.",
+    "tags": [
+      "spiritual"
+    ],
     "en": "Namaste 🙏 Keep faith and care for your loved ones. Puja is performed seeking divine protection and positive energy — we do not confirm harm from specific people. Our prayers are with your family 🙏",
-    "hi": "Namaste 🙏 Vishwas rakhein aur parivar ka saath dein. Puja divine protection ke liye hoti hai — kisi par aarop confirm nahi karte. Prarthna aapke saath hai 🙏"
+    "hi": "नमस्ते 🙏 विश्वास रखें और परिवार का साथ दें। पूजा दिव्य रक्षा के लिए होती है — किसी पर आरोप की पुष्टि नहीं करते। प्रार्थना आपके साथ है 🙏",
+    "hinglish": "Namaste 🙏 Vishwas rakhein aur parivar ka saath dein. Puja divine protection ke liye hoti hai — kisi par aarop confirm nahi karte. Prarthna aapke saath hai 🙏"
   },
   {
     "id": "spiritual_financial_rinmukteshwar",
@@ -80,9 +96,13 @@
       "paise ki problem",
       "money problem spiritual"
     ],
-    "tags": ["spiritual"],
-    "en": "Namaste 🙏 Rinmukteshwar Chadhava is offered with faith for relief from financial difficulties — we cannot guarantee recovery or returns. Browse chadhava: https://lifeguru.app/mandir-chadhava 🙏",
-    "hi": "Namaste 🙏 Rinmukteshwar Chadhava arthik mushkilon ke liye shraddha se hota hai — paisa wapas ya guarantee nahi. https://lifeguru.app/mandir-chadhava 🙏"
+    "example": "Bahut karz hai, koi seva hai?",
+    "tags": [
+      "spiritual"
+    ],
+    "en": "Namaste 🙏 We understand how heavy this feels. A chadhava is offered with faith for relief in a difficult time. You can see what is open right now: {{LINK_MANDIR_CHADHAVA}} 🙏",
+    "hi": "नमस्ते 🙏 यह बोझ हम समझ सकते हैं। कठिन समय में चढ़ावा श्रद्धा से होता है। जो अभी खुला है: {{LINK_MANDIR_CHADHAVA}} 🙏",
+    "hinglish": "Namaste 🙏 Yeh bojh hum samajh sakte hain. Kathin samay mein chadhava shraddha se hota hai. Jo abhi khula hai: {{LINK_MANDIR_CHADHAVA}} 🙏"
   },
   {
     "id": "spiritual_addiction_concern",
@@ -97,9 +117,13 @@
       "nasha",
       "lat lag gayi"
     ],
-    "tags": ["spiritual"],
-    "en": "We understand your concern for your loved one. Puja includes sincere prayer for well-being and positive change — not a guaranteed cure. For sensitive personal guidance, say “human agent” 🙏",
-    "hi": "Aapki chinta samajh sakte hain. Puja mein well-being ke liye prarthna hoti hai — guarantee nahi. Personal guidance ke liye “human agent” likhein 🙏"
+    "example": "Mere bhai ki aadat theek nahi ho rahi, unke liye puja chahiye.",
+    "tags": [
+      "spiritual"
+    ],
+    "en": "Namaste 🙏 We understand your worry for someone you love. The puja includes a sincere prayer for their well-being and for strength in the family. You can see what is open right now: {{LINK_MANDIR_PUJA}} 🙏",
+    "hi": "नमस्ते 🙏 आप अपने किसी अपने की चिंता कर रहे हैं, यह हम समझ सकते हैं। पूजा में उनकी कुशल और परिवार की हिम्मत के लिए प्रार्थना होती है। जो अभी खुला है: {{LINK_MANDIR_PUJA}} 🙏",
+    "hinglish": "Namaste 🙏 Aap apne kisi apne ki chinta kar rahe hain, yeh hum samajh sakte hain. Puja mein unki khair aur parivar ki himmat ke liye prarthna hoti hai. Jo abhi khula hai: {{LINK_MANDIR_PUJA}} 🙏"
   },
   {
     "id": "spiritual_puja_results_timeline",
@@ -113,8 +137,13 @@
       "kab fayda",
       "when will puja work"
     ],
-    "tags": ["spiritual", "puja"],
-    "en": "Puja is performed per Vedic rituals. Timing of perceived results varies — faith, devotion, and personal circumstances differ. We cannot promise a fixed timeline; our prayers are with you 🙏",
-    "hi": "Puja vidhi ke anusar hoti hai. Parinaam ka samay alag-alag hota hai — fixed timeline guarantee nahi. Hamari prarthna aapke saath hai 🙏"
+    "example": "Puja ka asar kitne din mein dikhega?",
+    "tags": [
+      "spiritual",
+      "puja"
+    ],
+    "en": "Namaste 🙏 The puja is performed with full Vedic rituals. People feel a change at different times, and we keep you in our prayers 🙏",
+    "hi": "नमस्ते 🙏 पूजा पूरी विधि के साथ होती है। बदलाव का एहसास हर व्यक्ति को अलग समय पर होता है। हमारी प्रार्थना आपके साथ है 🙏",
+    "hinglish": "Namaste 🙏 Puja poori vidhi ke saath hoti hai. Badlav ka ehsaas har vyakti ko alag samay par hota hai. Hamari prarthna aapke saath hai 🙏"
   }
 ]

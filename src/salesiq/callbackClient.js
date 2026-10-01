@@ -8,7 +8,7 @@ const { createOAuthTokenProvider } = require('./oauthToken');
 
 function isInvalidAuthCallback(reason) {
   const s = String(reason || '');
-  return /1002|invalid authorization/i.test(s);
+  return /1002|1008|invalid authorization|invalid oauthtoken/i.test(s);
 }
 
 function replyLineText(line) {
@@ -114,4 +114,4 @@ function createCallbackClient(config, tokenProviderOverride) {
   return { isConfigured, sendResponse };
 }
 
-module.exports = { createCallbackClient, buildCallbackBody, parseZohoApiBody };
+module.exports = { createCallbackClient, buildCallbackBody, parseZohoApiBody, isInvalidAuthCallback };

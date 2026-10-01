@@ -9,7 +9,7 @@ const GUARDRAILS_PATH = path.join(RULES_DIR, 'guardrails.md');
 const ROUTER_RULES_PATH = path.join(RULES_DIR, 'gemini-router.md');
 const CLASSIFY_SUMMARY_PATH = path.join(RULES_DIR, 'classify-summary.md');
 
-/** Merged into FAQ match — see docs/support-agent-knowledge-base-plan.md */
+/** Published knowledge-base cards. The bot picks an id, then sends en, hi, or hinglish. */
 const KB_FAQ_FILES = [
   'faq.json',
   'puja.json',

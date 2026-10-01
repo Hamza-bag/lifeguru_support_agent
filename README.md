@@ -4,7 +4,7 @@ Webhook service for **Mandir Puja & Chadhava** support. Zoho SalesIQ sends messa
 
 **Trust model:** DB allow-list = per-customer facts · KB JSON = shared policy · Gemini = route/rephrase/faq-id only · human = safe fallback.
 
-See [docs/support-agent-db-readonly.md](../docs/support-agent-db-readonly.md) and [docs/support-agent-db-phase-checklist.md](../docs/support-agent-db-phase-checklist.md).
+See [docs/support-agent-db-readonly.md](../docs/support-agent-db-readonly.md).
 
 ---
 
@@ -69,16 +69,26 @@ Copy from `.env.example`. Never commit `.env`.
 |----------|---------------------|
 | `PORT` | `3080` |
 | `SUPPORT_DB_*` | Phase 1: same as admin dev DB (read-only session in agent) |
-| `SUPPORT_LLM_FAQ_SELECT` | `true` — LLM picks KB id when keywords miss |
+| `SUPPORT_LLM_FAQ_SELECT` | `true` — one Gemini call picks the knowledge-base card id |
 | `GEMINI_API_KEY` | Optional; classify/mirror off if empty |
 | `SALESIQ_VERIFY_SIGNATURE` | `false` locally, `true` in prod |
 | `SESSION_STORE` | `memory` locally, `redis` for multi-instance prod |
 
 ---
 
+## How a message is answered
+
+1. SalesIQ sends the WhatsApp text and `visitor.phone`.
+2. A few clear cases are decided in code (greeting, thanks, this booking’s puja/video/prasad, how to book, which puja, calm AutoPay, refund, anger).
+3. Anything else is one Gemini call that picks a route and, when it is a policy question, a knowledge-base id.
+4. Booking facts (date, video link, prasad) come from the read-only database for that phone only.
+5. The reply is the stored English, Hindi, or Hinglish text. Other languages are rewritten from the English draft.
+6. If the question is unclear, or the card says to connect, the chat is transferred to the team.
+
 ## Content (CS-editable)
 
-- FAQ: `content/kb/faq.json`
+- Answers: `content/kb/*.json` (English, Hindi, Hinglish)
+- Review file for CS: `docs/LifeGuru-Support-KB-CS-Review.docx`
 - LLM rules: `content/rules/*.md`
 
 Restart the agent after editing content files.
@@ -87,10 +97,8 @@ Restart the agent after editing content files.
 
 ## Further reading
 
-If you work from the **LifeGuru monorepo**, see also:
-
-- `docs/support-agent-architecture.md` — behavior and routing
-- `docs/support-agent-local-testing.md` — extended local scenarios
-- `docs/support-agent-step5-ngrok-salesiq-safe.md` — Zoho sandbox without touching live WhatsApp
+- `docs/support-agent-db-readonly.md` — database access
+- `docs/support-agent-zoho-oauth.md` — SalesIQ token for pending replies
+- `docs/support-agent-step5-ngrok-salesiq-safe.md` — test the webhook without changing live WhatsApp
 
 Do **not** switch live Mandir Puja WhatsApp to this webhook until staging sign-off and rollback plan are done.

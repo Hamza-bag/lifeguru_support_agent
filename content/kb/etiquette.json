@@ -15,39 +15,79 @@
       "need to sit",
       "watch whole puja"
     ],
-    "tags": ["etiquette", "live"],
+    "example": "Kya puja ke time mujhe baithna zaroori hai?",
+    "tags": [
+      "etiquette",
+      "live"
+    ],
     "en": "Namaste 🙏 Most Mandir pujas are not live attendance — our pandit performs on your behalf with your name and gotra. You may pray quietly at home if you wish; it is not mandatory to sit through the whole ritual.",
-    "hi": "Namaste 🙏 Zyada tar pujas live attendance nahi hoti — pandit ji aapke naam-gotra se puja karte hain. Chahein to ghar par shaant baith kar prarthna kar sakte hain; poori puja baithna zaroori nahi."
+    "hi": "नमस्ते 🙏 अधिकतर पूजाओं में लाइव उपस्थिति नहीं होती — पंडित जी आपके नाम और गोत्र से पूजा करते हैं। चाहें तो घर पर शांत बैठकर प्रार्थना कर सकते हैं। पूरी पूजा बैठना ज़रूरी नहीं।",
+    "hinglish": "Namaste 🙏 Zyada tar pujas live attendance nahi hoti — pandit ji aapke naam-gotra se puja karte hain. Chahein to ghar par shaant baith kar prarthna kar sakte hain; poori puja baithna zaroori nahi."
   },
   {
     "id": "etiquette_nonveg_food_day",
     "domain": "etiquette",
     "status": "published",
     "owner": "CS",
-    "keywords": ["non veg", "non-veg", "meat", "chicken", "nonveg", "kha sakte", "food on puja day", "sattvic"],
-    "tags": ["etiquette", "food"],
+    "keywords": [
+      "non veg",
+      "non-veg",
+      "meat",
+      "chicken",
+      "nonveg",
+      "kha sakte",
+      "food on puja day",
+      "sattvic"
+    ],
+    "example": "Puja ke din non-veg kha sakte hain?",
+    "tags": [
+      "etiquette",
+      "food"
+    ],
     "en": "On puja day it is auspicious to avoid non-vegetarian food; a sattvic meal is recommended 🙏",
-    "hi": "Puja ke din non-veg se bachna shubh mana jata hai; sattvic bhojan behtar hai 🙏"
+    "hi": "पूजा के दिन मांसाहार से बचना शुभ माना जाता है। सात्विक भोजन बेहतर है 🙏",
+    "hinglish": "Puja ke din non-veg se bachna shubh mana jata hai; sattvic bhojan behtar hai 🙏"
   },
   {
     "id": "etiquette_missed_time",
     "domain": "etiquette",
     "status": "published",
     "owner": "CS",
-    "keywords": ["missed puja time", "miss time", "time miss", "samay nikal gaya", "late ho gaya"],
-    "tags": ["etiquette"],
+    "keywords": [
+      "missed puja time",
+      "miss time",
+      "time miss",
+      "samay nikal gaya",
+      "late ho gaya"
+    ],
+    "example": "Main puja ke time par nahi baith paya, kya puja count hogi?",
+    "tags": [
+      "etiquette"
+    ],
     "en": "Please don’t worry — pandit ji performs the puja on your behalf with your Sankalp, so spiritual benefit is credited to you. You can watch the video later and offer a mental pranam 🙏",
-    "hi": "Chinta na karein — pandit ji aapke sankalp se puja karte hain. Baad mein video dekh kar man hi man pranam kar sakte hain 🙏"
+    "hi": "चिंता न करें — पंडित जी आपके संकल्प से पूजा करते हैं। बाद में वीडियो देखकर मन ही मन प्रणाम कर सकते हैं 🙏",
+    "hinglish": "Chinta na karein — pandit ji aapke sankalp se puja karte hain. Baad mein video dekh kar man hi man pranam kar sakte hain 🙏"
   },
   {
     "id": "etiquette_periods_menstruation",
     "domain": "etiquette",
     "status": "published",
     "owner": "CS",
-    "keywords": ["period", "periods", "menstruation", "mahavari", "mc", "touch puja"],
-    "tags": ["etiquette"],
+    "keywords": [
+      "period",
+      "periods",
+      "menstruation",
+      "mahavari",
+      "mc",
+      "touch puja"
+    ],
+    "example": "Periods mein puja kar sakti hoon?",
+    "tags": [
+      "etiquette"
+    ],
     "en": "As per traditional custom, many avoid touching puja items during periods. Since the puja is performed for you at the temple, it remains fully valid — you may listen to mantras from a distance 🙏",
-    "hi": "Parampara ke anusar kai log periods mein puja samagri ko touch nahi karte. Puja mandir par aapke liye hoti hai — puja poori tarah valid rehti hai 🙏"
+    "hi": "परंपरा के अनुसार कई लोग मासिक धर्म में पूजा सामग्री को नहीं छूते। पूजा मंदिर में आपके लिए होती है — पूजा पूरी तरह मान्य रहती है 🙏",
+    "hinglish": "Parampara ke anusar kai log periods mein puja samagri ko touch nahi karte. Puja mandir par aapke liye hoti hai — puja poori tarah valid rehti hai 🙏"
   },
   {
     "id": "etiquette_dos_donts_where",
@@ -64,9 +104,14 @@
       "kya karna",
       "kya nahi karna"
     ],
-    "tags": ["etiquette", "guide"],
-    "en": "Namaste 🙏 For your booked puja, Do's & Don'ts and recommended mantras are on your order in the LifeGuru app (Profile → that booking). We also send a PDF on WhatsApp from {{PUJA_UPDATES_SENDER}} — save it as “LifeGuru Puja Updates”. If you already booked, ask about “mantra” or “dos and donts” after we pull your order.",
-    "hi": "Namaste 🙏 Booked puja ke Do's, Don'ts aur mantra app ke order page par hain. WhatsApp par PDF {{PUJA_UPDATES_SENDER}} se aata hai. Order select hone ke baad “mantra” ya “dos dont” pooch sakte hain."
+    "example": "Puja ke Do's and Don'ts kahan milenge?",
+    "tags": [
+      "etiquette",
+      "guide"
+    ],
+    "en": "Namaste 🙏 For your booked puja, the Do's, Don'ts, and mantras are sent as a PDF on WhatsApp from {{PUJA_UPDATES_SENDER}}. Please save that chat as “LifeGuru Puja Updates”. Tell me which booking and I can share what we have for it.",
+    "hi": "नमस्ते 🙏 आपकी बुक की गई पूजा के करें, न करें और मंत्र व्हाट्सऐप पर पीडीएफ़ में {{PUJA_UPDATES_SENDER}} से आते हैं। उस चैट को “LifeGuru Puja Updates” नाम से सहेज लीजिए। कौन-सी बुकिंग है, बताइए — जो हमारे पास है, वह मैं बता दूँगा।",
+    "hinglish": "Namaste 🙏 Aapki booked puja ke Do's, Don'ts aur mantra WhatsApp par PDF mein {{PUJA_UPDATES_SENDER}} se aate hain. Us chat ko “LifeGuru Puja Updates” naam se save kar lijiye. Kaunsi booking hai bataiye — jo hamare paas hai, woh main bata dunga."
   },
   {
     "id": "etiquette_clothes_what_to_wear",
@@ -89,9 +134,14 @@
       "attire",
       "outfit"
     ],
-    "tags": ["etiquette", "clothes"],
-    "en": "Namaste 🙏 You do not need to be at the temple — pandit ji performs the puja on your behalf. If you sit and pray at home, wear clean, modest traditional or comfortable clothes and choose a quiet place 🙏 Puja-specific Do's & Don'ts (including dress guidance) are on your order in the app and in the PDF from {{PUJA_UPDATES_SENDER}} (“LifeGuru Puja Updates”).",
-    "hi": "Namaste 🙏 Mandir par aapka hona zaroori nahi — pandit ji aapke naam-gotra se puja karte hain. Ghar par baith kar prarthna karein to saaf, modest/traditional kapde pehen kar shaant jagah choose karein 🙏 Dress code aur Do's/Don'ts app ke order page aur {{PUJA_UPDATES_SENDER}} se PDF par hain."
+    "example": "Puja ke din kya pehnna chahiye? Mandir aana hai kya?",
+    "tags": [
+      "etiquette",
+      "clothes"
+    ],
+    "en": "Namaste 🙏 You do not need to be at the temple. Pandit ji performs the puja in your name and gotra. If you sit and pray at home, wear clean, modest clothes and choose a quiet place. Do's and Don'ts for your puja also come as a PDF on WhatsApp from {{PUJA_UPDATES_SENDER}}.",
+    "hi": "नमस्ते 🙏 मंदिर पर आपका होना ज़रूरी नहीं। पंडित जी आपके नाम और गोत्र से पूजा करते हैं। घर पर प्रार्थना करें तो साफ़ कपड़े पहनकर शांत जगह चुनें। आपकी पूजा के करें और न करें व्हाट्सऐप पर पीडीएफ़ में {{PUJA_UPDATES_SENDER}} से आते हैं।",
+    "hinglish": "Namaste 🙏 Mandir par aapka hona zaroori nahi. Pandit ji aapke naam aur gotra se puja karte hain. Ghar par prarthna karein to saaf kapde pehen kar shaant jagah chunein. Aapki puja ke Do's aur Don'ts WhatsApp par PDF mein {{PUJA_UPDATES_SENDER}} se aate hain."
   },
   {
     "id": "etiquette_family_not_present",
@@ -107,9 +157,13 @@
       "puja still count",
       "blessings family"
     ],
-    "tags": ["etiquette"],
+    "example": "Family mein se koi present nahi hai, puja valid hai?",
+    "tags": [
+      "etiquette"
+    ],
     "en": "Please don’t worry — it is not mandatory for everyone to be physically present. The Sankalp is taken in everyone’s name; what matters most is intention and faith — blessings are received by all 🙏",
-    "hi": "Chinta na karein — sab ka physically present hona zaroori nahi. Sankalp sab ke naam par hota hai; shraddha aur niyat mahatvapurn hai — ashirwad sab ko milta hai 🙏"
+    "hi": "चिंता न करें — सबका शारीरिक रूप से उपस्थित होना ज़रूरी नहीं। संकल्प सबके नाम पर होता है। श्रद्धा और नीयत महत्वपूर्ण हैं — आशीर्वाद सबको मिलता है 🙏",
+    "hinglish": "Chinta na karein — sab ka physically present hona zaroori nahi. Sankalp sab ke naam par hota hai; shraddha aur niyat mahatvapurn hai — ashirwad sab ko milta hai 🙏"
   },
   {
     "id": "etiquette_dietary_slip_unintentional",
@@ -126,9 +180,14 @@
       "pyaz lasun",
       "rule break"
     ],
-    "tags": ["etiquette", "food"],
+    "example": "Galti se pyaaz kha liya, puja par asar padega?",
+    "tags": [
+      "etiquette",
+      "food"
+    ],
     "en": "We understand — if it was unintentional, that is absolutely fine. What truly matters is your faith, devotion, and pure intent 🙏",
-    "hi": "Samajh sakte hain — agar galti se hua ho to theek hai. Asli baat aapki shraddha aur niyat hai 🙏"
+    "hi": "समझ सकते हैं — यदि गलती से हुआ हो तो ठीक है। असली बात आपकी श्रद्धा और नीयत है 🙏",
+    "hinglish": "Samajh sakte hain — agar galti se hua ho to theek hai. Asli baat aapki shraddha aur niyat hai 🙏"
   },
   {
     "id": "etiquette_after_puja_daily_routine",
@@ -143,9 +202,13 @@
       "daily work after",
       "puja ke baad"
     ],
-    "tags": ["etiquette"],
+    "example": "Puja ke baad normal kaam kar sakte hain?",
+    "tags": [
+      "etiquette"
+    ],
     "en": "Yes, you can resume your normal routine after the puja. It is good to keep a peaceful, positive mindset for the rest of the day 🙏",
-    "hi": "Haan, puja ke baad aam dincharya chalu kar sakte hain. Din bhar shaant aur positive rehna accha hota hai 🙏"
+    "hi": "हाँ, पूजा के बाद सामान्य दिनचर्या शुरू कर सकते हैं। दिन भर शांत और सकारात्मक रहना अच्छा होता है 🙏",
+    "hinglish": "Haan, puja ke baad aam dincharya chalu kar sakte hain. Din bhar shaant aur positive rehna accha hota hai 🙏"
   },
   {
     "id": "etiquette_dos_donts_pdf_sent",
@@ -160,9 +223,13 @@
       "puja updates pdf",
       "lifeguru puja updates"
     ],
-    "tags": ["guide"],
+    "example": "Do's and Don'ts PDF bhej diya kya?",
+    "tags": [
+      "guide"
+    ],
     "en": "Do's & Don'ts are sent to your registered WhatsApp from {{PUJA_UPDATES_SENDER}} — please save it as “LifeGuru Puja Updates” and follow them as best you can on puja day 🙏",
-    "hi": "Do's & Don'ts aapke registered WhatsApp par {{PUJA_UPDATES_SENDER}} se bheje jate hain — “LifeGuru Puja Updates” save karein aur puja ke din follow karein 🙏"
+    "hi": "करें और न करें आपके पंजीकृत व्हाट्सऐप पर {{PUJA_UPDATES_SENDER}} से भेजे जाते हैं — “LifeGuru Puja Updates” सहेजें और पूजा के दिन उनका पालन करें 🙏",
+    "hinglish": "Do's & Don'ts aapke registered WhatsApp par {{PUJA_UPDATES_SENDER}} se bheje jate hain — “LifeGuru Puja Updates” save karein aur puja ke din follow karein 🙏"
   },
   {
     "id": "etiquette_pandit_name_gotra",
@@ -178,8 +245,12 @@
       "name in puja",
       "gotra included"
     ],
-    "tags": ["sankalp"],
+    "example": "Kya pandit ji mera naam aur gotra lenge?",
+    "tags": [
+      "sankalp"
+    ],
     "en": "Yes 🙏 Your name and gotra are included in the Sankalp at the start of the puja.",
-    "hi": "Haan 🙏 Puja shuru mein sankalp mein aapka naam aur gotra liya jata hai."
+    "hi": "हाँ 🙏 पूजा की शुरुआत में संकल्प में आपका नाम और गोत्र लिया जाता है।",
+    "hinglish": "Haan 🙏 Puja shuru mein sankalp mein aapka naam aur gotra liya jata hai."
   }
 ]

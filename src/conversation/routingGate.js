@@ -5,6 +5,7 @@ const {
   isPureSocialGreeting,
   isPureThanks,
   requiresDirectHumanHandoffText,
+  detectReplyLanguage,
 } = require('./intent');
 
 /**
@@ -48,8 +49,8 @@ function isTopicChipOnly(raw) {
 }
 
 /**
- * Skip Gemini mirror when reply is fixed (chips, order pick, yes/no) or trigger-only.
- * Handoff / refund / Hinglish still mirror so forward lines match the user's language.
+ * Skip Gemini mirror when the stored template already matches the user.
+ * English, Devanagari, and Hinglish are stored. Other languages are rewritten.
  */
 function shouldSkipLlmMirror(state, text) {
   const raw = String(text || '').trim();
@@ -57,12 +58,7 @@ function shouldSkipLlmMirror(state, text) {
 
   const stage = state.stage || 'await_query';
 
-  if (stage === 'select_order') {
-    const n = Number.parseInt(raw, 10);
-    if (Number.isInteger(n) && n >= 1 && n <= (state.orders || []).length) {
-      return true;
-    }
-  }
+  if (stage === 'select_order') return true;
 
   if (stage === 'ask_more') {
     if (wantsNoMore(raw) || wantsYesMore(raw)) return true;
@@ -81,9 +77,8 @@ function shouldSkipLlmMirror(state, text) {
     if (digits.length >= 10) return true;
   }
 
-  // English and Hindi templates already match those registers. Mirror stays on for
-  // Hinglish and other languages, where the template language is not the user's.
-  if (state.replyRegister === 'en' || state.replyRegister === 'devanagari') return true;
+  const register = detectReplyLanguage(raw).register;
+  if (register === 'en' || register === 'devanagari' || register === 'hinglish') return true;
 
   return false;
 }

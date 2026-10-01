@@ -15,9 +15,13 @@
       "prasad dispatch",
       "प्रसाद"
     ],
-    "tags": ["prasad"],
+    "example": "Prasad kitne din mein ghar aayega?",
+    "tags": [
+      "prasad"
+    ],
     "en": "Namaste 🙏 The Prasad box is dispatched after puja completes and usually reaches your registered address in 8–10 days — only if you selected Prasad at booking. Updates come on WhatsApp from {{PUJA_UPDATES_SENDER}}. For your booking status, share Order ID or open the order in app.",
-    "hi": "Namaste 🙏 Puja complete hone ke baad Prasad box bheja jata hai aur aam taur par 8–10 din mein registered address par pahunchta hai — sirf tab jab booking par Prasad select kiya ho. Updates {{PUJA_UPDATES_SENDER}} se WhatsApp par aate hain."
+    "hi": "नमस्ते 🙏 पूजा पूरी होने के बाद प्रसाद का डिब्बा भेजा जाता है और आमतौर पर 8–10 दिन में पंजीकृत पते पर पहुँचता है — केवल तभी जब बुकिंग पर प्रसाद चुना गया हो। अपडेट {{PUJA_UPDATES_SENDER}} से व्हाट्सऐप पर आते हैं।",
+    "hinglish": "Namaste 🙏 Puja complete hone ke baad Prasad box bheja jata hai aur aam taur par 8–10 din mein registered address par pahunchta hai — sirf tab jab booking par Prasad select kiya ho. Updates {{PUJA_UPDATES_SENDER}} se WhatsApp par aate hain."
   },
   {
     "id": "prasad_not_selected",
@@ -32,9 +36,13 @@
       "251 prasad",
       "prasad select nahi"
     ],
-    "tags": ["prasad"],
+    "example": "Prasad kyun nahi aaya, maine select nahi kiya tha?",
+    "tags": [
+      "prasad"
+    ],
     "en": "Namaste 🙏 If Prasad was not selected at booking (and the ₹251 add-on was not paid), we cannot dispatch a box for that order. Please choose Prasad on your next puja booking if you would like delivery 🙏",
-    "hi": "Namaste 🙏 Agar booking par Prasad select nahi tha (₹251 add-on nahi hua), to is order par box nahi bheja ja sakta. Agli booking par Prasad option choose kar sakte hain 🙏"
+    "hi": "नमस्ते 🙏 यदि बुकिंग पर प्रसाद नहीं चुना था (₹251 की अतिरिक्त सेवा नहीं हुई), तो इस ऑर्डर पर डिब्बा नहीं भेजा जा सकता। अगली बुकिंग पर प्रसाद चुन सकते हैं 🙏",
+    "hinglish": "Namaste 🙏 Agar booking par Prasad select nahi tha (₹251 add-on nahi hua), to is order par box nahi bheja ja sakta. Agli booking par Prasad option choose kar sakte hain 🙏"
   },
   {
     "id": "prasad_add_after_booking",
@@ -48,9 +56,14 @@
       "prasad ab add",
       "missed prasad"
     ],
-    "tags": ["prasad"],
-    "en": "Namaste 🙏 If Prasad was not selected at booking, we may add it manually only while the puja booking window is still open (add-on ₹251). Say “human agent” with your Order ID — we will check and share payment steps if possible.",
-    "hi": "Namaste 🙏 Agar booking window abhi khuli hai to team ₹251 add-on ke saath Prasad manually add kar sakti hai. Order ID ke saath “human agent” likhein — hum check karenge."
+    "example": "Booking ke baad prasad add kar sakte hain?",
+    "tags": [
+      "prasad"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 If Prasad was not selected, it can sometimes be added while the booking window is still open, as a ₹251 add-on. The team will check your booking and share the payment step if it is still possible.",
+    "hi": "नमस्ते 🙏 यदि प्रसाद नहीं चुना गया था, तो बुकिंग की अवधि खुली होने पर कभी ₹251 की अतिरिक्त सेवा जुड़ सकती है। टीम आपकी बुकिंग जाँच कर, संभव हो तो भुगतान का चरण बताएगी।",
+    "hinglish": "Namaste 🙏 Agar Prasad select nahi hua tha, to booking window khuli hone par kabhi ₹251 ki extra service jud sakti hai. Team aapki booking check karke, mumkin ho to payment ka step batayegi."
   },
   {
     "id": "prasad_how_to_use_items",
@@ -69,9 +82,13 @@
       "prasad use",
       "prasad kaise use"
     ],
-    "tags": ["prasad"],
+    "example": "Rudraksha aur Gangajal ka kya karun?",
+    "tags": [
+      "prasad"
+    ],
     "en": "Namaste 🙏 Items are blessed during puja — use with devotion (items vary by puja): Panchmeva — eat or share reverently; Rudraksha — home temple or wear after simple puja; Gangajal — sprinkle at home or in daily puja; Kalava — tie while praying; Kumkum / Bhasma — forehead or home puja as per your tradition 🙏",
-    "hi": "Namaste 🙏 Prasad vastu puja mein bless hoti hain — shraddha se use karein (puja ke hisaab se alag ho sakta hai): Panchmeva — khayein/share karein; Rudraksha — mandir ya pehen sakte hain; Gangajal — ghar mein; Kalava — haath par bandhein; Kumkum/Bhasma — tradition ke mutabik 🙏"
+    "hi": "नमस्ते 🙏 प्रसाद की वस्तुएँ पूजा में आशीर्वादित होती हैं — श्रद्धा से उपयोग करें (पूजा के अनुसार अलग हो सकता है): पंचमेवा खाएँ या बाँटें, रुद्राक्ष मंदिर में रखें या पहनें, गंगाजल घर में रखें, कलावा हाथ पर बाँधें, कुमकुम या भस्म परंपरा के अनुसार 🙏",
+    "hinglish": "Namaste 🙏 Prasad vastu puja mein bless hoti hain — shraddha se use karein (puja ke hisaab se alag ho sakta hai): Panchmeva — khayein/share karein; Rudraksha — mandir ya pehen sakte hain; Gangajal — ghar mein; Kalava — haath par bandhein; Kumkum/Bhasma — tradition ke mutabik 🙏"
   },
   {
     "id": "prasad_box_damaged",
@@ -85,9 +102,14 @@
       "prasad kharab",
       "damaged package"
     ],
-    "tags": ["prasad"],
-    "en": "Namaste 🙏 We are sorry the Prasad box arrived damaged. Please share a clear photo of the package. Our team will check it with the courier and tell you the next step. This chat cannot promise a replacement — say “human agent” and send the photo. 🙏",
-    "hi": "Namaste 🙏 Prasad box damage ke liye maafi. Package ki clear photo bhejein. Team courier se check karke agla step batayegi. Yahan replacement ka promise nahi — photo ke saath “human agent” likhein. 🙏"
+    "example": "Prasad ka box kharab pahuncha hai.",
+    "tags": [
+      "prasad"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I am sorry the Prasad box arrived damaged. Please keep a clear photo of the package ready. The team will check it with the courier and tell you the next step.",
+    "hi": "नमस्ते 🙏 प्रसाद का डिब्बा खराब पहुँचने के लिए क्षमा करें। पैकेज की साफ़ फ़ोटो तैयार रखिए। टीम कूरियर के साथ जाँच कर अगला कदम बताएगी।",
+    "hinglish": "Namaste 🙏 Prasad ka box kharab pahunchne ke liye maafi. Package ki saaf photo taiyar rakhiye. Team courier ke saath check karke agla kadam batayegi."
   },
   {
     "id": "prasad_outside_india",
@@ -102,9 +124,13 @@
       "usa prasad",
       "prasad india ke bahar"
     ],
-    "tags": ["prasad"],
+    "example": "Kya prasad India ke bahar bhejte ho?",
+    "tags": [
+      "prasad"
+    ],
     "en": "Currently we deliver Prasad only within India. The puja’s spiritual benefit and your video are still shared with you wherever you are 🙏",
-    "hi": "Abhi Prasad sirf India ke andar deliver hota hai. Puja aur video aapko kahin se bhi share ki jaati hai 🙏"
+    "hi": "अभी प्रसाद केवल भारत के अंदर पहुँचता है। पूजा और वीडियो आपको कहीं से भी साझा किए जाते हैं 🙏",
+    "hinglish": "Abhi Prasad sirf India ke andar deliver hota hai. Puja aur video aapko kahin se bhi share ki jaati hai 🙏"
   },
   {
     "id": "prasad_address_change",
@@ -117,9 +143,14 @@
       "delivery address change",
       "address badalna prasad"
     ],
-    "tags": ["prasad"],
-    "en": "Prasad delivery address can be changed only before the box is dispatched. Once dispatched, we cannot change it. Say “human agent” with Order ID — we will check dispatch status and help if still possible 😊",
-    "hi": "Prasad address tabhi badal sakte hain jab box dispatch nahi hua ho. Dispatch ke baad change nahi hota. Order ID ke saath “human agent” likhein — status check karenge."
+    "example": "Prasad ka address change karna hai.",
+    "tags": [
+      "prasad"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 The Prasad address can be changed only before the box is dispatched. Once it has been sent, the address cannot be changed. The team will check whether yours has gone out yet.",
+    "hi": "नमस्ते 🙏 प्रसाद का पता केवल डिब्बा भेजे जाने से पहले बदल सकता है। भेज चुके होने के बाद पता नहीं बदलता। टीम देखेगी कि आपका डिब्बा निकल चुका है या नहीं।",
+    "hinglish": "Namaste 🙏 Prasad ka pata sirf box bheje jaane se pehle badal sakta hai. Bhej chuke hone ke baad pata nahi badalta. Team dekhegi ki aapka box nikal chuka hai ya nahi."
   },
   {
     "id": "prasad_delisted",
@@ -132,9 +163,13 @@
       "no prasad this puja",
       "temple prasad nahi"
     ],
-    "tags": ["prasad"],
+    "example": "Is puja ka prasad available kyun nahi hai?",
+    "tags": [
+      "prasad"
+    ],
     "en": "Namaste 🙏 Sometimes Prasad is temporarily unavailable from the temple for a specific puja — we cannot offer it until availability returns. We apologize for the inconvenience and thank you for your patience 🙏",
-    "hi": "Namaste 🙏 Kabhi-kabhi mandir ki taraf se kisi puja ke liye Prasad temporarily unavailable hota hai — tab hum provide nahi kar paate. Asuvidha ke liye maafi 🙏"
+    "hi": "नमस्ते 🙏 कभी-कभी मंदिर की ओर से किसी पूजा के लिए प्रसाद कुछ समय उपलब्ध नहीं होता — तब हम नहीं भेज पाते। असुविधा के लिए क्षमा करें 🙏",
+    "hinglish": "Namaste 🙏 Kabhi-kabhi mandir ki taraf se kisi puja ke liye Prasad temporarily unavailable hota hai — tab hum provide nahi kar paate. Asuvidha ke liye maafi 🙏"
   },
   {
     "id": "prasad_quality_purity",
@@ -148,9 +183,13 @@
       "dry prasad",
       "shelf life prasad"
     ],
-    "tags": ["prasad"],
+    "example": "Prasad ki quality kaise ensure hoti hai?",
+    "tags": [
+      "prasad"
+    ],
     "en": "We pack dry items such as Panchmeva for safer transit (typically 8–10 days). Prasad is prepared and packed with care and devotion 🙏",
-    "hi": "Transit ke liye dry items jaise Panchmeva pack karte hain (8–10 din). Prasad care aur shraddha se taiyar hota hai 🙏"
+    "hi": "यात्रा के लिए सूखी वस्तुएँ जैसे पंचमेवा पैक करते हैं (8–10 दिन)। प्रसाद देखभाल और श्रद्धा से तैयार होता है 🙏",
+    "hinglish": "Transit ke liye dry items jaise Panchmeva pack karte hain (8–10 din). Prasad care aur shraddha se taiyar hota hai 🙏"
   },
   {
     "id": "prasad_box_contents",
@@ -164,8 +203,12 @@
       "box mein kya hai",
       "prasad items list"
     ],
-    "tags": ["prasad"],
-    "en": "Contents vary by puja. Common items: Thank You card, Panchmeva, Kalawa, Gangajal, Kumkum or Bhasma, and sometimes Rudraksha, Morpankh, or murti (e.g. Santan/Baal Gopal pujas). Exact list matches your booked puja — check your booking summary or ask “human agent” if unsure 🙏",
-    "hi": "Prasad box puja ke hisaab se alag hota hai. Aam cheezen: Thank You card, Panchmeva, Kalawa, Gangajal, Kumkum/Bhasma, kabhi Rudraksha/Morpankh/murti. Booking summary par dekhein ya “human agent” se confirm karein 🙏"
+    "example": "Mere puja ke prasad box mein kya kya hota hai?",
+    "tags": [
+      "prasad"
+    ],
+    "en": "Namaste 🙏 The Prasad box depends on the puja. Usual packs: Sarv Rog Nivaran, Shiv Abhishek, and Kaal Sarp Dosh include a thank-you card, Panchmeva, kalawa, Gangajal, bhasma, and Panchmukhi rudraksha. Manglik Dosh, Kamdev Rati, Sheeghra Vivah, Lakshmi Puja, and Gau Seva include a thank-you card, Panchmeva, kalawa, Gangajal, and red kumkum. Baglamukhi adds a yellow chunri. Vaishno Devi adds a prasad packet. Khatu Shyam adds a morpankh. Baal Gopal, Laddu Gopal, and Santan Prapti add a morpankh and a small murti. Hanuman, Shani, and Ganesh use saffron sindoor. Pitru Dosh Shanti includes bhasma and Vishnu charan paduka. Tell me which booking you mean, and I will confirm what is on that order. 🙏",
+    "hi": "नमस्ते 🙏 प्रसाद का डिब्बा पूजा पर निर्भर करता है। सर्व रोग निवारण, शिव अभिषेक और काल सर्प दोष में धन्यवाद कार्ड, पंचमेवा, कलावा, गंगाजल, भस्म और पंचमुखी रुद्राक्ष होते हैं। मांगलिक दोष, कामदेव रति, शीघ्र विवाह, लक्ष्मी पूजा और गौ सेवा में धन्यवाद कार्ड, पंचमेवा, कलावा, गंगाजल और लाल कुमकुम होते हैं। बगलामुखी में पीली चुनरी जुड़ती है। वैष्णो देवी में प्रसाद पैकेट जुड़ता है। खाटू श्याम में मोरपंख जुड़ता है। बाल गोपाल, लड्डू गोपाल और संतान प्राप्ति में मोरपंख और छोटी मूर्ति जुड़ती है। हनुमान, शनि और गणेश में केसरिया सिंदूर होता है। पितृ दोष शांति में भस्म और विष्णु चरण पादुका होती है। कौन-सी बुकिंग है, बताइए — उस ऑर्डर पर क्या है, वह बता दूँगा। 🙏",
+    "hinglish": "Namaste 🙏 Prasad box puja par depend karta hai. Sarv Rog Nivaran, Shiv Abhishek, aur Kaal Sarp Dosh mein thank-you card, Panchmeva, kalawa, Gangajal, bhasma, aur Panchmukhi rudraksha hota hai. Manglik Dosh, Kamdev Rati, Sheeghra Vivah, Lakshmi Puja, aur Gau Seva mein thank-you card, Panchmeva, kalawa, Gangajal, aur red kumkum hota hai. Baglamukhi mein yellow chunri judti hai. Vaishno Devi mein prasad packet judta hai. Khatu Shyam mein morpankh judta hai. Baal Gopal, Laddu Gopal, aur Santan Prapti mein morpankh aur chhoti murti judti hai. Hanuman, Shani, aur Ganesh mein saffron sindoor hota hai. Pitru Dosh Shanti mein bhasma aur Vishnu charan paduka hoti hai. Kaunsi booking hai bataiye — us order par kya hai, woh bata dunga. 🙏"
   }
 ]

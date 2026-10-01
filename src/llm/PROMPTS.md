@@ -30,6 +30,10 @@ CS edits those files; no change to `classify.js` / `polish.js` required for poli
   "route": "admin" | "faq" | "human" | "clarify",
   "intent": "puja" | "video" | "prasad" | "both" | null,
   "faqId": "<catalog id>" | null,
+  "orderLookup": "latest" | "first" | "on_date" | "between" | "puja_on" | null,
+  "orderDate": "YYYY-MM-DD" | null,
+  "orderDateFrom": "YYYY-MM-DD" | null,
+  "orderDateTo": "YYYY-MM-DD" | null,
   "reason": "short internal note"
 }
 ```

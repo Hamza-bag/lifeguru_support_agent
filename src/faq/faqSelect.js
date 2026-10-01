@@ -1,4 +1,5 @@
 const { readFaqEntries } = require('../content/loadContent');
+const { applyKbPlaceholders } = require('../content/kbPlaceholders');
 
 const MAX_CATALOG = 120;
 const HINT_CHARS = 100;
@@ -13,7 +14,7 @@ function faqCatalogForLlm() {
     .slice(0, MAX_CATALOG)
     .map((e) => ({
       id: e.id,
-      hint: String(e.en || '').replace(/\s+/g, ' ').slice(0, HINT_CHARS),
+      hint: applyKbPlaceholders(String(e.en || '')).replace(/\s+/g, ' ').slice(0, HINT_CHARS),
     }));
 }
 

@@ -1,7 +1,6 @@
 [
   {
     "id": "autopay_501",
-    "tags": ["autopay", "subscription", "mandate", "deduct", "301", "501", "701"],
     "keywords": [
       "501",
       "301",
@@ -19,19 +18,36 @@
       "unexpected payment",
       "why charged"
     ],
-    "en": "Namaste 🙏 If an amount was auto-debited (e.g. ₹301 / ₹501 / ₹701 or your plan amount): it is usually your active Chadhava/Puja subscription cycle — often after a ₹1 intro on the first cycle. To stop future debits, cancel the UPI mandate in PhonePe/Google Pay. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. We cannot promise refunds once seva is scheduled or done; if you are upset, say “human agent”.",
-    "hi": "Namaste 🙏 Agar subscription se amount kata (₹301/₹501/₹701 ya plan amount): yeh active plan ki cycle hoti hai — pehli baar kabhi ₹1 intro ho sakta hai. Aage ki katauti rokne ke liye PhonePe/Google Pay mein mandate cancel karein. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. Scheduled/done seva par refund guarantee nahi; pareshani ho to “human agent” likhein."
+    "example": "Account se ₹501 apne aap kyun kat gaya?",
+    "tags": [
+      "autopay",
+      "subscription",
+      "mandate",
+      "deduct",
+      "301",
+      "501",
+      "701"
+    ],
+    "en": "Namaste 🙏 If an amount was auto-debited (for example ₹301, ₹501, ₹701, or your plan amount), it is usually your active Chadhava or Puja subscription, sometimes after a ₹1 first cycle. To stop future debits, cancel the UPI mandate in PhonePe or Google Pay. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. If this still does not look right, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 यदि राशि अपने आप कटी है (जैसे ₹301, ₹501, ₹701 या आपकी योजना की राशि), तो यह आमतौर पर सक्रिय चढ़ावा या पूजा योजना होती है। कभी पहली बार ₹1 भी कटता है। आगे की कटौती रोकने के लिए PhonePe या Google Pay में मैंडेट रद्द करें। PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. फिर भी ठीक न लगे तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Agar rashi apne aap kati hai (jaise ₹301, ₹501, ₹701 ya aapki plan ki rashi), to yeh aam taur par active Chadhava ya Puja plan hota hai. Kabhi pehli baar ₹1 bhi katta hai. Aage ki katauti rokne ke liye PhonePe ya Google Pay mein mandate cancel karein. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. Phir bhi theek na lage to bataiye, main aapko team se jod deta hoon."
   },
   {
     "id": "spiritual_choose_puja_devotion",
-    "tags": ["spiritual", "recommend", "policy"],
     "keywords": [],
-    "en": "Namaste 🙏 We are sorry you are going through this. Mandir Puja and Chadhava are offerings of faith and devotion — we choose seva with a sincere heart, not to “guarantee” marriage, health, court, or financial outcomes. We do not recommend one puja as a promise for a specific result. You may browse sevas on https://lifeguru.app/mandir-puja or https://lifeguru.app/mandir-chadhava, or say “human agent” if you want gentle guidance from our team.",
-    "hi": "Namaste 🙏 Jo pareshani hai uske liye hamari saanjhedari hai. Puja/Chadhava shraddha ki seva hai — shaadi, swasthya, court ya paisa ki guarantee nahi dete. Kisi ek puja ko “result pakka” ke taur par recommend nahi karte. https://lifeguru.app/mandir-puja ya mandir-chadhava dekhein, ya “human agent” likhein."
+    "example": "Bahut pareshani hai, kaunsi puja karun?",
+    "tags": [
+      "spiritual",
+      "recommend",
+      "policy"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I am sorry you are going through this. Please see the sevas open for booking right now. Puja: {{LINK_MANDIR_PUJA}} — Chadhava: {{LINK_MANDIR_CHADHAVA}}. A team member can help you choose with care.",
+    "hi": "नमस्ते 🙏 आप जो सह रहे हैं, उसमें हम आपके साथ हैं। जो सेवा अभी बुकिंग के लिए खुली है, वह यहाँ देखें। पूजा: {{LINK_MANDIR_PUJA}} — चढ़ावा: {{LINK_MANDIR_CHADHAVA}}। टीम चुनने में सावधानी से मदद करेगी।",
+    "hinglish": "Namaste 🙏 Aap jo seh rahe hain, usmein hum aapke saath hain. Jo seva abhi booking ke liye khuli hai, woh yahan dekhein. Puja: {{LINK_MANDIR_PUJA}} — Chadhava: {{LINK_MANDIR_CHADHAVA}}. Team chunne mein madad karegi."
   },
   {
     "id": "no_money_guarantee",
-    "tags": ["policy", "guarantee", "returns", "money", "devotion"],
     "keywords": [
       "money return",
       "max return",
@@ -49,42 +65,88 @@
       "लाभ",
       "फायदा"
     ],
-    "en": "LifeGuru does not guarantee financial returns, profit, or “money back” from Mandir Puja or Chadhava. These are devotional offerings (seva) performed as per your sankalp, faith, and capacity. We cannot recommend a puja “for maximum returns.” If you need help choosing a seva or have a sensitive question, our team can guide you on chat.",
-    "hi": "LifeGuru Mandir Puja या Chadhava से पैसे/लाभ/“money return” की कोई गारंटी नहीं देता। ये भक्ति और सेवा (seva) हैं — आपकी श्रद्धा और क्षमता के अनुसार। “सबसे ज़्यादा फायदे” वाली puja recommend नहीं कर सकते। Seva चुनने या किसी विशेष सवाल पर टीम चैट पर मार्गदर्शन कर सकती है — “human agent” लिखें।"
+    "example": "Yeh puja se paisa wapas milega na?",
+    "tags": [
+      "policy",
+      "guarantee",
+      "returns",
+      "money",
+      "devotion"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 Puja and Chadhava are offerings of faith, done with your sankalp. I would not want to promise a financial result. Please see what is open right now. Puja: {{LINK_MANDIR_PUJA}} — Chadhava: {{LINK_MANDIR_CHADHAVA}}. A team member can help you choose.",
+    "hi": "नमस्ते 🙏 पूजा और चढ़ावा आपकी श्रद्धा और संकल्प से होते हैं। मैं धन या लाभ का वादा नहीं करना चाहता। जो अभी खुला है: पूजा {{LINK_MANDIR_PUJA}} — चढ़ावा {{LINK_MANDIR_CHADHAVA}}। टीम चुनने में मदद करेगी।",
+    "hinglish": "Namaste 🙏 Puja aur Chadhava aapki shraddha aur sankalp se hote hain. Main dhan ya fayde ka wada nahi karna chahta. Jo abhi khula hai: Puja {{LINK_MANDIR_PUJA}} — Chadhava {{LINK_MANDIR_CHADHAVA}}. Team chunne mein madad karegi."
   },
   {
     "id": "how_to_book",
-    "tags": ["book", "booking", "link"],
-    "keywords": ["how to book", "book puja", "booking link", "get puja done", "want puja", "want to get puja", "कैसे बुक", "बुकिंग", "puja karwana", "puja karawu", "mane puja", "karawu che", "puja karavu"],
-    "en": "You can book Mandir Puja or Chadhava from the LifeGuru app or the booking link shared on our website/WhatsApp campaigns. If payment is pending, complete payment to confirm the booking.",
-    "hi": "LifeGuru app या website/WhatsApp पर मिलने वाले booking link से Mandir Puja या Chadhava book कर सकते हैं। Payment pending हो तो confirm करने के लिए payment पूरा करें।"
+    "keywords": [
+      "how to book",
+      "book puja",
+      "booking link",
+      "get puja done",
+      "want puja",
+      "want to get puja",
+      "कैसे बुक",
+      "बुकिंग",
+      "puja karwana",
+      "puja karawu",
+      "mane puja",
+      "karawu che",
+      "puja karavu"
+    ],
+    "example": "Puja book kaise karun?",
+    "tags": [
+      "book",
+      "booking",
+      "link"
+    ],
+    "en": "You can book a Mandir Puja or Chadhava on the LifeGuru website: {{LINK_MANDIR_PUJA}} and {{LINK_MANDIR_CHADHAVA}}. Complete the payment to confirm the booking.",
+    "hi": "मंदिर पूजा या चढ़ावा LifeGuru वेबसाइट पर बुक करें: {{LINK_MANDIR_PUJA}} और {{LINK_MANDIR_CHADHAVA}}। बुकिंग पक्की करने के लिए भुगतान पूरा करें।",
+    "hinglish": "Mandir Puja ya Chadhava LifeGuru website par book karein: {{LINK_MANDIR_PUJA}} aur {{LINK_MANDIR_CHADHAVA}}. Booking pakki karne ke liye payment poora karein."
   },
   {
     "id": "no_whatsapp_phone",
-    "tags": ["_system"],
     "keywords": [],
+    "example": "Is chat par mera number nahi aa raha.",
+    "tags": [
+      "_system"
+    ],
     "en": "I don't have your WhatsApp number on this chat. Please share the 10-digit mobile number you used when you booked on LifeGuru.",
-    "hi": "इस चैट पर आपका WhatsApp नंबर नहीं मिला। कृपया वह 10 अंकों का मोबाइल नंबर भेजें जिससे आपने LifeGuru पर बुकिंग की थी।"
+    "hi": "इस चैट पर आपका WhatsApp नंबर नहीं मिला। कृपया वह 10 अंकों का मोबाइल नंबर भेजें जिससे आपने LifeGuru पर बुकिंग की थी।",
+    "hinglish": "Is chat par aapka WhatsApp number nahi mila. Kripya woh 10-digit mobile number bhejein jisse aapne LifeGuru par booking ki thi."
   },
   {
     "id": "no_booking_on_whatsapp",
-    "tags": ["_system"],
     "keywords": [],
+    "example": "Is WhatsApp number par booking nahi mil rahi.",
+    "tags": [
+      "_system"
+    ],
     "en": "I couldn't find a LifeGuru booking for this WhatsApp number.",
-    "hi": "इस WhatsApp नंबर पर कोई LifeGuru बुकिंग नहीं मिली।"
+    "hi": "इस WhatsApp नंबर पर कोई LifeGuru बुकिंग नहीं मिली।",
+    "hinglish": "Is WhatsApp number par koi LifeGuru booking nahi mili."
   },
   {
     "id": "ask_booking_phone_for_team",
-    "tags": ["_system"],
     "keywords": [],
+    "example": "Booking doosre number se ki thi.",
+    "tags": [
+      "_system"
+    ],
     "en": "Share the mobile number you used at checkout. Our team will verify it and help you on chat.",
-    "hi": "चेकआउट पर जो मोबाइल नंबर इस्तेमाल किया था वह भेजें — टीम जाँच कर चैट पर मदद करेगी।"
+    "hi": "चेकआउट पर जो मोबाइल नंबर इस्तेमाल किया था वह भेजें — टीम जाँच कर चैट पर मदद करेगी।",
+    "hinglish": "Checkout par jo mobile number istemal kiya tha woh bhejein — team check karke chat par madad karegi."
   },
   {
     "id": "phone_received_forward",
-    "tags": ["_system"],
     "keywords": [],
+    "example": "Yeh raha mera booking wala mobile number.",
+    "tags": [
+      "_system"
+    ],
     "en": "Thanks. Connecting you to the LifeGuru team with your message.",
-    "hi": "धन्यवाद। आपका संदेश के साथ आपको LifeGuru टीम से जोड़ रहा हूँ।"
+    "hi": "धन्यवाद। आपका संदेश के साथ आपको LifeGuru टीम से जोड़ रहा हूँ।",
+    "hinglish": "Dhanyavad. Aapke sandesh ke saath aapko LifeGuru team se jod raha hoon."
   }
 ]

@@ -5,6 +5,8 @@ const {
   classifyIntent,
   isOrderIntent,
   isNewBookingQuery,
+  isPujaDurationQuery,
+  intentForBookingQuestion,
   isComplexSupportMessage,
   isSpiritualPujaRecommendationQuery,
   needsEmpatheticHumanHandoff,
@@ -14,7 +16,10 @@ const {
   requiresDirectHumanHandoffText,
   autopayFaqId,
   isCatalogueLiveQuestion,
+  isSankalpOrGotraChangeRequest,
+  isIrritatedOrAngry,
 } = require('./intent');
+const { parseOrderLookup } = require('../orders/orderLookup');
 
 function isVagueHelpOnly(text) {
   const raw = String(text || '').trim().toLowerCase();
@@ -76,6 +81,17 @@ function tryRulesRoute(state, queryText) {
     return null;
   }
 
+  if (isSankalpOrGotraChangeRequest(queryText) && !isIrritatedOrAngry(queryText)) {
+    return {
+      language: lang,
+      route: 'sankalp_change',
+      intent: null,
+      reason: 'rules_sankalp_change',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
   if (requiresDirectHumanHandoffText(queryText)) {
     return {
       language: lang,
@@ -125,12 +141,38 @@ function tryRulesRoute(state, queryText) {
     };
   }
 
+  if (isPujaDurationQuery(queryText) && policy.faqEnabled) {
+    return {
+      language: lang,
+      route: 'faq',
+      intent: null,
+      faqId: 'puja_duration_hours',
+      reason: 'rules_puja_duration',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
   if (isNewBookingQuery(queryText)) {
     return {
       language: lang,
       route: 'faq',
       intent: null,
       reason: 'rules_new_booking',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
+  const lookup = parseOrderLookup(queryText);
+  if (lookup?.deferToModel) return null;
+  if (lookup?.key) {
+    return {
+      language: lang,
+      route: 'admin',
+      intent: intentForBookingQuestion(queryText, intent),
+      orderLookup: lookup,
+      reason: `rules_lookup_${lookup.key}`,
       usedLlm: false,
       llmError: false,
     };

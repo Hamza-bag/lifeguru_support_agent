@@ -19,7 +19,7 @@ describe('webhook budget estimate', () => {
     const est = estimateSyncTurnMs({
       config: baseConfig,
       state: { stage: 'await_query' },
-      text: 'meri puja kab hai',
+      text: 'mari puja keware awse',
     });
     assert.ok(est > syncWebhookBudgetMs(baseConfig));
   });
@@ -55,7 +55,7 @@ describe('auto pending mode', () => {
         config: cfg,
         callbackClient: callbackOk,
         payload: { handler: 'message', request: { id: 'r1' } },
-        text: 'meri puja kab hai',
+        text: 'mari puja keware awse',
         state: { stage: 'await_query' },
         isNewChat: false,
       }),

@@ -1,7 +1,7 @@
 /**
  * "Which puja for this problem?" — no Gemini, and no product URL.
- * Which seva is open changes in the admin panel, so the reply points at the
- * listing pages. Those pages only show bookings that are still open.
+ * The reply points at the listing pages, which show only sevas still open,
+ * and then connects the customer to the team.
  */
 function whichPujaFaqId(text) {
   const raw = String(text || '').trim();

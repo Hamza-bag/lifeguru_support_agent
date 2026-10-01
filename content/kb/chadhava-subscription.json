@@ -4,9 +4,18 @@
     "domain": "chadhava_subscription",
     "status": "published",
     "owner": "Subscriptions CS",
-    "keywords": ["chadhava subscription refund", "subscription refund", "chadhava paisa wapas"],
-    "tags": ["refund", "subscription"],
-    "en": "Namaste 🙏 If this week’s/month’s Chadhava is already done or scheduled, the amount is offered to the temple — it is usually non-refundable. Future debits can be stopped by cancelling the mandate in your UPI app. For a specific case, say “human agent”.",
-    "hi": "Namaste 🙏 Agar is cycle ki chadhava ho chuki ya schedule hai to rashi mandir ko arpit hoti hai — refund aam taur par nahi hota. Aage ki katauti mandate cancel karke rok sakte hain. Case ke liye “human agent” likhein."
+    "keywords": [
+      "chadhava subscription refund",
+      "subscription refund",
+      "chadhava paisa wapas"
+    ],
+    "example": "Is hafte ka chadhava ho chuka hai, refund milega?",
+    "tags": [
+      "refund",
+      "subscription"
+    ],
+    "en": "Namaste 🙏 If this cycle’s chadhava is already done or scheduled, that amount has been offered at the temple. Future debits can be stopped by cancelling the mandate in PhonePe or Google Pay. If you want this charge looked at, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 यदि इस चक्र का चढ़ावा हो चुका है या निर्धारित है, तो वह राशि मंदिर को चढ़ाई जा चुकी है। आगे की कटौती PhonePe या Google Pay में मैंडेट रद्द करके रुक सकती है। इस शुल्क को देखना हो तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Agar is cycle ka chadhava ho chuka hai ya schedule hai, to woh rashi mandir ko chadhai ja chuki hai. Aage ki katauti PhonePe ya Google Pay mein mandate cancel karke ruk sakti hai. Is charge ko dekhna ho to bataiye, main aapko team se jod deta hoon."
   }
 ]

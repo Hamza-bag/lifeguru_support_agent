@@ -5,6 +5,7 @@ function emptyState() {
     stage: 'await_query',
     pendingText: null,
     pendingIntent: null,
+    pendingHandoff: null,
     customerName: null,
     customerId: null,
     orders: [],

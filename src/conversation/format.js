@@ -11,8 +11,10 @@ function formatWhen(iso, lang) {
 }
 
 function formatOrderLine(order, index) {
+  const title = order.title || 'Booking';
   const booked = order.bookedOn || '';
-  return `${index}. ${order.title}${booked ? ` — ${booked}` : ''}`;
+  if (!booked) return `${index}. ${title}`;
+  return `${index}. ${title}\n   Booked on ${booked}`;
 }
 
 function formatStatus(status, lang) {

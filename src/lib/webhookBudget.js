@@ -29,10 +29,10 @@ function estimateSyncTurnMs({ config, state, text }) {
     config.policy?.routingStrategy === 'rules_first' && tryRulesRoute(st, text);
   if (rulesHit) {
     if (rulesHit.route === 'admin') {
-      // Facts + mirror can consume most of the 5s webhook when Admin is slow.
-      ms +=
-        (config.db?.queryTimeoutMs || 3000) +
-        Math.min(config.llmMirrorTimeoutMs || 6000, 3800);
+      ms += config.db?.queryTimeoutMs || 3000;
+      if (config.llmMirrorLanguage && !shouldSkipLlmMirror(st, text)) {
+        ms += Math.min(config.llmMirrorTimeoutMs || 6000, 3800);
+      }
     } else if (config.llmMirrorLanguage && !shouldSkipLlmMirror(st, text)) {
       ms += MIRROR_EXPECTED_MS;
     }

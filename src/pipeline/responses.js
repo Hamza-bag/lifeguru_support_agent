@@ -1,4 +1,4 @@
-const { t } = require('../conversation/copy');
+const { t, templateLocale } = require('../conversation/copy');
 const { needsEmpatheticHumanHandoff } = require('../conversation/intent');
 const { kbLines } = require('../faq/matchFaq');
 const { topicSuggestions } = require('../conversation/intent');
@@ -13,11 +13,19 @@ function reply(replies, extra = {}) {
 }
 
 function forward(lang, options = {}) {
-  const locale = lang === 'hi' ? 'hi' : 'en';
+  const locale = templateLocale(lang);
   const empathetic = Boolean(options.empathetic);
   return {
     action: 'forward',
     replies: [t(locale, empathetic ? 'forwardEmpathetic' : 'forward')],
+  };
+}
+
+function forwardUnclear(lang) {
+  const locale = templateLocale(lang);
+  return {
+    action: 'forward',
+    replies: [t(locale, 'forwardUnclear')],
   };
 }
 
@@ -28,7 +36,7 @@ function forwardForHuman(lang, queryText, classifyMeta) {
 }
 
 function endChat(lang) {
-  const locale = lang === 'hi' ? 'hi' : 'en';
+  const locale = templateLocale(lang);
   return {
     action: 'end',
     replies: [t(locale, 'goodbye')],
@@ -40,29 +48,33 @@ function welcomePrompt() {
 }
 
 function greetingReply(lang) {
-  if (lang === 'hi') {
-    return reply(t('hi', 'welcomeQuery'));
+  if (lang === 'hi' || lang === 'hinglish') {
+    return reply(t(lang, 'welcomeQuery'));
   }
   return reply(WELCOME_QUERY);
 }
 
 function thanksReply(lang) {
-  const locale = lang === 'hi' ? 'hi' : 'en';
-  return reply(t(locale, 'thanksAck'));
+  return reply(t(templateLocale(lang), 'thanksAck'));
 }
 
 function askMoreSuggestions(lang) {
-  return lang === 'hi' ? ['हाँ', 'नहीं', 'एजेंट'] : ['Yes', 'No', 'Human agent'];
+  if (lang === 'hi') return ['हाँ', 'नहीं'];
+  if (lang === 'hinglish') return ['Haan', 'Nahi'];
+  return ['Yes', 'No'];
 }
 
 function whatElseSuggestions(lang) {
-  return lang === 'hi' ? ['पूजा समय', 'वीडियो', 'एजेंट'] : ['Puja time', 'Video', 'Human agent'];
+  if (lang === 'hi') return ['पूजा समय', 'वीडियो'];
+  if (lang === 'hinglish') return ['Puja samay', 'Video'];
+  return ['Puja time', 'Video'];
 }
 
 function askPhoneForHumanReply(lang) {
+  const chip = lang === 'hi' ? 'एजेंट' : lang === 'hinglish' ? 'Team' : 'Human agent';
   return reply(
     kbLines(lang, ['no_whatsapp_phone'], ['askBookingNumber'], t),
-    { suggestions: lang === 'hi' ? ['एजेंट'] : ['Human agent'] },
+    { suggestions: [chip] },
   );
 }
 
@@ -85,6 +97,7 @@ function pickTopicPrompt(state) {
 module.exports = {
   reply,
   forward,
+  forwardUnclear,
   forwardForHuman,
   endChat,
   welcomePrompt,

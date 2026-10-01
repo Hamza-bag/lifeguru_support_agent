@@ -19,7 +19,7 @@ describe('async webhook', () => {
         config: pendingConfig,
         callbackClient: callbackOk,
         payload: { handler: 'message', request: { id: 'req-1' } },
-        text: 'meri puja kab hai',
+        text: 'mari puja keware awse',
         state: { stage: 'await_query' },
         isNewChat: false,
       }),

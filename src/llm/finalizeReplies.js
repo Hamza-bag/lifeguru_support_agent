@@ -1,6 +1,13 @@
 const { mirrorReplyLanguage } = require('./polish');
 const { shouldSkipLlmMirror } = require('../conversation/routingGate');
 
+function selectedBookingLine(state) {
+  if (!state?.orderId) return '';
+  const order = (state.orders || []).find((item) => String(item.id) === String(state.orderId));
+  if (!order?.title) return '';
+  return order.title;
+}
+
 /**
  * Template drafts → optional Gemini rewrite (mirror user language, or locale polish).
  */
@@ -20,7 +27,8 @@ async function finalizeBotReplies({
 
   const trimmedUser = String(userText || '').trim();
   const skipMirrorForDeterministicTurn =
-    trimmedUser && state && shouldSkipLlmMirror(state, trimmedUser);
+    response?.action === 'end' ||
+    (trimmedUser && state && shouldSkipLlmMirror(state, trimmedUser));
 
   if (config.llmMirrorLanguage && trimmedUser && !skipMirrorForDeterministicTurn) {
     const timeoutMs =
@@ -45,6 +53,7 @@ async function finalizeBotReplies({
       action: response.action,
       timeoutMs,
       rulesBlock,
+      bookingContext: selectedBookingLine(state),
     });
     return {
       response: { ...response, replies: mirrored.replies },

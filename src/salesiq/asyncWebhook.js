@@ -37,9 +37,8 @@ function shouldUseAsyncWebhook({ config, callbackClient, payload, text, state, i
 }
 
 function pendingWaitReply(lang) {
-  if (lang === 'hi') {
-    return 'एक पल — हम आपकी मदद कर रहे हैं…';
-  }
+  if (lang === 'hi') return 'एक पल — हम आपकी मदद कर रहे हैं…';
+  if (lang === 'hinglish') return 'Ek pal — aapki madad kar rahe hain…';
   return 'One moment — getting that for you…';
 }
 

@@ -9,6 +9,7 @@ const {
   requiresDirectHumanHandoffText,
   isSankalpOrGotraChangeRequest,
   intentFromTopicChoice,
+  followUpOnOpenBooking,
 } = require('./intent');
 const { shouldSkipLlmClassify } = require('./routingGate');
 
@@ -20,7 +21,7 @@ function isBurstFragmentOnly(text) {
   const raw = String(text || '').trim();
   if (!raw) return false;
   if (/^[\s?.!,…]+$/.test(raw)) return false;
-  return wordCount(raw) <= 3;
+  return wordCount(raw) <= 2;
 }
 
 function shouldUseBurstBuffer(state, text, input) {
@@ -29,8 +30,9 @@ function shouldUseBurstBuffer(state, text, input) {
   const raw = String(text || '').trim();
   if (!raw) return false;
   const stage = state?.stage || 'await_query';
-  if (!['await_query', 'pick_topic', 'ask_more'].includes(stage)) return false;
+  if (!['await_query', 'pick_topic'].includes(stage)) return false;
   if (!isBurstFragmentOnly(raw)) return false;
+  if (state?.orderId && followUpOnOpenBooking(raw)) return false;
   if (shouldSkipLlmClassify(state, raw)) return false;
   if (requiresDirectHumanHandoffText(raw)) return false;
   if (isSankalpOrGotraChangeRequest(raw)) return false;

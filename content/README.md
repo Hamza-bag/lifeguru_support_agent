@@ -15,7 +15,7 @@ content/
     …other published cards
 ```
 
-**Start here:** [docs/support-agent-architecture.md](../../docs/support-agent-architecture.md)
+**Start here:** [README](../README.md). CS review file: [LifeGuru-Support-KB-CS-Review.docx](../../docs/LifeGuru-Support-KB-CS-Review.docx).
 
 ## Quick reference
 
@@ -28,6 +28,6 @@ content/
 
 ## Rules
 
-1. FAQ cards: **both** `en` and `hi` for customer text.
+1. FAQ cards: **`en`**, **`hi`**, and **`hinglish`** for customer text.
 2. No order-specific facts in KB JSON.
 3. Valid JSON only in `kb/*.json`.

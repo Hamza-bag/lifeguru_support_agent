@@ -1,4 +1,4 @@
-const { faqById } = require('./faqLookup');
+const { faqById, templateLocale } = require('./faqLookup');
 
 /** Use the id already chosen by classify. No extra Gemini call. */
 function resolveFaq(_userText, lang = 'en', faqId = null) {
@@ -10,7 +10,7 @@ function resolveFaq(_userText, lang = 'en', faqId = null) {
 
 /** CS-editable copy from content/kb (system ids), with template fallback. */
 function kbLines(lang, ids, fallbackKeys, t) {
-  const locale = lang === 'hi' ? 'hi' : 'en';
+  const locale = templateLocale(lang);
   return ids.map((id, i) => {
     const hit = faqById(id, locale);
     if (hit?.text) return hit.text;

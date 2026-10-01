@@ -1,9 +1,12 @@
 const policy = require('../config/policy');
 const {
   wantsHuman,
+  needsPersonAfterAnswer,
   wantsNoMore,
   wantsYesMore,
   classifyIntent,
+  followUpOnOpenBooking,
+  isPujaDurationQuery,
   isOrderIntent,
   detectReplyLanguage,
 } = require('../conversation/intent');
@@ -11,6 +14,7 @@ const { emptyState } = require('./state');
 const {
   reply,
   forward,
+  forwardUnclear,
   forwardForHuman,
   endChat,
   welcomePrompt,
@@ -27,8 +31,10 @@ const { parseWebSupportPrefill } = require('../lib/webSupportPrefill');
 const {
   handleAwaitBookingNumber,
   lookupAndShowOrders,
+  beginNameChange,
   handleSelectOrder,
 } = require('./orderFlow');
+const { parseOrderLookup } = require('../orders/orderLookup');
 const { answerForOrder } = require('./factsReplies');
 const { t } = require('../conversation/copy');
 const { requiresDirectHumanHandoff } = require('../conversation/directHandoff');
@@ -57,6 +63,24 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
   const social = replyFromSocialRoute(state, routed, lang);
   if (social) return social;
 
+  if (routed.route === 'sankalp_change') {
+    const { phone, source: phoneSource } = resolveChatPhone(input, state);
+    if (!phone) {
+      return {
+        state: { ...state, stage: 'await_booking_number', pendingText: queryText },
+        response: withClassifyMeta(askPhoneForHumanReply(lang), routed.classifyMeta),
+      };
+    }
+    const started = await beginNameChange(
+      { ...state, chatPhone: phone, chatPhoneSource: phoneSource || 'visitor' },
+      factsClient,
+      queryText,
+      phone,
+    );
+    started.response = withClassifyMeta(started.response, routed.classifyMeta);
+    return started;
+  }
+
   if (routed.route === 'human') {
     return {
       state,
@@ -69,9 +93,15 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
     return faq;
   }
   if (routed.route === 'clarify') {
-    const picked = pickTopicPrompt({ ...state, pendingText: queryText, pendingIntent: null });
-    picked.response = withClassifyMeta(picked.response, routed.classifyMeta);
-    return picked;
+    if (routed.classifyMeta?.reason === 'rules_help') {
+      const picked = pickTopicPrompt({ ...state, pendingText: queryText, pendingIntent: null });
+      picked.response = withClassifyMeta(picked.response, routed.classifyMeta);
+      return picked;
+    }
+    return {
+      state,
+      response: withClassifyMeta(forwardUnclear(lang), routed.classifyMeta),
+    };
   }
 
   let { phone, source: phoneSource } = resolveChatPhone(input, state);
@@ -142,8 +172,8 @@ async function handlePickTopic(state, text, factsClient, input) {
   }
   if (routed.route === 'clarify') {
     const attempts = (state.clarifyAttempts || 0) + 1;
-    if (attempts > policy.maxClarifyAttempts) {
-      return { state, response: withClassifyMeta(forward(lang), routed.classifyMeta) };
+    if (attempts >= policy.maxAskMoreAttempts || routed.classifyMeta?.reason !== 'rules_help') {
+      return { state, response: withClassifyMeta(forwardUnclear(lang), routed.classifyMeta) };
     }
     const picked = pickTopicPrompt({ ...state, clarifyAttempts: attempts });
     picked.response = withClassifyMeta(picked.response, routed.classifyMeta);
@@ -157,17 +187,52 @@ async function handlePickTopic(state, text, factsClient, input) {
   );
 }
 
+function isLateVideoFollowUp(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  return (
+    /\b(more than|few days|nahi aaya|nahi mila|not received|still waiting|bahut din)\b/.test(lower) ||
+    /नहीं आया|नहीं मिला|कई दिन/.test(raw)
+  );
+}
+
+async function answerKnownBooking(state, factsClient, text, intent, input) {
+  if (!state.orderId) {
+    const { phone } = resolveChatPhone(input, state);
+    if (phone) {
+      return lookupAndShowOrders(
+        { ...state, pendingIntent: intent, pendingText: text },
+        factsClient,
+        text,
+        phone,
+      );
+    }
+  }
+  return answerForOrder({ ...state, pendingIntent: intent }, factsClient, text);
+}
+
 async function handleAskMore(state, text, factsClient, input) {
   const lang = state.language;
   if (wantsNoMore(text)) {
     return { state: emptyState(), response: endChat(lang) };
   }
-  if (wantsHuman(text)) {
+  if (wantsHuman(text) || needsPersonAfterAnswer(text)) {
     return { state, response: forward(lang) };
+  }
+  if (isPujaDurationQuery(text)) {
+    return replyFromFaq(state, text, 'puja_duration_hours');
+  }
+  if (state.orderId && isLateVideoFollowUp(text)) {
+    return answerForOrder({ ...state, pendingIntent: 'video' }, factsClient, text);
   }
   const pick = Number.parseInt(String(text || '').trim(), 10);
   if (Number.isInteger(pick) && pick >= 1 && pick <= (state.orders || []).length) {
     return handleSelectOrder(state, text, factsClient);
+  }
+  const openIntent = followUpOnOpenBooking(text);
+  const namedBooking = parseOrderLookup(text);
+  if (state.orderId && openIntent && !namedBooking?.key) {
+    return answerForOrder({ ...state, pendingIntent: openIntent }, factsClient, text);
   }
   const routed = await applyRouting(state, text);
   const social = replyFromSocialRoute(routed.state, routed, routed.state.language);
@@ -183,18 +248,28 @@ async function handleAskMore(state, text, factsClient, input) {
     faq.response = withClassifyMeta(faq.response, routed.classifyMeta);
     return faq;
   }
+  if (routed.orderLookup?.key && routed.orderLookup.key !== 'recent') {
+    const { phone } = resolveChatPhone(input, routed.state);
+    if (phone) {
+      const listed = await lookupAndShowOrders(routed.state, factsClient, text, phone);
+      listed.response = withClassifyMeta(listed.response, routed.classifyMeta);
+      return listed;
+    }
+  }
   if (isOrderIntent(routed.intent)) {
-    const answered = await answerForOrder(
+    const answered = await answerKnownBooking(
       { ...routed.state, pendingIntent: routed.intent },
       factsClient,
       text,
+      routed.intent,
+      input,
     );
     answered.response = withClassifyMeta(answered.response, routed.classifyMeta);
     return answered;
   }
   const intent = classifyIntent(text);
   if (isOrderIntent(intent)) {
-    return answerForOrder(state, factsClient, text);
+    return answerKnownBooking(state, factsClient, text, intent, input);
   }
   if (wantsYesMore(text)) {
     return {
@@ -208,7 +283,7 @@ async function handleAskMore(state, text, factsClient, input) {
   if (attempts >= policy.maxAskMoreAttempts) {
     return {
       state: { ...state, askMoreAttempts: 0 },
-      response: withClassifyMeta(forwardForHuman(lang, text, { route: 'human', reason: 'ask_more_unresolved' }), {
+      response: withClassifyMeta(forwardUnclear(lang), {
         route: 'human',
         reason: 'ask_more_unresolved',
       }),

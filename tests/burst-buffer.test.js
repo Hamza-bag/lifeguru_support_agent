@@ -34,10 +34,10 @@ describe('burst buffer (split messages)', () => {
     assert.equal(t3.state.userBurstBuffer, null);
   });
 
-  it('does not hold complete sentences (sankalp name change → handoff)', async () => {
+  it('asks which booking for a name change, then hands off the one they pick', async () => {
     let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
     await handleTurn({ state, text: 'Hi', chatPhone: CHAT }, facts);
-    const r = await handleTurn(
+    const asked = await handleTurn(
       {
         state: { ...state, stage: 'await_query', language: 'hi' },
         text: 'Snakalp mei naam change kqrna hai',
@@ -45,8 +45,14 @@ describe('burst buffer (split messages)', () => {
       },
       facts,
     );
-    assert.ok(r.response.replies.length > 0);
-    assert.equal(r.response.action, 'forward');
+    assert.equal(asked.response.action, 'reply');
+    assert.match(asked.response.replies.join('\n'), /Satyanarayan/);
+    const handed = await handleTurn(
+      { state: asked.state, text: '1', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(handed.response.action, 'forward');
+    assert.equal(handed.state.orderId, '1001');
   });
 
   it('does not burst-merge punctuation-only follow-ups alone', async () => {

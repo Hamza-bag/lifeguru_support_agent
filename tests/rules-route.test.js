@@ -10,6 +10,19 @@ describe('rules-first routing', () => {
     assert.equal(r.reason, 'rules_intent');
   });
 
+  it('answers how long a puja runs from the knowledge base, not the booking clock time', () => {
+    const r = tryRulesRoute({ stage: 'await_query' }, 'puja kitne time chlegi');
+    assert.equal(r.route, 'faq');
+    assert.equal(r.faqId, 'puja_duration_hours');
+  });
+
+  it('treats last puja as the schedule of that booking', () => {
+    const r = tryRulesRoute({ stage: 'await_query' }, 'Last puja?');
+    assert.equal(r.route, 'admin');
+    assert.equal(r.orderLookup.key, 'latest');
+    assert.equal(r.intent, 'puja');
+  });
+
   it('routes Roman Gujarati mari puja keware awse to admin', () => {
     const r = tryRulesRoute({ stage: 'await_query' }, 'mari puja keware awse');
     assert.equal(r.route, 'admin');
@@ -35,10 +48,10 @@ describe('rules-first routing', () => {
     assert.equal(r.reason, 'rules_help');
   });
 
-  it('routes sankalp name change to human without LLM', () => {
+  it('asks which booking for a name change, then hands that booking to the team', () => {
     const r = tryRulesRoute({ stage: 'await_query' }, 'naam change karna hai sankalp mein');
-    assert.equal(r.route, 'human');
-    assert.equal(r.reason, 'rules_direct_human');
+    assert.equal(r.route, 'sankalp_change');
+    assert.equal(r.reason, 'rules_sankalp_change');
   });
 
   it('routes new booking intent to faq not admin', () => {

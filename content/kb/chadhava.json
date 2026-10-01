@@ -4,19 +4,37 @@
     "domain": "chadhava",
     "status": "published",
     "owner": "Chadhava CS",
-    "keywords": ["chadhava book", "chadhava kaha", "chadhava options", "chadhava seva"],
-    "tags": ["chadhava"],
-    "en": "Browse Chadhava sevas: https://lifeguru.app/mandir-chadhava — message us if you need help choosing.",
-    "hi": "Chadhava options: https://lifeguru.app/mandir-chadhava — madad chahiye ho to likhein."
+    "keywords": [
+      "chadhava book",
+      "chadhava kaha",
+      "chadhava options",
+      "chadhava seva"
+    ],
+    "example": "Chadhava kahan se book karun?",
+    "tags": [
+      "chadhava"
+    ],
+    "en": "Browse Chadhava sevas: {{LINK_MANDIR_CHADHAVA}} — message us if you need help choosing.",
+    "hi": "चढ़ावा की सेवाएँ यहाँ देखें: {{LINK_MANDIR_CHADHAVA}} — चुनने में मदद चाहिए तो लिखें।",
+    "hinglish": "Chadhava ki sevaein yahan dekhein: {{LINK_MANDIR_CHADHAVA}} — chunne mein madad chahiye to likhein."
   },
   {
     "id": "chadhava_how_performed",
     "domain": "chadhava",
     "status": "published",
     "owner": "Chadhava CS",
-    "keywords": ["chadhava kaise", "how is chadhava done", "chadhava video", "one time chadhava"],
-    "tags": ["chadhava"],
-    "en": "Namaste 🙏 A chadhava is an offering made at the temple in your name and gotra. You pick the offering on https://lifeguru.app/mandir-chadhava, fill name and gotra, and pay. The recorded video is sent on WhatsApp within 3–4 days. You can book more than one offering in the same order. 🙏",
-    "hi": "Namaste 🙏 Chadhava mandir mein aapke naam aur gotra se hota hai. https://lifeguru.app/mandir-chadhava par offering chunein, naam aur gotra bharein, payment karein. Video 3–4 din mein WhatsApp par aata hai. Ek order mein ek se zyada offering ho sakti hai. 🙏"
+    "keywords": [
+      "chadhava kaise",
+      "how is chadhava done",
+      "chadhava video",
+      "one time chadhava"
+    ],
+    "example": "Chadhava kaise hota hai?",
+    "tags": [
+      "chadhava"
+    ],
+    "en": "Namaste 🙏 A chadhava is an offering made at the temple in your name and gotra. You pick the offering on {{LINK_MANDIR_CHADHAVA}}, fill name and gotra, and pay. The recorded video is sent on WhatsApp within 3–4 days. You can book more than one offering in the same order. 🙏",
+    "hi": "नमस्ते 🙏 चढ़ावा मंदिर में आपके नाम और गोत्र से होता है। {{LINK_MANDIR_CHADHAVA}} पर अर्पण चुनें, नाम और गोत्र भरें, और भुगतान करें। वीडियो 3–4 दिन में व्हाट्सऐप पर आता है। एक ऑर्डर में एक से अधिक अर्पण हो सकते हैं। 🙏",
+    "hinglish": "Namaste 🙏 Chadhava mandir mein aapke naam aur gotra se hota hai. {{LINK_MANDIR_CHADHAVA}} par arpan chunein, naam aur gotra bharein, aur payment karein. Video 3–4 din mein WhatsApp par aata hai. Ek order mein ek se zyada arpan ho sakte hain. 🙏"
   }
 ]

@@ -4,7 +4,13 @@ const { trimProductName, normalizeFactsPayload } = require('../src/orders/trimFa
 describe('trimFacts', () => {
   it('shortens very long product names', () => {
     const long = 'A'.repeat(120);
-    assert.equal(trimProductName(long).length, 80);
+    assert.equal(trimProductName(long).length, 48);
+    assert.equal(
+      trimProductName(
+        'Yamuna Ghat puja title Vrindavan Welcome to India, a vibrant land of breathtaking diversity.',
+      ),
+      'Yamuna Ghat puja',
+    );
   });
 
   it('normalizes facts payload', () => {

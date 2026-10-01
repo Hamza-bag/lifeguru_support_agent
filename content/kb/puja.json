@@ -4,40 +4,82 @@
     "domain": "puja",
     "status": "published",
     "owner": "Puja CS",
-    "keywords": ["how long", "kitni der", "duration", "hours", "2 hour", "puja time kitna"],
-    "tags": ["puja"],
+    "keywords": [
+      "how long",
+      "kitni der",
+      "duration",
+      "hours",
+      "2 hour",
+      "puja time kitna"
+    ],
+    "example": "Puja kitni der chalti hai?",
+    "tags": [
+      "puja"
+    ],
     "en": "The puja usually lasts about 2 hours.",
-    "hi": "Puja aam taur par lagbhag 2 ghante chalti hai."
+    "hi": "पूजा आमतौर पर लगभग 2 घंटे चलती है।",
+    "hinglish": "Puja aam taur par lagbhag 2 ghante chalti hai."
   },
   {
     "id": "puja_chant_optional",
     "domain": "puja",
     "status": "published",
     "owner": "Puja CS",
-    "keywords": ["chant", "mantra", "bolna", "jap", "saath mein"],
-    "tags": ["puja"],
+    "keywords": [
+      "chant",
+      "mantra",
+      "bolna",
+      "jap",
+      "saath mein"
+    ],
+    "example": "Kya mujhe saath mein mantra padhna zaroori hai?",
+    "tags": [
+      "puja"
+    ],
     "en": "Chanting is not mandatory, but you may chant the deity’s mantra or “Om” while the puja is performed — it helps align with the rituals 🙏",
-    "hi": "Jaap karna zaroori nahi, lekin chahein to mantra ya “Om” bol sakte hain 🙏"
+    "hi": "जप ज़रूरी नहीं है, लेकिन चाहें तो मंत्र या “ॐ” बोल सकते हैं 🙏",
+    "hinglish": "Jaap karna zaroori nahi, lekin chahein to mantra ya “Om” bol sakte hain 🙏"
   },
   {
     "id": "puja_view_bookings",
     "domain": "puja",
     "status": "published",
     "owner": "Puja CS",
-    "keywords": ["my bookings", "booking history", "account", "profile", "upcoming puja", "kahan dekhu booking"],
-    "tags": ["account"],
-    "en": "View bookings and videos anytime: https://lifeguru.app/profile — updates also come on your registered WhatsApp.",
-    "hi": "Bookings aur videos: https://lifeguru.app/profile — updates WhatsApp par bhi aate hain."
+    "keywords": [
+      "my bookings",
+      "booking history",
+      "account",
+      "profile",
+      "upcoming puja",
+      "kahan dekhu booking"
+    ],
+    "example": "Apni bookings kahan dekhunga?",
+    "tags": [
+      "account"
+    ],
+    "en": "You can ask me here about your bookings and videos. Updates also come on your registered WhatsApp.",
+    "hi": "अपनी बुकिंग और वीडियो के बारे में यहीं पूछ सकते हैं। अपडेट आपके पंजीकृत व्हाट्सऐप पर भी आते हैं।",
+    "hinglish": "Apni booking aur video ke baare mein yahin poochh sakte hain. Updates aapke registered WhatsApp par bhi aate hain."
   },
   {
     "id": "puja_browse_upcoming",
     "domain": "puja",
     "status": "published",
     "owner": "Puja CS",
-    "keywords": ["upcoming puja", "new puja", "book puja", "mandir puja link", "kaunsi puja"],
-    "tags": ["book"],
-    "en": "Browse upcoming pujas: https://lifeguru.app/mandir-puja — Chadhava: https://lifeguru.app/mandir-chadhava",
-    "hi": "Upcoming puja: https://lifeguru.app/mandir-puja — Chadhava: https://lifeguru.app/mandir-chadhava"
+    "keywords": [
+      "upcoming puja",
+      "new puja",
+      "book puja",
+      "mandir puja link",
+      "kaunsi puja"
+    ],
+    "example": "Aane wali pujas kahan dikhengi?",
+    "tags": [
+      "book"
+    ],
+    "en": "Browse upcoming pujas: {{LINK_MANDIR_PUJA}} — Chadhava: {{LINK_MANDIR_CHADHAVA}}",
+    "hi": "आने वाली पूजा: {{LINK_MANDIR_PUJA}} — चढ़ावा: {{LINK_MANDIR_CHADHAVA}}",
+    "hinglish": "Aane wali puja: {{LINK_MANDIR_PUJA}} — Chadhava: {{LINK_MANDIR_CHADHAVA}}"
   },
   {
     "id": "puja_day_started_what_now",
@@ -53,8 +95,12 @@
       "ab kya karu",
       "puja commence"
     ],
-    "tags": ["puja"],
+    "example": "Meri puja shuru ho gayi hai, ab main kya karun?",
+    "tags": [
+      "puja"
+    ],
     "en": "Namaste 🙏 On puja day, pandit ji performs rituals for all registered devotees. You may sit quietly and focus on your Sankalp 🙏 For exact status on your booking, ask “meri puja kab hai” or share Order ID so we can pull your order.",
-    "hi": "Namaste 🙏 Puja ke din pandit ji sab registered bhakton ke liye vidhi karte hain. Shaant baith kar apne sankalp par dhyan de sakte hain 🙏 Apni booking ka exact status ke liye “meri puja kab hai” likhein ya Order ID bhejein."
+    "hi": "नमस्ते 🙏 पूजा के दिन पंडित जी सभी पंजीकृत भक्तों के लिए विधि करते हैं। शांत बैठकर अपने संकल्प पर ध्यान दे सकते हैं 🙏 अपनी बुकिंग की स्थिति के लिए पूजा का समय पूछें।",
+    "hinglish": "Namaste 🙏 Puja ke din pandit ji sab registered bhakton ke liye vidhi karte hain. Shaant baith kar apne sankalp par dhyan de sakte hain 🙏 Apni booking ka exact status ke liye “meri puja kab hai” likhein ya Order ID bhejein."
   }
 ]

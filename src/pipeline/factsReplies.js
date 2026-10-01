@@ -1,6 +1,6 @@
 const config = require('../config');
 const { t } = require('../conversation/copy');
-const { classifyIntent } = require('../conversation/intent');
+const { classifyIntent, intentForBookingQuestion } = require('../conversation/intent');
 const { formatWhen, formatStatus } = require('../conversation/format');
 const { reply, forward, askMoreSuggestions } = require('./responses');
 const { failOpenHandoff } = require('../lib/failOpen');
@@ -23,6 +23,12 @@ function sanitizeVideoLink(raw) {
   return link;
 }
 
+function videoPastInvestigationWindow(facts) {
+  if (facts.videoReady) return false;
+  const days = daysSincePujaDate(facts.scheduledAt);
+  return days != null && days > VIDEO_SLA_ESCALATION_DAYS;
+}
+
 function buildVideoReply(lang, facts) {
   const product = facts.productName || 'booking';
   if (facts.videoReady) {
@@ -33,13 +39,6 @@ function buildVideoReply(lang, facts) {
     return applyKbPlaceholders(t(lang, 'factsVideoReady', { product }));
   }
   let body = t(lang, 'factsVideoPending', { product });
-  const days = daysSincePujaDate(facts.scheduledAt);
-  if (days != null && days > VIDEO_SLA_ESCALATION_DAYS) {
-    body +=
-      lang === 'hi'
-        ? '\n\nPuja date ke 5 din se zyada ho chuke hain — turant check ke liye “human agent” likhein.'
-        : '\n\nIt has been more than 5 days since your puja date — say “human agent” and we will escalate with the team.';
-  }
   return body;
 }
 
@@ -92,22 +91,28 @@ function buildGuideReply(lang, facts) {
   if (facts.recommendedMantra) {
     parts.push(
       lang === 'hi'
-        ? `Namaste 🙏 Is booking ke liye recommended mantra: ${facts.recommendedMantra}`
-        : `Namaste 🙏 Recommended mantra for your booking: ${facts.recommendedMantra}`,
+        ? `नमस्ते 🙏 इस बुकिंग के लिए सुझाया मंत्र: ${facts.recommendedMantra}`
+        : lang === 'hinglish'
+          ? `Namaste 🙏 Is booking ke liye suggested mantra: ${facts.recommendedMantra}`
+          : `Namaste 🙏 Recommended mantra for your booking: ${facts.recommendedMantra}`,
     );
   }
   if (facts.dosDontsSummary) {
     parts.push(
       lang === 'hi'
-        ? `Do's & Don'ts (aapki puja): ${facts.dosDontsSummary}`
-        : `Do's & Don'ts for your puja: ${facts.dosDontsSummary}`,
+        ? `करें और न करें (आपकी पूजा): ${facts.dosDontsSummary}`
+        : lang === 'hinglish'
+          ? `Do's & Don'ts (aapki puja): ${facts.dosDontsSummary}`
+          : `Do's & Don'ts for your puja: ${facts.dosDontsSummary}`,
     );
   }
   if (parts.length) {
     parts.push(
       lang === 'hi'
-        ? 'Poori guide app mein order details par bhi hai: https://lifeguru.app/profile — WhatsApp par bhi PDF {{PUJA_UPDATES_SENDER}} se bheja ja sakta hai.'
-        : 'Full guide is on your order in the app: https://lifeguru.app/profile — we may also have sent a Do\'s & Don\'ts PDF on WhatsApp from {{PUJA_UPDATES_SENDER}}.',
+        ? 'पूरी गाइड व्हाट्सऐप पर पीडीएफ़ में {{PUJA_UPDATES_SENDER}} से भी भेजी जा सकती है।'
+        : lang === 'hinglish'
+          ? 'Poori guide WhatsApp par PDF mein {{PUJA_UPDATES_SENDER}} se bhi bheji ja sakti hai.'
+          : 'We may also have sent a Do\'s & Don\'ts PDF on WhatsApp from {{PUJA_UPDATES_SENDER}}.',
     );
     return applyKbPlaceholders(parts.join('\n\n'));
   }
@@ -158,11 +163,27 @@ async function answerForOrder(state, factsClient, intentText) {
   if (!facts) {
     return { state, response: forward(lang) };
   }
-  const intent = classifyIntent(intentText || '') || state.pendingIntent || 'both';
+  const intent =
+    classifyIntent(intentText || '') ||
+    state.pendingIntent ||
+    intentForBookingQuestion(intentText);
+  if (intent === 'video' && videoPastInvestigationWindow(facts)) {
+    return {
+      state: {
+        ...state,
+        stage: 'ask_more',
+        askMoreAttempts: 0,
+        pendingText: null,
+        pendingIntent: null,
+        handoffEscalation: 'video_overdue',
+      },
+      response: forward(lang),
+    };
+  }
   const body = buildFactsReply(lang, facts, intent);
   return {
     state: { ...state, stage: 'ask_more', askMoreAttempts: 0, pendingText: null, pendingIntent: null },
-    response: reply([body, t(lang, 'askMore')], {
+    response: reply(`${body}\n\n${t(lang, 'askMore')}`, {
       suggestions: askMoreSuggestions(lang),
     }),
   };

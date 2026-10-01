@@ -13,18 +13,34 @@
       "subscription cancel",
       "upi mandate"
     ],
-    "tags": ["autopay"],
-    "en": "Namaste 🙏 To stop AutoPay: open PhonePe / Google Pay → Profile → AutoPay / Mandates → select LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls",
-    "hi": "Namaste 🙏 AutoPay band karne ke liye PhonePe / Google Pay → Profile → AutoPay / Mandates → LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls"
+    "example": "AutoPay band kaise karun?",
+    "tags": [
+      "autopay"
+    ],
+    "en": "Namaste 🙏 To stop AutoPay: open PhonePe / Google Pay → Profile → AutoPay / Mandates → select LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. Completing Chadhava at least 7 times is often recommended for a sankalp. We respect your decision either way. 🙏",
+    "hi": "नमस्ते 🙏 ऑटोपे बंद करने के लिए PhonePe या Google Pay खोलें → प्रोफ़ाइल → ऑटोपे / मैंडेट → LifeGuru मैंडेट → रद्द करें। PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. संकल्प के लिए चढ़ावा कम से कम 7 बार पूरा करना अक्सर सुझाया जाता है। दोनों में आपका निर्णय हम मानते हैं। 🙏",
+    "hinglish": "Namaste 🙏 AutoPay band karne ke liye PhonePe / Google Pay → Profile → AutoPay / Mandates → LifeGuru mandate → Cancel. PhonePe: https://youtube.com/shorts/y5XCA_b_sfs — GPay: https://youtube.com/shorts/NlR4dp4dEls. Sankalp ke liye Chadhava kam se kam 7 baar poora karna aksar suggested hai. Dono mein aapka faisla hum maante hain. 🙏"
   },
   {
     "id": "sub_rs1_intro_then_full",
     "domain": "puja_subscription",
     "status": "published",
     "owner": "Subscriptions CS",
-    "keywords": ["rs 1", "rs.1", "1 rupee", "ek rupaye", "intro offer", "pehle 1", "why charged more"],
-    "tags": ["billing"],
+    "keywords": [
+      "rs 1",
+      "rs.1",
+      "1 rupee",
+      "ek rupaye",
+      "intro offer",
+      "pehle 1",
+      "why charged more"
+    ],
+    "example": "Pehle ₹1 kata tha, ab ₹501 kyun kata?",
+    "tags": [
+      "billing"
+    ],
     "en": "The ₹1 (or intro) charge is often the first cycle offer; from the next cycle your plan amount applies (₹301 / ₹501 / ₹701 or as shown at booking). To stop future debits, cancel the UPI mandate in your payment app.",
-    "hi": "Pehle cycle par intro/₹1 ho sakta hai; uske baad plan amount (₹301/₹501/₹701 ya jo booking par tha) lagta hai. Mandate cancel karke aage ki katauti rok sakte hain."
+    "hi": "पहले चक्र पर ₹1 हो सकता है। उसके बाद योजना की राशि लगती है (₹301, ₹501, ₹701 या बुकिंग पर जो दिखी हो)। मैंडेट रद्द करके आगे की कटौती रोक सकते हैं।",
+    "hinglish": "Pehle cycle par intro/₹1 ho sakta hai; uske baad plan amount (₹301/₹501/₹701 ya jo booking par tha) lagta hai. Mandate cancel karke aage ki katauti rok sakte hain."
   }
 ]

@@ -6,10 +6,13 @@ const {
   classifyIntent,
   isOrderIntent,
   isComplexSupportMessage,
+  isSankalpOrGotraChangeRequest,
+  isIrritatedOrAngry,
 } = require('../conversation/intent');
 const { classifyRulesBlockForPrompt } = require('../content/loadContent');
 const { faqById } = require('../faq/faqLookup');
 const { faqCatalogForLlm } = require('../faq/faqSelect');
+const { chooseOrderLookup } = require('../orders/orderLookup');
 
 const VALID_ROUTES = new Set(['admin', 'faq', 'human', 'clarify']);
 const VALID_INTENTS = new Set(['puja', 'video', 'prasad', 'both', null]);
@@ -23,13 +26,17 @@ function buildClassifyPrompt(userText, recentConversation = '', catalog = []) {
         .map((c) => `- ${c.id}: ${c.hint}`)
         .join('\n')}\n`
     : '';
-  return `${classifyRulesBlockForPrompt()}You are a router ONLY for LifeGuru WhatsApp support (Mandir Puja, Chadhava, bookings). Output JSON only — no chat, no advice outside LifeGuru.
+  return `${classifyRulesBlockForPrompt()}You are LifeGuru's customer support router. The person messaging is a LifeGuru customer asking about Mandir Puja, Chadhava, or their booking. Output JSON only — no chat reply.
 
 {
   "language": "en" | "hi" (template hint only — user may write any language; routing must still work),
   "route": "admin" | "faq" | "human" | "clarify",
   "intent": "puja" | "video" | "prasad" | "both" | null,
   "faqId": "<catalog id>" | null,
+  "orderLookup": "latest" | "first" | "on_date" | "between" | "puja_on" | null,
+  "orderDate": "YYYY-MM-DD" | null,
+  "orderDateFrom": "YYYY-MM-DD" | null,
+  "orderDateTo": "YYYY-MM-DD" | null,
   "reason": "short internal note"
 }
 
@@ -39,8 +46,13 @@ Scope (LifeGuru only):
 
 Routes:
 - "admin" + intent: THEIR booking lookup — puja time, video status, prasad/tracking (any language: Hindi, Hinglish, Marathi, Gujarati, Bengali, Tamil, Telugu, US English, etc. — if intent is clear).
+- On "admin", set orderLookup when they name which booking. Otherwise null (we load the latest 3).
+  latest = most recent one. first = earliest ever. null = latest 3 bookings.
+  on_date = booked on orderDate. between = booked from orderDateFrom through orderDateTo.
+  puja_on = puja scheduled on orderDate (not the booking date). Dates are YYYY-MM-DD only. Never invent a date.
 - "faq": LifeGuru policy/how-to, no order lookup (autopay explainer, how to book, want to book/get puja done — not existing order status). When route is "faq", set faqId to one catalog id that matches the question. For every other route, faqId must be null. Never invent an id.
-- "human": refund, complaint, fraud, naam/gotra CHANGE on order, media/screenshot, video delay insist/anger, sensitive; long emotional life/business distress; custom sales guarantees or partner money disputes; health/family hardship — even if they mention puja/₹51/sankalp.
+- "human": refund, complaint, fraud, media/screenshot, video delay insist/anger, sensitive; long emotional life/business distress; custom sales guarantees or partner money disputes; health/family hardship — even if they mention puja/₹51/sankalp. Also human when they want a person, even if a word is misspelled (for example a transfer or connect request). Read the meaning, not the exact spelling.
+- Name or gotra change is not "human" yet. Route "sankalp_change" so we ask which booking first. The team checks whether that booking can still be changed.
 - NOT "admin": they want help opening a business, minimum sales promises, or puja "so business runs" — that is human, not booking status lookup.
 - "clarify": hi/hello only, vague "help", or ambiguous (one short routing step — never answer off-topic).
 
@@ -60,7 +72,16 @@ function acceptedFaqId(route, rawId) {
   return faqById(id, 'en') ? id : null;
 }
 
+function preferSankalpPick(result, userText) {
+  if (!isSankalpOrGotraChangeRequest(userText) || isIrritatedOrAngry(userText)) return result;
+  return { ...result, route: 'sankalp_change', intent: null, faqId: null };
+}
+
 function normalizeClassifyResult(parsed, userText) {
+  return preferSankalpPick(buildClassifyResult(parsed, userText), userText);
+}
+
+function buildClassifyResult(parsed, userText) {
   const fallbackLang = detectLanguage(userText);
   if (!parsed || typeof parsed !== 'object') {
     if (isComplexSupportMessage(userText)) {
@@ -92,10 +113,15 @@ function normalizeClassifyResult(parsed, userText) {
         ? parsed.intent
         : classifyIntent(userText);
 
+  const orderLookup = chooseOrderLookup(parsed, userText);
   if (route === 'admin' && !isOrderIntent(intent)) {
-    intent = classifyIntent(userText);
-    if (!isOrderIntent(intent)) {
-      route = 'clarify';
+    if (orderLookup?.key) {
+      intent = 'both';
+    } else {
+      intent = classifyIntent(userText);
+      if (!isOrderIntent(intent)) {
+        route = 'clarify';
+      }
     }
   }
 
@@ -114,6 +140,7 @@ function normalizeClassifyResult(parsed, userText) {
     reason: String(parsed.reason || '').slice(0, 120),
     usedLlm: true,
   };
+  if (out.route === 'admin' && orderLookup?.key) out.orderLookup = orderLookup;
   if (empathetic) {
     out.empathetic = true;
     out.reason = `${out.reason || 'llm'}_complex_override`.slice(0, 120);

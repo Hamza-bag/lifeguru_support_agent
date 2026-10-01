@@ -21,9 +21,10 @@ describe('routingGate', () => {
     assert.equal(shouldSkipLlmClassify({ stage: 'await_query' }, 'video kab aayega'), false);
   });
 
-  it('still mirrors refund / handoff lines', () => {
-    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'Refund chahiye'), false);
-    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'human agent'), false);
+  it('uses stored templates for English and Hinglish handoff lines', () => {
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'Refund chahiye'), true);
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'human agent'), true);
+    assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'paisa wapas mari'), false);
   });
 
   it('skips mirror when the template language already matches', () => {
@@ -37,8 +38,15 @@ describe('routingGate', () => {
     );
     assert.equal(
       shouldSkipLlmMirror(
-        { stage: 'await_query', replyRegister: 'hinglish_or_roman_hi' },
+        { stage: 'await_query', replyRegister: 'hinglish' },
         'video kab aayega',
+      ),
+      true,
+    );
+    assert.equal(
+      shouldSkipLlmMirror(
+        { stage: 'await_query', replyRegister: 'other' },
+        'naa puja eppudu',
       ),
       false,
     );
@@ -48,6 +56,10 @@ describe('routingGate', () => {
     assert.equal(shouldSkipLlmMirror({ stage: 'await_query' }, 'Hi'), true);
     assert.equal(
       shouldSkipLlmMirror({ stage: 'select_order', orders: [{ id: '1' }] }, '1'),
+      true,
+    );
+    assert.equal(
+      shouldSkipLlmMirror({ stage: 'select_order', replyRegister: 'other' }, 'shutup'),
       true,
     );
   });

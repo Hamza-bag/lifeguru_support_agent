@@ -34,9 +34,21 @@ function isRomanMarathi(lower) {
   return mr && !HINDI_ROMAN_MARKERS.test(lower) && !isRomanGujarati(lower);
 }
 
+/** Plain English can use the template. Anything else in Latin script is mirrored. */
+function looksLikeEnglish(text) {
+  const words = String(text || '')
+    .toLowerCase()
+    .match(/[a-z]{2,}/g) || [];
+  if (!words.length) return true;
+  const known =
+    /^(a|an|the|i|is|are|was|my|your|me|we|you|when|what|where|how|please|video|puja|pooja|prasad|booking|order|orders|chadhava|help|hi|hello|hey|thanks|thank|yes|no|status|link|live|refund|cancel|name|gotra|today|and|or|to|for|of|on|in|it|its|this|that|not|have|has|will|can|do|about|any|which|with|from|ok|okay|want|book|last|latest|first|time|schedule|same|number|days|already|more|long|need|get|show|send|team|human|agent|list|few|than)$/;
+  const hits = words.filter((word) => known.test(word)).length;
+  return hits / words.length >= 0.6;
+}
+
 /**
- * Template locale (en|hi only in copy.js) + LLM mirror for the user's real language.
- * Roman Hinglish / Eng-Gujarati / Eng-Marathi → en templates + mirror.
+ * Stored templates: English, Devanagari Hindi, and Roman Hinglish.
+ * Gujarati, Marathi, Punjabi, and other languages stay on the English draft and the mirror.
  */
 function detectReplyLanguage(text) {
   const raw = String(text || '');
@@ -57,7 +69,10 @@ function detectReplyLanguage(text) {
     return { locale: 'en', mirror: true, register: 'punjabi_roman' };
   }
   if (HINDI_ROMAN_MARKERS.test(lower)) {
-    return { locale: 'en', mirror: true, register: 'hinglish_or_roman_hi' };
+    return { locale: 'hinglish', mirror: false, register: 'hinglish' };
+  }
+  if (!looksLikeEnglish(raw)) {
+    return { locale: 'en', mirror: true, register: 'other' };
   }
   return { locale: 'en', mirror: true, register: 'en' };
 }
@@ -185,7 +200,6 @@ function requiresDirectHumanHandoffText(text) {
   const raw = String(text || '').trim();
   if (!raw) return false;
   if (isIrritatedOrAngry(raw)) return true;
-  if (isSankalpOrGotraChangeRequest(raw)) return true;
   if (textContainsExternalLink(raw)) return true;
   const lower = raw.toLowerCase();
 
@@ -233,11 +247,26 @@ function requiresDirectHumanHandoffText(text) {
   return false;
 }
 
+function needsPersonAfterAnswer(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (
+    /\b(not happy|unhappy|not satisfied|didn'?t help|does not help|still missing|still wrong|still unclear|not resolved|this is wrong)\b/.test(
+      lower,
+    )
+  ) {
+    return true;
+  }
+  if (/\bstill not\b/.test(lower)) return true;
+  return /खुश नहीं|ठीक नहीं|अभी भी नहीं|मदद नहीं/.test(raw);
+}
+
 function wantsHuman(text) {
   const raw = String(text || '').trim().toLowerCase();
   if (!raw) return false;
   if (requiresDirectHumanHandoffText(text)) return true;
   if (isCalmAutopayHelp(text)) return false;
+  if (/^(human|agent)( please| pls)?$/i.test(raw)) return true;
   if (
     /\b(human agent|talk to (a )?(human|agent|someone|person)|customer care|operator|refund|cancel|complaint|manager)\b/.test(
       raw,
@@ -421,7 +450,32 @@ function isNewBookingQuery(text) {
   return false;
 }
 
+function isPujaDurationQuery(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (/\b(video|recording|prasad)\b/.test(lower)) return false;
+  if (/\b(how long|kitni der|kitne time|kitna time|duration)\b/.test(lower)) return true;
+  if (/\b(chalegi|chlegi|chalti)\b/.test(lower) && /\b(puja|pooja)\b/.test(lower)) return true;
+  if (/कितने समय|कितनी देर/.test(raw)) return true;
+  return false;
+}
+
+/** Schedule, video, or prasad — only what the question names. */
+function intentForBookingQuestion(text, classified) {
+  if (classified === 'both') return 'both';
+  if (isOrderIntent(classified)) return classified;
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  const video = /\b(video|recording)\b/.test(lower) || /वीडियो|विडियो/.test(raw);
+  const prasad = /\b(prasad|tracking|courier)\b/.test(lower) || /प्रसाद|ट्रैक/.test(raw);
+  if (video && prasad) return 'both';
+  if (video) return 'video';
+  if (prasad) return 'prasad';
+  return 'puja';
+}
+
 function classifyIntent(text) {
+  if (isPujaDurationQuery(text)) return null;
   if (isOwnLiveBookingQuestion(text)) return 'live';
   if (isNewBookingQuery(text)) return null;
   if (isComplexSupportMessage(text)) return null;
@@ -466,10 +520,21 @@ function intentFromTopicChoice(text) {
   return classifyIntent(text);
 }
 
+/** Video, prasad, or puja time once a booking is already chosen. */
+function followUpOnOpenBooking(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (/\b(video|recording)\b/.test(lower) || /वीडियो|विडियो/.test(raw)) return 'video';
+  if (/\b(prasad|tracking|courier)\b/.test(lower) || /प्रसाद|ट्रैक/.test(raw)) return 'prasad';
+  if (/\blive\b/i.test(raw) || /लाइव/.test(raw)) return 'live';
+  if (/\b(puja|pooja|schedule)\b/.test(lower) || /पूजा/.test(raw)) return 'puja';
+  return null;
+}
+
 function topicSuggestions(lang) {
-  return lang === 'hi'
-    ? ['पूजा समय', 'वीडियो', 'प्रसाद']
-    : ['Puja schedule', 'Video', 'Prasad'];
+  if (lang === 'hi') return ['पूजा समय', 'वीडियो', 'प्रसाद'];
+  if (lang === 'hinglish') return ['Puja samay', 'Video', 'Prasad'];
+  return ['Puja schedule', 'Video', 'Prasad'];
 }
 
 module.exports = {
@@ -490,6 +555,7 @@ module.exports = {
   isRomanGujarati,
   isRomanMarathi,
   wantsHuman,
+  needsPersonAfterAnswer,
   wantsNoMore,
   wantsYesMore,
   isNewBookingQuery,
@@ -497,6 +563,9 @@ module.exports = {
   isClearPostBookingStatusQuery,
   needsEmpatheticHumanHandoff,
   classifyIntent,
+  isPujaDurationQuery,
+  intentForBookingQuestion,
+  followUpOnOpenBooking,
   isOrderIntent,
   intentFromTopicChoice,
   topicSuggestions,

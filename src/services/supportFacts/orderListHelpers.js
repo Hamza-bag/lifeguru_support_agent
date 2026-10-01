@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { getModels } = require('../../models');
 const { internationalPhonePair } = require('../../orders/phone');
 const { formatBookedOn } = require('./formatBookedOn');
+const { trimProductName } = require('../../orders/trimFacts');
 
 const ORDER_LIST_LIMIT = 3;
 
@@ -63,7 +64,7 @@ async function mapOrdersToList(orders, userById) {
     return {
       id: String(order.id),
       customerId: String(order.user_id),
-      title: titles.get(order.id) || `Order ${order.id}`,
+      title: trimProductName(titles.get(order.id) || `Order ${order.id}`),
       bookedOn: formatBookedOn(order.created_at),
       status: order.status || '',
       _userId: order.user_id,

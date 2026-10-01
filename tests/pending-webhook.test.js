@@ -90,7 +90,7 @@ describe('SalesIQ pending webhook', () => {
           active_conversation_id: 'pending-conv-1',
           phone: '919876543210',
         },
-        message: { text: 'meri puja kab hai' },
+        message: { text: 'mari puja keware awse' },
       });
 
       assert.equal(res.status, 200);
@@ -140,7 +140,7 @@ describe('SalesIQ pending webhook', () => {
         operation: 'message',
         request: { id: requestId, conversation_id: 'pending-conv-fail' },
         visitor: { active_conversation_id: 'pending-conv-fail', phone: '919876543210' },
-        message: { text: 'meri puja kab hai' },
+        message: { text: 'mari puja keware awse' },
       });
 
       await waitFor(() => callbacks.length, 2);

@@ -12,9 +12,13 @@
       "puja bekar",
       "result nahi mila"
     ],
-    "tags": ["puja"],
-    "en": "Namaste 🙏 Your puja was performed as per Vedic rituals. Effects vary by faith, devotion, and individual circumstances — some see change quickly, others gradually. We pray your wishes are fulfilled soon 🙏 We do not guarantee specific outcomes; say “human agent” if you need to discuss further.",
-    "hi": "Namaste 🙏 Puja vidhi ke mutabik hui. Parinaam shraddha aur samay par nirbhar karte hain — kisi ko jaldi, kisi ko dheere. Hamari prarthna aapke saath hai 🙏 Koi specific guarantee nahi; aur baat ke liye “human agent”."
+    "example": "Puja kara li, koi fayda nahi hua.",
+    "tags": [
+      "puja"
+    ],
+    "en": "Namaste 🙏 Your puja was performed with the Vedic rituals. Some people feel a change soon, and for others it comes more slowly. We are praying that your wish is fulfilled. If you want to talk about it, tell me and I will connect you to the team.",
+    "hi": "नमस्ते 🙏 आपकी पूजा विधि के साथ हुई है। कुछ लोगों को बदलाव जल्दी महसूस होता है, कुछ को धीरे। हम प्रार्थना करते हैं कि आपकी मनोकामना पूरी हो। इस पर बात करनी हो तो बताइए, मैं आपको टीम से जोड़ देता हूँ।",
+    "hinglish": "Namaste 🙏 Aapki puja vidhi ke saath hui hai. Kuch logon ko badlav jaldi mehsoos hota hai, kuch ko dheere. Hum prarthna karte hain ki aapki manokamna poori ho. Is par baat karni ho to bataiye, main aapko team se jod deta hoon."
   },
   {
     "id": "refund_name_video_issue_repuja",
@@ -27,9 +31,14 @@
       "sankalp missing refund",
       "video not shared refund"
     ],
-    "tags": ["video"],
-    "en": "Namaste 🙏 We understand how important Sankalp is. We can usually arrange the same puja again (or another puja) in the next schedule at no extra cost. If you still prefer a refund, tell us — say “human agent” to process with the team 🙏",
-    "hi": "Namaste 🙏 Sankalp bahut mahatvapurn hai. Aam taur par agle schedule par dubara puja bina extra charge ke arrange hoti hai. Refund chahiye ho to batayein — “human agent” likhein 🙏"
+    "example": "Naam nahi liya gaya, paisa wapas chahiye.",
+    "tags": [
+      "video"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 I understand how important the sankalp is. The team can usually arrange the same puja again in the next schedule, at no extra cost. If you would rather talk about a refund, they can help with that too.",
+    "hi": "नमस्ते 🙏 संकल्प कितना ज़रूरी है, यह समझ सकता हूँ। टीम आमतौर पर अगली तिथि पर वही पूजा दोबारा करवा सकती है, बिना अतिरिक्त शुल्क। धनवापसी की बात करनी हो तो वह भी टीम देखेगी।",
+    "hinglish": "Namaste 🙏 Sankalp kitna zaroori hai, yeh samajh sakta hoon. Team aam taur par agli date par wahi puja dubara karva sakti hai, bina extra charge. Refund ki baat karni ho to woh bhi team dekhegi."
   },
   {
     "id": "cancel_puja_booking",
@@ -42,9 +51,14 @@
       "puja cancel karna",
       "booking cancel"
     ],
-    "tags": ["cancel"],
-    "en": "Each puja is scheduled on an auspicious date — we encourage proceeding as planned. If you still wish to cancel, share your reason; the team can help with refund or reschedule. Say “human agent” with Order ID 🙏",
-    "hi": "Puja shubh date par schedule hoti hai — jaane dena behtar hota hai. Phir bhi cancel karna ho to reason batayein; team refund/reschedule mein madad karegi. Order ID ke saath “human agent” 🙏"
+    "example": "Meri puja booking cancel karni hai.",
+    "tags": [
+      "cancel"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 The puja is set for an auspicious date. If you still want to cancel or move it, the team can look at a refund or another date with you.",
+    "hi": "नमस्ते 🙏 पूजा एक शुभ तिथि पर है। फिर भी रद्द करनी हो या तिथि बदलनी हो तो टीम धनवापसी या नई तिथि आपके साथ देख सकती है।",
+    "hinglish": "Namaste 🙏 Puja ek shubh date par hai. Phir bhi cancel karni ho ya date badalni ho to team refund ya nayi date aapke saath dekh sakti hai."
   },
   {
     "id": "reschedule_puja_earlier",
@@ -58,8 +72,13 @@
       "puja jaldi",
       "date badalna puja"
     ],
-    "tags": ["puja"],
-    "en": "Namaste 🙏 Dates follow the pandit’s auspicious muhurat — we recommend keeping the current schedule. Alternatively we can cancel with refund and rebook the next available date. Say “human agent” with how you’d like to proceed 🙏",
-    "hi": "Namaste 🙏 Date pandit ke shubh muhurat par hoti hai — current schedule par chalna behtar. Ya refund karke agli date par dubara book kar sakte hain. “human agent” likhein 🙏"
+    "example": "Puja ki date pehle kar sakte ho?",
+    "tags": [
+      "puja"
+    ],
+    "handoff": true,
+    "en": "Namaste 🙏 The date follows the pandit’s auspicious time, so keeping it is usually best. If you need it earlier, the team can look at a refund and the next open date with you.",
+    "hi": "नमस्ते 🙏 तिथि पंडित के शुभ समय पर होती है, इसलिए इसे बनाए रखना आमतौर पर बेहतर होता है। जल्दी चाहिए तो टीम धनवापसी और अगली खुली तिथि आपके साथ देख सकती है।",
+    "hinglish": "Namaste 🙏 Date pandit ke shubh samay par hoti hai, isliye ise banaye rakhna aam taur par behtar hota hai. Jaldi chahiye to team refund aur agli khuli date aapke saath dekh sakti hai."
   }
 ]

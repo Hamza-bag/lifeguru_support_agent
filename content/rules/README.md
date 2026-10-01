@@ -9,6 +9,6 @@ Markdown files here are injected into **every Gemini call** (classify + reply mi
 
 Assembly: `src/content/loadContent.js` → `rulesBlockForPrompt()`.
 
-Prompt details: [src/llm/PROMPTS.md](../../src/llm/PROMPTS.md) and [docs/support-agent-architecture.md](../../../docs/support-agent-architecture.md).
+Prompt details: [src/llm/PROMPTS.md](../../src/llm/PROMPTS.md).
 
 **Do not** contradict Admin order facts or entries in `content/kb/faq.json`.

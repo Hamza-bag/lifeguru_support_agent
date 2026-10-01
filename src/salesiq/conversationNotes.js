@@ -1,5 +1,5 @@
 const { createOAuthTokenProvider } = require('./oauthToken');
-const { parseZohoApiBody } = require('./callbackClient');
+const { parseZohoApiBody, isInvalidAuthCallback } = require('./callbackClient');
 
 function createConversationNotesClient(config, tokenProviderOverride) {
   const base = (config.salesIqApiBase || '').replace(/\/$/, '');
@@ -16,28 +16,38 @@ function createConversationNotesClient(config, tokenProviderOverride) {
       return { ok: false, reason: 'not_configured' };
     }
     const url = `${base}/${encodeURIComponent(screen)}/conversations/${encodeURIComponent(conversationId)}/notes`;
-    try {
-      const token = await tokenProvider.getAccessToken();
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: `Zoho-oauthtoken ${token}`,
-        },
-        body: JSON.stringify({ notes: String(notesText).trim() }),
-      });
-      const raw = await res.text();
-      const zoho = parseZohoApiBody(raw);
-      if (!zoho.ok) {
-        return { ok: false, status: res.status, reason: zoho.reason || raw.slice(0, 300) };
+
+    async function postNote(noteUrl) {
+      try {
+        const token = await tokenProvider.getAccessToken();
+        const res = await fetch(noteUrl, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            authorization: `Zoho-oauthtoken ${token}`,
+          },
+          body: JSON.stringify({ notes: String(notesText).trim() }),
+        });
+        const raw = await res.text();
+        const zoho = parseZohoApiBody(raw);
+        if (!zoho.ok) {
+          return { ok: false, status: res.status, reason: zoho.reason || raw.slice(0, 300) };
+        }
+        if (!res.ok) {
+          return { ok: false, status: res.status, reason: raw.slice(0, 300) };
+        }
+        return { ok: true, status: res.status };
+      } catch (err) {
+        return { ok: false, reason: String(err.message || err) };
       }
-      if (!res.ok) {
-        return { ok: false, status: res.status, reason: raw.slice(0, 300) };
-      }
-      return { ok: true, status: res.status };
-    } catch (err) {
-      return { ok: false, reason: String(err.message || err) };
     }
+
+    let result = await postNote(url);
+    if (!result.ok && isInvalidAuthCallback(result.reason) && tokenProvider.canRefresh) {
+      const refreshed = await tokenProvider.forceRefresh().catch(() => false);
+      if (refreshed) result = await postNote(url);
+    }
+    return result;
   }
 
   return { isConfigured, addNote };
