@@ -11,10 +11,10 @@ describe('llm classify normalize', () => {
     assert.equal(r.usedLlm, false);
   });
 
-  it('falls back to puja intent for Spanish mixed with puja keyword', () => {
+  it('does not guess a booking lookup from Spanish when the model returns nothing', () => {
     const r = normalizeClassifyResult(null, 'cuando en mi puja');
-    assert.equal(r.route, 'admin');
-    assert.equal(r.intent, 'puja');
+    assert.equal(r.route, 'clarify');
+    assert.equal(r.intent, null);
   });
 
   it('maps admin video from LLM JSON', () => {
@@ -49,12 +49,30 @@ describe('llm classify normalize', () => {
     assert.equal(admin.faqId, null);
   });
 
+  it('sends an invoice request to a person even when the model picked the GST card', () => {
+    const r = normalizeClassifyResult(
+      { language: 'en', route: 'faq', intent: null, faqId: 'gst_on_puja', reason: 'tax' },
+      'please send my invoice',
+    );
+    assert.equal(r.route, 'human');
+    assert.equal(r.faqId, null);
+  });
+
+  it('sends abuse to a person even when the model picked a booking answer', () => {
+    const r = normalizeClassifyResult(
+      { language: 'en', route: 'admin', intent: 'video', reason: 'video' },
+      'this video is useless, I am furious',
+    );
+    assert.equal(r.route, 'human');
+    assert.equal(r.empathetic, true);
+  });
+
   it('routes human for refund-like LLM route', () => {
     const r = normalizeClassifyResult(
       { language: 'en', route: 'human', intent: null, reason: 'refund' },
       'refund my money',
     );
-    assert.equal(r.route, 'human');
+    assert.equal(r.route, 'booking_handoff');
   });
 });
 

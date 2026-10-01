@@ -3,7 +3,11 @@
  */
 const { tryRulesRoute } = require('../conversation/rulesRoute');
 const { shouldSkipLlmClassify, shouldSkipLlmMirror } = require('../conversation/routingGate');
-const { isOrderIntent, isClearPostBookingStatusQuery } = require('../conversation/intent');
+const {
+  isOrderIntent,
+  isClearPostBookingStatusQuery,
+  detectReplyLanguage,
+} = require('../conversation/intent');
 
 /** Typical classify + mirror latency (ms) — below ceilings; used for pending auto mode. */
 const CLASSIFY_EXPECTED_MS = 2800;
@@ -15,6 +19,9 @@ function likelyNeedsAdminFacts(state, text) {
   if (stage === 'select_order' || stage === 'await_booking_number') return true;
   const raw = String(text || '').trim();
   if (!raw) return false;
+  // English, Hindi, and Hinglish can be ruled in code. Any other language is
+  // decided by the model, which may still need a booking lookup.
+  if (detectReplyLanguage(raw).register === 'other') return true;
   return isOrderIntent(raw) || isClearPostBookingStatusQuery(raw);
 }
 

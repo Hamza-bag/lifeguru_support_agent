@@ -1,5 +1,4 @@
 const { t, templateLocale } = require('../conversation/copy');
-const { needsEmpatheticHumanHandoff } = require('../conversation/intent');
 const { kbLines } = require('../faq/matchFaq');
 const { topicSuggestions } = require('../conversation/intent');
 const { WELCOME_QUERY } = require('./state');
@@ -30,8 +29,7 @@ function forwardUnclear(lang) {
 }
 
 function forwardForHuman(lang, queryText, classifyMeta) {
-  const empathetic =
-    Boolean(classifyMeta?.empathetic) || needsEmpatheticHumanHandoff(queryText);
+  const empathetic = Boolean(classifyMeta?.empathetic);
   return forward(lang, { empathetic });
 }
 

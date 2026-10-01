@@ -1,38 +1,22 @@
-/**
- * "Which puja for this problem?" — no Gemini, and no product URL.
- * The reply points at the listing pages, which show only sevas still open,
- * and then connects the customer to the team.
- */
+/** Catalogue “which puja” picks. Other wording is left for the model. */
 function whichPujaFaqId(text) {
-  const raw = String(text || '').trim();
-  if (!raw) return null;
+  const raw = String(text || '');
   const lower = raw.toLowerCase();
-  const blob = `${lower}\n${raw}`;
+  if (/\b(video|refund|cancel|tracking)\b/.test(lower) || /वीडियो|रिफंड/.test(raw)) return null;
 
-  if (/\b(video|refund|cancel|tracking|prasad)\b/.test(lower)) return null;
-  if (/वीडियो|रिफंड|प्रसाद/.test(raw)) return null;
-  const choosing =
-    /konsi|kaunsi|which|ke liye|karani hai|karni hai|karwana|any puja|koi puja/.test(lower) ||
-    /कौन\s*सी|के लिए|करनी है|करानी/.test(raw);
-  if (
-    /\b(kab|when is|status)\b/.test(lower) &&
-    !choosing
-  ) {
-    return null;
-  }
-
-  if (/ganpati|ganapati|\bganesh\b|गणपति|गणेश/.test(blob)) {
+  if (/\b(ganpati|ganesh|ganapati)\b/.test(lower) || /गणपति|गणेश/.test(raw)) {
     return 'which_puja_not_in_catalogue';
   }
-  if (/hanuman|हनुमान/.test(blob) && /puja|seva|पूजा|सेवा/.test(blob)) {
+  if ((/\bhanuman\b/.test(lower) || /हनुमान/.test(raw)) && /\b(puja|pooja)\b/.test(lower)) {
     return 'which_puja_hanuman';
   }
-  if (!choosing) return null;
 
-  if (/karz|debt|\bloan\b|\bemi\b|\brin\b|कर्ज|ऋण|क़र्ज़/.test(blob)) {
-    return 'which_puja_debt';
-  }
-  if (/shaadi|shadi|\bvivah\b|marriage|rishta|शादी|विवाह/.test(blob)) {
+  const choosing =
+    /\b(konsi|kaunsi|which|ke liye|karani hai|karni hai|karwana|any puja|koi puja)\b/.test(lower) ||
+    /कौन सी|कौनसी|के लिए/.test(raw);
+  if (!choosing) return null;
+  if (/\b(karz|debt|loan)\b/.test(lower) || /कर्ज|ऋण/.test(raw)) return 'which_puja_debt';
+  if (/\b(shaadi|vivah|marriage|wedding)\b/.test(lower) || /शादी|विवाह/.test(raw)) {
     return 'which_puja_marriage';
   }
   return null;

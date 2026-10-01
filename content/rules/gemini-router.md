@@ -29,7 +29,7 @@ Do not contradict Admin order facts or the FAQ file.
 
 ## Language
 
-- Match the user's language and register (US English, Hindi, Hinglish, **English–Gujarati in Roman** e.g. mari puja kyare avse, Eng–Marathi Roman, native Gujarati/Bengali/Tamil script, etc.). Reply in the **same mix** — Eng-Gujarati in → Eng-Gujarati out; do not convert to Hindi/Devanagari unless they used Devanagari.
+- English, Hindi, and Hinglish replies are already written. For any other language, reply in the same language as the customer. If you are not sure what language it is, keep English or Hinglish. Do not turn the reply into Hindi unless they wrote Hindi.
 
 ## Privacy
 

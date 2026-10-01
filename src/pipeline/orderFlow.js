@@ -36,7 +36,7 @@ async function handleAwaitBookingNumber(state, text) {
 async function showOrders(state, factsClient, followUpText) {
   const lang = state.language;
   const orders = state.orders || [];
-  if (orders.length === 1) {
+  if (orders.length === 1 && state.pendingHandoff !== 'booking_issue') {
     const next = {
       ...state,
       orderId: String(orders[0].id),
@@ -60,7 +60,13 @@ async function showOrders(state, factsClient, followUpText) {
     replies.push(t(lang, 'confirmName', { name: state.customerName }));
   }
   replies.push(t(lang, 'listOrders', { list }));
-  replies.push(t(lang, state.pendingHandoff === 'sankalp_change' ? 'pickForNameChange' : 'pickPrompt'));
+  const pickKey =
+    state.pendingHandoff === 'sankalp_change'
+      ? 'pickForNameChange'
+      : state.pendingHandoff === 'booking_issue'
+        ? 'pickForBookingIssue'
+        : 'pickPrompt';
+  replies.push(t(lang, pickKey));
   return {
     state: { ...state, stage: 'select_order' },
     response: reply(replies.join('\n\n'), {
@@ -207,11 +213,13 @@ function orderIndexFromReply(text, orders) {
   if (Number.isInteger(number) && number >= 1 && number <= orders.length) return number - 1;
   const raw = trimmed.toLowerCase();
   const hits = [];
+  const genericTitleWord =
+    /^(puja|pooja|booking|order|orders|offering|mandir|seva|chadhava)$/;
   orders.forEach((order, index) => {
     const words = String(order.title || '')
       .toLowerCase()
       .split(/[^a-z0-9\u0900-\u097F]+/)
-      .filter((word) => word.length > 3);
+      .filter((word) => word.length > 3 && !genericTitleWord.test(word));
     if (words.some((word) => raw.includes(word))) hits.push(index);
   });
   return hits.length === 1 ? hits[0] : -1;
@@ -274,6 +282,68 @@ async function beginNameChange(state, factsClient, queryText, phone) {
   );
 }
 
+function forwardBookingIssue(state, order) {
+  const lang = state.language;
+  return {
+    state: {
+      ...state,
+      orderId: order ? String(order.id) : state.orderId,
+      customerId: order ? String(order.customerId || state.customerId) : state.customerId,
+      handoffEscalation: 'booking_issue',
+      pendingHandoff: null,
+      stage: 'await_query',
+    },
+    response: {
+      action: 'forward',
+      replies: [
+        order
+          ? t(lang, 'forwardBookingIssue', { title: order.title })
+          : t(lang, 'forwardBookingIssueDetails'),
+      ],
+    },
+  };
+}
+
+async function beginBookingIssue(state, factsClient, queryText, phone) {
+  const lang = state.language;
+  let found;
+  try {
+    found = await factsClient.lookupByPhone(phone);
+  } catch (err) {
+    console.error('[support] booking issue lookup failed', err.message || err);
+    if (config.supportFailOpenForward) {
+      return failOpenHandoff(state, lang, queryText, 'booking_issue_lookup_failed');
+    }
+    throw err;
+  }
+  const orders = found?.orders || [];
+  if (!found?.matched || !orders.length) {
+    return {
+      state: {
+        ...state,
+        chatPhone: phone,
+        pendingText: queryText,
+        pendingHandoff: 'booking_issue',
+        handoffDetailsAsked: true,
+        stage: 'await_handoff_details',
+      },
+      response: reply(t(lang, 'askBookingIssueDetails')),
+    };
+  }
+  return showOrders(
+    {
+      ...state,
+      customerName: found.name || null,
+      customerId: found.customerId,
+      orders,
+      pendingText: queryText,
+      pendingHandoff: 'booking_issue',
+    },
+    factsClient,
+    queryText,
+  );
+}
+
 async function handleSelectOrder(state, text, factsClient) {
   const lang = state.language;
   const trimmed = String(text || '').trim();
@@ -281,6 +351,20 @@ async function handleSelectOrder(state, text, factsClient) {
     ? orderIndexFromReply(trimmed, state.orders || [])
     : Number.parseInt(trimmed, 10) - 1;
   if (!Number.isInteger(index) || index < 0 || index >= (state.orders || []).length) {
+    if (state.pendingHandoff === 'booking_issue') {
+      if (state.handoffDetailsAsked) {
+        return forwardBookingIssue(state, null);
+      }
+      return {
+        state: {
+          ...state,
+          handoffDetailsAsked: true,
+          pendingText: trimmed || state.pendingText,
+          stage: 'await_handoff_details',
+        },
+        response: reply(t(lang, 'askBookingIssueDetails')),
+      };
+    }
     if (wantsHuman(trimmed)) {
       return { state, response: forward(lang) };
     }
@@ -306,6 +390,9 @@ async function handleSelectOrder(state, text, factsClient) {
   if (state.pendingHandoff === 'sankalp_change') {
     return forwardNameChange(state, order);
   }
+  if (state.pendingHandoff === 'booking_issue') {
+    return forwardBookingIssue(state, order);
+  }
   const next = {
     ...state,
     orderId: String(order.id),
@@ -320,5 +407,7 @@ module.exports = {
   showOrders,
   lookupAndShowOrders,
   beginNameChange,
+  beginBookingIssue,
+  forwardBookingIssue,
   handleSelectOrder,
 };

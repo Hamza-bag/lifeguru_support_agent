@@ -1,30 +1,35 @@
 const policy = require('../config/policy');
-const { whichPujaFaqId } = require('../faq/whichPuja');
 const {
   detectLanguage,
   classifyIntent,
   isOrderIntent,
-  isNewBookingQuery,
-  isPujaDurationQuery,
   intentForBookingQuestion,
   isComplexSupportMessage,
-  isSpiritualPujaRecommendationQuery,
-  needsEmpatheticHumanHandoff,
   intentFromTopicChoice,
   isPureSocialGreeting,
   isPureThanks,
   requiresDirectHumanHandoffText,
-  autopayFaqId,
   isCatalogueLiveQuestion,
-  isSankalpOrGotraChangeRequest,
+  isRefundOrCancelRequest,
   isIrritatedOrAngry,
+  isSankalpOrGotraChangeRequest,
+  isPujaDurationQuery,
+  autopayFaqId,
+  isDamagedPrasad,
+  isAddPrasadRequest,
+  isNoBenefitComplaint,
+  isPaymentFailedBooking,
+  isBookingConfirmedAsk,
+  isClearPostBookingStatusQuery,
 } = require('./intent');
 const { parseOrderLookup } = require('../orders/orderLookup');
+const { whichPujaFaqId } = require('../faq/whichPuja');
 
 function isVagueHelpOnly(text) {
   const raw = String(text || '').trim().toLowerCase();
   if (raw.length < 3) return true;
-  return /^(help|madad|hlp)$/.test(raw);
+  if (/^(help|madad|hlp)$/.test(raw)) return true;
+  return /^(hey[, ]+|hi[, ]+)?(help|madad)( chahiye| please| pls)?$/.test(raw);
 }
 
 function resolveRulesIntent(state, queryText) {
@@ -41,39 +46,15 @@ function resolveRulesIntent(state, queryText) {
 function tryRulesRoute(state, queryText) {
   const lang = state.language || detectLanguage(queryText);
 
-  const whichPuja = whichPujaFaqId(queryText);
-  if (whichPuja && policy.faqEnabled) {
-    return {
-      language: lang,
-      route: 'faq',
-      intent: null,
-      faqId: whichPuja,
-      reason: `rules_${whichPuja}`,
-      usedLlm: false,
-      llmError: false,
-    };
-  }
-
-  if (isSpiritualPujaRecommendationQuery(queryText) && policy.faqEnabled) {
-    return {
-      language: lang,
-      route: 'faq',
-      intent: null,
-      reason: 'rules_spiritual_faq',
-      usedLlm: false,
-      llmError: false,
-    };
-  }
-
-  if (needsEmpatheticHumanHandoff(queryText)) {
+  if (isIrritatedOrAngry(queryText)) {
     return {
       language: lang,
       route: 'human',
       intent: 'human',
-      reason: 'rules_complex_human',
+      reason: 'rules_abuse',
+      empathetic: true,
       usedLlm: false,
       llmError: false,
-      empathetic: true,
     };
   }
 
@@ -81,12 +62,34 @@ function tryRulesRoute(state, queryText) {
     return null;
   }
 
-  if (isSankalpOrGotraChangeRequest(queryText) && !isIrritatedOrAngry(queryText)) {
+  if (isNoBenefitComplaint(queryText)) {
+    if ((state.noBenefitAsks || 0) >= 2) {
+      return {
+        language: lang,
+        route: 'human',
+        intent: 'human',
+        reason: 'rules_no_benefit_repeat',
+        usedLlm: false,
+        llmError: false,
+      };
+    }
     return {
       language: lang,
-      route: 'sankalp_change',
+      route: 'faq',
       intent: null,
-      reason: 'rules_sankalp_change',
+      faqId: 'puja_no_benefit_no_guarantee',
+      reason: 'rules_no_benefit',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
+  if (isRefundOrCancelRequest(queryText)) {
+    return {
+      language: lang,
+      route: 'booking_handoff',
+      intent: 'human',
+      reason: 'rules_booking_handoff',
       usedLlm: false,
       llmError: false,
     };
@@ -116,14 +119,47 @@ function tryRulesRoute(state, queryText) {
     };
   }
 
-  const autopayId = autopayFaqId(queryText);
-  if (autopayId && policy.faqEnabled) {
+  if (isSankalpOrGotraChangeRequest(queryText)) {
     return {
       language: lang,
-      route: 'faq',
-      intent: null,
-      faqId: autopayId,
-      reason: `rules_${autopayId}`,
+      route: 'sankalp_change',
+      intent: 'human',
+      reason: 'rules_sankalp_change',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+
+  if (policy.faqEnabled) {
+    const which = whichPujaFaqId(queryText);
+    const faqId =
+      which ||
+      (!isClearPostBookingStatusQuery(queryText) && isPujaDurationQuery(queryText)
+        ? 'puja_duration_hours'
+        : null) ||
+      (isDamagedPrasad(queryText) ? 'prasad_box_damaged' : null) ||
+      (isAddPrasadRequest(queryText) ? 'prasad_add_after_booking' : null) ||
+      (isPaymentFailedBooking(queryText) ? 'payment_done_not_confirmed' : null) ||
+      autopayFaqId(queryText);
+    if (faqId) {
+      return {
+        language: lang,
+        route: 'faq',
+        intent: null,
+        faqId,
+        reason: `rules_${faqId}`,
+        usedLlm: false,
+        llmError: false,
+      };
+    }
+  }
+
+  if (isBookingConfirmedAsk(queryText)) {
+    return {
+      language: lang,
+      route: 'admin',
+      intent: 'puja',
+      reason: 'rules_booking_confirm',
       usedLlm: false,
       llmError: false,
     };
@@ -136,29 +172,6 @@ function tryRulesRoute(state, queryText) {
       intent: null,
       faqId: 'live_puja_not_available',
       reason: 'rules_live_catalogue',
-      usedLlm: false,
-      llmError: false,
-    };
-  }
-
-  if (isPujaDurationQuery(queryText) && policy.faqEnabled) {
-    return {
-      language: lang,
-      route: 'faq',
-      intent: null,
-      faqId: 'puja_duration_hours',
-      reason: 'rules_puja_duration',
-      usedLlm: false,
-      llmError: false,
-    };
-  }
-
-  if (isNewBookingQuery(queryText)) {
-    return {
-      language: lang,
-      route: 'faq',
-      intent: null,
-      reason: 'rules_new_booking',
       usedLlm: false,
       llmError: false,
     };

@@ -35,6 +35,13 @@ const COPY = {
       'Connecting you to the team for {title}. They will check if this booking can still be changed.',
     forwardNameChangeNoBooking:
       'I could not find a booking on this number. Connecting you to the team for the name or gotra change.',
+    pickForBookingIssue:
+      'Which booking is this about? Please reply with its number. If yours is not in this list, tell me the puja name and date.',
+    askBookingIssueDetails:
+      'Please share the puja name, the date, and the mobile number you booked with. I will connect you to the team with those details.',
+    forwardBookingIssue: 'Connecting you to the team for {title}.',
+    forwardBookingIssueDetails:
+      'Thank you. Connecting you to the team with the details you shared.',
     factsPuja: 'Your {product} is scheduled for {when}. Current status: {status}.',
     factsPujaUnknown: 'I have {product} (status: {status}), but no puja time is set yet.',
     factsVideoReady:
@@ -126,6 +133,13 @@ const COPY = {
       '{title} के लिए आपको टीम से जोड़ रहा हूँ। वे देखेंगे कि इस बुकिंग में बदलाव अभी हो सकता है या नहीं।',
     forwardNameChangeNoBooking:
       'इस नंबर पर बुकिंग नहीं मिली। नाम या गोत्र बदलने के लिए आपको टीम से जोड़ रहा हूँ।',
+    pickForBookingIssue:
+      'यह किस बुकिंग के बारे में है? कृपया उसका नंबर भेजें। अगर आपकी पूजा इस सूची में नहीं है, तो पूजा का नाम और तारीख बताएं।',
+    askBookingIssueDetails:
+      'कृपया पूजा का नाम, तारीख, और जिस मोबाइल नंबर से बुकिंग की थी वह भेजें। मैं इन्हीं विवरण के साथ आपको टीम से जोड़ दूँगा।',
+    forwardBookingIssue: '{title} के लिए आपको टीम से जोड़ रहा हूँ।',
+    forwardBookingIssueDetails:
+      'धन्यवाद। आपके बताए विवरण के साथ आपको टीम से जोड़ रहा हूँ।',
     factsPuja: 'आपकी {product} {when} पर निर्धारित है। स्थिति: {status}।',
     factsPujaUnknown: '{product} मिली है (स्थिति: {status}), लेकिन पूजा का समय अभी सेट नहीं है।',
     factsVideoReady:
@@ -216,6 +230,13 @@ const COPY = {
       '{title} ke liye aapko team se jod raha hoon. Woh dekhenge ki is booking mein badlav abhi ho sakta hai ya nahi.',
     forwardNameChangeNoBooking:
       'Is number par booking nahi mili. Naam ya gotra badalne ke liye aapko team se jod raha hoon.',
+    pickForBookingIssue:
+      'Yeh kis booking ke baare mein hai? Kripya uska number bhejein. Agar aapki puja is list mein nahi hai, to puja ka naam aur date bataiye.',
+    askBookingIssueDetails:
+      'Kripya puja ka naam, date, aur jis mobile number se booking ki thi woh bhejein. Main inhi details ke saath aapko team se jod dunga.',
+    forwardBookingIssue: '{title} ke liye aapko team se jod raha hoon.',
+    forwardBookingIssueDetails:
+      'Dhanyavad. Aapke bataye details ke saath aapko team se jod raha hoon.',
     factsPuja: 'Aapki {product} {when} par nishchit hai. Status: {status}.',
     factsPujaUnknown: '{product} mili hai (status: {status}), lekin puja ka samay abhi set nahi hai.',
     factsVideoReady:

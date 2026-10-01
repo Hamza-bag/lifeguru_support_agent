@@ -23,11 +23,8 @@ function registerHint(register) {
     devanagari: 'User writes Hindi in Devanagari — use polite Hindi (Devanagari).',
     hinglish: 'User writes Roman Hinglish — reply in Roman Hinglish, not formal English.',
     hinglish_or_roman_hi: 'User writes Roman Hinglish — reply in Roman Hinglish, not formal English.',
-    punjabi_roman: 'User writes Roman Punjabi / Punjabi-English mix — reply in that mix (e.g. batawo, schedule, chahiye).',
-    eng_gujarati: 'User writes English–Gujarati in Roman — match that mix.',
-    eng_marathi: 'User writes English–Marathi in Roman — match that mix.',
-    indic_regional: 'User uses a regional Indic script — reply in the same script/register.',
-    other: 'Reply in the same language as the user. Keep dates, links, names, and booking facts accurate.',
+    other:
+      'Reply in the same language as the customer. If you are not sure what language it is, keep the draft in English or Hinglish. Do not guess a language from one shared word.',
     en: 'User writes standard English — English is OK.',
   };
   return map[register] || map.en;
@@ -76,7 +73,7 @@ Rules:
 - Answer only what they just asked, about the booking in the draft.
 - Keep every date, status, product name, link token (⟦U0⟧), and numbered booking line. Do not drop a list. Do not switch to a different booking.
 - Do not add "human agent", "talk to the team", menus, or a new question they did not ask.
-- If their message is English, reply in English. If it is Hinglish or another language, match that language.
+- Reply in the same language as the customer. If you are not sure what language it is, keep the draft in English or Hinglish.
 - One reply bubble. Do not say you are an AI.
 - If action is "forward" or "end", keep that meaning.
 

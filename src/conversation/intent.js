@@ -2,7 +2,7 @@ function detectLanguage(text) {
   return detectReplyLanguage(text).locale;
 }
 
-/** Non-Devanagari Indic scripts (Gujarati, Bengali, Tamil, …) — templates stay English; mirror localizes. */
+/** Non-Devanagari Indic scripts. The reply model localizes these; code does not name the language. */
 function hasOtherIndicScript(raw) {
   return /[\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F]/.test(
     raw,
@@ -10,31 +10,9 @@ function hasOtherIndicScript(raw) {
 }
 
 const HINDI_ROMAN_MARKERS =
-  /\b(meri|mera|mere|mujhe|mujhpe|kab|kya|hai|hain|nahi|nhi|aayegi|aayega|chahiye|batao|bataiye|batawo|kal|aaj|dhanyavad|milega|aaya|chahida)\b/;
+  /\b(meri|mera|mere|mujhe|mujhpe|kab|kya|hai|hain|nahi|nhi|aayegi|aayega|chahiye|batao|bataiye|kal|aaj|dhanyavad|milega|aaya)\b/;
 
-/** Roman Punjabi (often mixed with English). */
-function isRomanPunjabi(lower) {
-  return /\b(meye|maine|kidi|kithe|kadon|ehno|ihno|daso|batawo|chahida|chahidi|karda|kardi|karna|schedule batawo)\b/.test(
-    lower,
-  );
-}
-
-/** Roman script Gujarati (often mixed with English words). Check before Hindi — "puja" alone is not Hindi. */
-function isRomanGujarati(lower) {
-  const guj =
-    /\b(mari|maru|mara|tamari|tamaru|kyare|kyar|keware|kewa?re|kem|kevi|kevo|nathi|avse|avshe|aavse|awse|chhe|mane|tame|su|thase|thay|kari|sake)\b/.test(
-      lower,
-    );
-  return guj && !HINDI_ROMAN_MARKERS.test(lower);
-}
-
-function isRomanMarathi(lower) {
-  const mr =
-    /\b(majhi|maza|mazhi|mazha|kay|aahe|kadhi|mala|tula|zala|hotay|nahi ka)\b/.test(lower);
-  return mr && !HINDI_ROMAN_MARKERS.test(lower) && !isRomanGujarati(lower);
-}
-
-/** Plain English can use the template. Anything else in Latin script is mirrored. */
+/** Plain English can use the template. */
 function looksLikeEnglish(text) {
   const words = String(text || '')
     .toLowerCase()
@@ -48,33 +26,21 @@ function looksLikeEnglish(text) {
 
 /**
  * Stored templates: English, Devanagari Hindi, and Roman Hinglish.
- * Gujarati, Marathi, Punjabi, and other languages stay on the English draft and the mirror.
+ * Any other language is left for the reply model. Code does not name it.
  */
 function detectReplyLanguage(text) {
   const raw = String(text || '');
   if (/[\u0900-\u097F]/.test(raw)) {
-    return { locale: 'hi', mirror: true, register: 'devanagari' };
-  }
-  if (hasOtherIndicScript(raw)) {
-    return { locale: 'en', mirror: true, register: 'indic_regional' };
+    return { locale: 'hi', mirror: false, register: 'devanagari' };
   }
   const lower = raw.toLowerCase();
-  if (isRomanGujarati(lower)) {
-    return { locale: 'en', mirror: true, register: 'eng_gujarati' };
-  }
-  if (isRomanMarathi(lower)) {
-    return { locale: 'en', mirror: true, register: 'eng_marathi' };
-  }
-  if (isRomanPunjabi(lower)) {
-    return { locale: 'en', mirror: true, register: 'punjabi_roman' };
-  }
   if (HINDI_ROMAN_MARKERS.test(lower)) {
     return { locale: 'hinglish', mirror: false, register: 'hinglish' };
   }
-  if (!looksLikeEnglish(raw)) {
+  if (hasOtherIndicScript(raw) || !looksLikeEnglish(raw)) {
     return { locale: 'en', mirror: true, register: 'other' };
   }
-  return { locale: 'en', mirror: true, register: 'en' };
+  return { locale: 'en', mirror: false, register: 'en' };
 }
 
 /** Hi/hello only — welcome reply, no Gemini or Admin. */
@@ -120,56 +86,20 @@ function textContainsExternalLink(text) {
   return false;
 }
 
-/** Sankalp / gotra / name on booking — always human (MVP rules path). */
-function isSankalpOrGotraChangeRequest(text) {
-  const raw = String(text || '').trim();
-  if (!raw) return false;
-  if (!/(naam|name|gotra|sankalp|snakalp|संकल्प|नाम|गोत्र)/i.test(raw)) return false;
-  const lower = raw.toLowerCase();
-  return (
-    /\b(change|changes|changing|update|correct|edit|fix|wrong|badal|badlo|badalna|karna|karni|kqrna|chahiye|galat)\b/i.test(
-      lower,
-    ) || /बदल|सही|गलत|अपडेट|बदलना|करना|चाहिए|गलत/i.test(raw)
-  );
-}
-
-/** Upset tone on any topic — not tied to autopay, video, or one product. */
-function isIrritatedOrAngry(text) {
+/**
+ * Refund or cancellation of a booking, in English or Hindi.
+ * The team still handles it, after we know which booking.
+ * AutoPay how-to, anger, and other languages are left for the model.
+ */
+function isRefundOrCancelRequest(text) {
   const raw = String(text || '');
   const lower = raw.toLowerCase();
-  return (
-    /\b(angry|anger|irritated|irritating|furious|scam|fraud|cheat|cheated|cheating|thug|bakwas|bakwaas|worst|useless|pathetic|disgusting|shame)\b/.test(
-      lower,
-    ) ||
-    /\b(gussa|pagal|bewakoof|dhoka|thagi|bekar)\b/.test(lower) ||
-    /धोखा|ठगी|गुस्सा|बेकार|बकवास|फ्रॉड/.test(raw)
-  );
-}
-
-/** Calm “how do I stop autopay” — the word cancel here is not a puja cancellation. */
-function isCalmAutopayHelp(text) {
-  const raw = String(text || '');
-  if (!raw.trim() || isIrritatedOrAngry(raw)) return false;
-  if (/\b(refund|money back|paisa wapas)\b/i.test(raw) || /पैस[ाे].*वाप|वापस.*पैस/.test(raw)) {
-    return false;
+  if (/\b(autopay|auto[\s-]?pay|mandate)\b/.test(lower) || /ऑटोपे|मंडेट/.test(raw)) return false;
+  if (/\b(refund|money back|paisa wapas)\b/.test(lower)) return true;
+  if (/\b(cancel|cancellation)\b/.test(lower) && /\b(puja|pooja|booking|order|chadhava)\b/.test(lower)) {
+    return true;
   }
-  return (
-    /\b(autopay|auto[\s-]?pay|upi\s*mandate|\bmandate\b)\b/i.test(raw) ||
-    /ऑटोपे|ऑटो\s*पे|मंडेट/.test(raw)
-  );
-}
-
-function autopayFaqId(text) {
-  if (!isCalmAutopayHelp(text)) return null;
-  const raw = String(text || '');
-  const lower = raw.toLowerCase();
-  const whyCharged =
-    /\b(kyu|why|kata|charged|deduct|deducted|501|301|701)\b/.test(lower) ||
-    /क्यों|कट\s*ग/.test(raw);
-  const wantsSteps =
-    /\b(stop|cancel|band|kaise|how|steps)\b/.test(lower) || /कैसे|रोक|बंद/.test(raw);
-  if (whyCharged && !wantsSteps) return 'autopay_501';
-  return 'sub_autopay_cancel_steps';
+  return /रिफंड|रद्द|पैस[ाे].*वाप|वापस.*पैस/.test(raw);
 }
 
 function mentionsLive(text) {
@@ -193,95 +123,105 @@ function isOwnLiveBookingQuestion(text) {
   return mentionsLive(text) && mentionsOwnBooking(text);
 }
 
-/**
- * Call request, screenshot, upset tone, or a payment dispute that is not a calm autopay how-to.
- */
+/** A pasted link is handed to a person. What the words mean is left for the model. */
 function requiresDirectHumanHandoffText(text) {
-  const raw = String(text || '').trim();
-  if (!raw) return false;
-  if (isIrritatedOrAngry(raw)) return true;
-  if (textContainsExternalLink(raw)) return true;
-  const lower = raw.toLowerCase();
-
-  if (
-    /\b(screenshot|screen\s*shot|screen\s*capture|snap\s*sent|photo\s*sent|image\s*sent|shared\s*(a\s*)?(photo|image|screenshot)|sent\s*(you\s*)?(a\s*)?(photo|screenshot|ss))\b/i.test(
-      lower,
-    ) ||
-    /\b(ss\s*bhej|screenshot\s*bhej|photo\s*bhej|photo\s*bheja|screenshot\s*bheja)\b/i.test(lower) ||
-    /स्क्रीनशॉट|स्क्रीन\s*शॉट|फोटो\s*भेज/i.test(raw)
-  ) {
-    return true;
-  }
-
-  if (
-    /\b(call me|call us|call you|please call|can you call|can u call|could you call|how can i call|give me a call|give us a call|callback|call back|phone call|talk on call|speak on phone|need a call)\b/i.test(
-      lower,
-    ) ||
-    /\b(call karo|call kar|call kijiye|phone karo|phone kar|mujhe call|mujko call|call pe|baat phone)\b/i.test(
-      lower,
-    ) ||
-    /कॉल\s*कर|फोन\s*कर|कॉल\s*म|call\s*chahiye/i.test(raw)
-  ) {
-    return true;
-  }
-
-  if (
-    !isCalmAutopayHelp(raw) &&
-    (/\b(money\s*deduct|deducted|deduction|amount\s*deduct|wrong\s*deduct|charged|charge\s*cut|paise\s*kat|paisa\s*kat|money\s*cut|cut\s*gaya|cut\s*gayi|kat\s*gaya|kat\s*gayi|amount\s*cut)\b/i.test(
-      lower,
-    ) ||
-      /कट\s*गया|कट\s*गय|पैस[ेा]\s*कट|राशि\s*कट/i.test(raw))
-  ) {
-    return true;
-  }
-
-  if (
-    /\b(voice\s*note|voice\s*message|audio\s*message|sent\s*audio|whatsapp\s*audio|voice\s*note)\b/i.test(
-      lower,
-    ) ||
-    /वॉइस\s*नोट|ऑडियो\s*मैसेज|ऑडियो\s*भेज/i.test(raw)
-  ) {
-    return true;
-  }
-
-  return false;
+  return textContainsExternalLink(text);
 }
 
-function needsPersonAfterAnswer(text) {
+/** Invoice, bill, or receipt. Always a person — there is no invoice to send from here. */
+function isInvoiceRequest(text) {
   const raw = String(text || '');
   const lower = raw.toLowerCase();
-  if (
-    /\b(not happy|unhappy|not satisfied|didn'?t help|does not help|still missing|still wrong|still unclear|not resolved|this is wrong)\b/.test(
-      lower,
-    )
-  ) {
-    return true;
-  }
-  if (/\bstill not\b/.test(lower)) return true;
-  return /खुश नहीं|ठीक नहीं|अभी भी नहीं|मदद नहीं/.test(raw);
+  if (/\b(invoice|invoices|receipt|receipts|bill|bills)\b/.test(lower)) return true;
+  return /इनवॉइस|इनवॉयस|रसीद|बिल/.test(raw);
 }
 
 function wantsHuman(text) {
   const raw = String(text || '').trim().toLowerCase();
   if (!raw) return false;
+  if (isInvoiceRequest(text)) return true;
   if (requiresDirectHumanHandoffText(text)) return true;
-  if (isCalmAutopayHelp(text)) return false;
-  if (/^(human|agent)( please| pls)?$/i.test(raw)) return true;
+  if (/^(human|agent|human agent)( please| pls)?$/i.test(raw)) return true;
   if (
-    /\b(human agent|talk to (a )?(human|agent|someone|person)|customer care|operator|refund|cancel|complaint|manager)\b/.test(
-      raw,
+    /\b(human|agent|insaan|insan)\b/.test(raw) &&
+    /\b(baat|talk|connect|karao|karo|chahiye)\b/.test(raw)
+  ) {
+    return true;
+  }
+  return /एजेंट से बात|इंसान से बात/.test(String(text || ''));
+}
+
+/** Clear irritation or abuse. Forces a person even if the model picked a booking or a FAQ. */
+function isIrritatedOrAngry(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (
+    /\b(furious|angry|idiot|stupid|fraud|cheat|cheated|useless|bakwas|gussa|abuse|abusing|scam)\b/.test(
+      lower,
     )
   ) {
     return true;
   }
-  if (
-    /एजेंट|ऑपरेटर|इन्सान|इंसान|रिफंड|शिकायत|कम्प्लेन|कम्प्लेन्ट|रद्द|हेल्प डेस्क|पैस[ाा].*वाप|वापस.*पैस|refund|paisa wapas/i.test(
-      raw,
-    )
-  ) {
-    return true;
-  }
-  return false;
+  return /गुस्सा|गाली|धोखा|बेवकूफ/.test(raw);
+}
+
+function isSankalpOrGotraChangeRequest(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  const target = /\b(gotra|naam|name|sankalp)\b/.test(lower) || /गोत्र|नाम|संकल्प/.test(raw);
+  const change = /\b(change|badal|update|correct|galat|kardo|kar do)\b/.test(lower) || /बदल|गलत/.test(raw);
+  return target && change;
+}
+
+/** How long the puja lasts. A “when is it” question is a booking lookup, not this. */
+function isPujaDurationQuery(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (/\b(how long|duration|kitni der|kitne time|kitna time|kitne ghante)\b/.test(lower)) return true;
+  if (/कितनी देर|कितने घंटे|कितना समय/.test(raw)) return true;
+  return /\b(chalegi|chalti)\b/.test(lower) && /\b(puja|pooja)\b/.test(lower);
+}
+
+function autopayFaqId(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (!(/\b(autopay|auto[\s-]?pay|mandate)\b/.test(lower) || /ऑटोपे|मंडेट/.test(raw))) return null;
+  if (isIrritatedOrAngry(raw)) return null;
+  const askingWhy =
+    /\b(why|kyu|kyun|kyon|charged|deducted|501|301|701)\b/.test(lower) &&
+    !/\b(cancel|stop|band)\b/.test(lower);
+  return askingWhy ? 'autopay_501' : 'sub_autopay_cancel_steps';
+}
+
+function isDamagedPrasad(text) {
+  const lower = String(text || '').toLowerCase();
+  const box = /\b(prasad|dabba|box|package)\b/.test(lower) || /प्रसाद|डिब्बा/.test(String(text || ''));
+  const broken = /\b(toota|tuta|damaged|broken|kharab)\b/.test(lower) || /टूटा|खराब/.test(String(text || ''));
+  return box && broken;
+}
+
+function isAddPrasadRequest(text) {
+  const lower = String(text || '').toLowerCase();
+  return /\b(prasad|box|dabba)\b/.test(lower) && /\badd\b/.test(lower);
+}
+
+function isNoBenefitComplaint(text) {
+  const lower = String(text || '').toLowerCase();
+  return /\b(fayda nahi|koi fayda|no benefit|no effect|kuch nahi hua)\b/.test(lower);
+}
+
+function isPaymentFailedBooking(text) {
+  const lower = String(text || '').toLowerCase();
+  if (/\b(autopay|refund)\b/.test(lower)) return false;
+  const money = /\b(payment|paid|paise|paisa)\b/.test(lower);
+  const missing = /\b(pending|failed|nahi hui|nahi hua)\b/.test(lower) || /नहीं हुई|नहीं हुआ/.test(String(text || ''));
+  return money && missing;
+}
+
+function isBookingConfirmedAsk(text) {
+  if (isPaymentFailedBooking(text)) return false;
+  const lower = String(text || '').toLowerCase();
+  return /\b(booking confirm|confirm hai|payment ho chuki|payment ho gayi)\b/.test(lower);
 }
 
 function wantsNoMore(text) {
@@ -325,27 +265,13 @@ function wordCount(text) {
     .filter(Boolean).length;
 }
 
-/**
- * Long emotional / business-distress / custom-deal messages — not "when is my puja".
- * Must not trigger keyword admin lookup or rules-only puja intent.
- */
+/** Very long messages are not a booking-status shortcut. The model reads them. */
 function isComplexSupportMessage(text) {
   const raw = String(text || '').trim();
   if (!raw) return false;
   const words = wordCount(raw);
-  const len = raw.length;
-
-  if (len > 220 || words > 45) return true;
-  if (words > 22 && /[.!?।\n]/.test(raw)) return true;
-
-  const distress =
-    /karobaar|karobar|business|sale nahi|partner|dost|outstanding|faas|fass|minimum sale|20k|18k|charaunga|charaenge|bimar|continuous|sochta|utha dene|puja se possible/i.test(
-      raw,
-    ) ||
-    /करोबार|व्यापार|सेल|पार्टनर|दोस्त|फंस|बिमार|माँ|मां|outstanding|minimum/i.test(raw);
-
-  if (distress && (len > 90 || words > 16)) return true;
-  return false;
+  if (raw.length > 220 || words > 45) return true;
+  return words > 22 && /[.!?।\n]/.test(raw);
 }
 
 /** Short, explicit post-booking status questions — safe for keyword "puja/video" routing. */
@@ -356,7 +282,7 @@ function isClearPostBookingStatusQuery(text) {
   const words = wordCount(raw);
 
   const statusCue =
-    /\b(when|cuando|kab|keware|kyare|awse|avse|aavse|status|tracking|time|aayeg|aayega|aaya|aayi|schedule|milegi|milega|receive|received|published|ready)\b/.test(
+    /\b(when|kab|status|tracking|aayega|aayegi|aaya|schedule|milega|milegi)\b/.test(
       lower,
     ) ||
     /\b(not arrived|did not arrive|didn't arrive|not received|nahi aaya|nahi aayi|nahi mila)\b/.test(
@@ -365,7 +291,7 @@ function isClearPostBookingStatusQuery(text) {
     /कब|समय|ट्रैक|स्टेटस|स्थिति|नहीं आया|नहीं मिला/.test(raw);
 
   const myBookingCue =
-    /\b(when is my|my puja|mi puja|meri puja|mari puja|maro puja|puja kab|video kab|prasad kab|tracking|order status|cuando)\b/i.test(
+    /\b(when is my|my puja|meri puja|puja kab|video kab|prasad kab|tracking|order status)\b/i.test(
       lower,
     ) ||
     /meri.*puja.*kab|video.*aayeg|prasad.*milega|prasad.*delivery|वीडियो.*कब|पूजा.*कब|प्रसाद|ट्रैक/i.test(
@@ -376,87 +302,6 @@ function isClearPostBookingStatusQuery(text) {
   if (statusCue && /\b(puja|pooja|video|prasad|chadhava|order|booking)\b/i.test(lower)) {
     return words <= 25;
   }
-  return false;
-}
-
-function isSpiritualPujaRecommendationQuery(text) {
-  const raw = String(text || '').trim();
-  if (!raw || wordCount(raw) > 45) return false;
-  if (isClearPostBookingStatusQuery(raw)) return false;
-  const lower = raw.toLowerCase();
-  if (
-    /\b(money return|max return|maximum return|guarantee|guaranteed|profit|labh|returns|financial)\b/i.test(
-      lower,
-    )
-  ) {
-    return false;
-  }
-  const lifeTopic =
-    /\b(marriage|shaadi|shadi|vivah|wedding|health|bemar|bimar|sick|court|case|debt|rin|money|job|career|black magic|negative|problem|pareshani|tension)\b/i.test(
-      lower,
-    ) || /शादी|बीमार|कोर्ट|कर्ज|परेशानी/.test(raw);
-  const asksPuja =
-    /\b(which puja|kaunsi puja|konsi puja|kayi puja|recommend|suggest|best puja|puja karu|puja karni|chadhava karu|seva karu)\b/i.test(
-      lower,
-    ) || /कौन\s*सी\s*पूजा|कौनसी\s*पूजा/.test(raw);
-  return lifeTopic && (asksPuja || /\b(puja|chadhava|seva)\b/i.test(lower));
-}
-
-function isPujaGuideQuery(text) {
-  const raw = String(text || '').toLowerCase();
-  return (
-    /\b(dos and dont|do's and don't|dos dont|donts|do and dont|mantra|mantras|chant|jap|guideline|puja guide|recommended practice)\b/.test(
-      raw,
-    ) || /मंत्र|जाप|डू|डोंट|क्या कर|क्या न कर/.test(text)
-  );
-}
-
-function needsEmpatheticHumanHandoff(text) {
-  if (isSpiritualPujaRecommendationQuery(text)) return false;
-  return isComplexSupportMessage(text);
-}
-
-/** New puja/chadhava booking — not "when is my puja" post-booking support. */
-function isNewBookingQuery(text) {
-  const raw = String(text || '').toLowerCase();
-  if (
-    /\b(how to book|booking link|book puja|book pooja|book chadhava|new booking|nayi booking)\b/.test(
-      raw,
-    )
-  ) {
-    return true;
-  }
-  if (/\b(kaise book|book karna|karwana hai|karwana chahte|puja karwa)\b/.test(raw)) {
-    return true;
-  }
-  /** Roman Gujarati: "mane puja karawu che" = want puja done — not "when is my puja". */
-  if (
-    /\b(puja|pooja|chadhava)\b/.test(raw) &&
-    /\b(karawu|karavu|karawa|karvi|karwana|karwa)\b/.test(raw) &&
-    !/\b(kyare|keware|kewa?re|awse|avse|aavse|kab|when|status|video)\b/.test(raw)
-  ) {
-    return true;
-  }
-  if (/\b(mane puja|mane chadhava)\b/.test(raw) && !/\b(kyare|keware|kewa?re)\b/.test(raw)) {
-    return true;
-  }
-  if (
-    /\b(want|wants|get|need|like to|wish to|would like)\b/.test(raw) &&
-    /\b(puja|pooja|chadhava)\b/.test(raw) &&
-    !/\b(my|meri|mera|when|kab|time|video|status|refund|order|already)\b/.test(raw)
-  ) {
-    return true;
-  }
-  return false;
-}
-
-function isPujaDurationQuery(text) {
-  const raw = String(text || '');
-  const lower = raw.toLowerCase();
-  if (/\b(video|recording|prasad)\b/.test(lower)) return false;
-  if (/\b(how long|kitni der|kitne time|kitna time|duration)\b/.test(lower)) return true;
-  if (/\b(chalegi|chlegi|chalti)\b/.test(lower) && /\b(puja|pooja)\b/.test(lower)) return true;
-  if (/कितने समय|कितनी देर/.test(raw)) return true;
   return false;
 }
 
@@ -475,11 +320,8 @@ function intentForBookingQuestion(text, classified) {
 }
 
 function classifyIntent(text) {
-  if (isPujaDurationQuery(text)) return null;
   if (isOwnLiveBookingQuestion(text)) return 'live';
-  if (isNewBookingQuery(text)) return null;
   if (isComplexSupportMessage(text)) return null;
-  if (isPujaGuideQuery(text)) return 'guide';
   if (!isClearPostBookingStatusQuery(text)) return null;
   const raw = String(text || '').toLowerCase();
   const video =
@@ -542,28 +384,27 @@ module.exports = {
   detectReplyLanguage,
   isPureSocialGreeting,
   isPureThanks,
-  isIrritatedOrAngry,
-  isCalmAutopayHelp,
-  autopayFaqId,
   isCatalogueLiveQuestion,
   isOwnLiveBookingQuestion,
   requiresDirectHumanHandoffText,
-  isSankalpOrGotraChangeRequest,
-  isSpiritualPujaRecommendationQuery,
-  isPujaGuideQuery,
   hasOtherIndicScript,
-  isRomanGujarati,
-  isRomanMarathi,
   wantsHuman,
-  needsPersonAfterAnswer,
+  isInvoiceRequest,
+  isIrritatedOrAngry,
+  isSankalpOrGotraChangeRequest,
+  isPujaDurationQuery,
+  autopayFaqId,
+  isDamagedPrasad,
+  isAddPrasadRequest,
+  isNoBenefitComplaint,
+  isPaymentFailedBooking,
+  isBookingConfirmedAsk,
+  isRefundOrCancelRequest,
   wantsNoMore,
   wantsYesMore,
-  isNewBookingQuery,
   isComplexSupportMessage,
   isClearPostBookingStatusQuery,
-  needsEmpatheticHumanHandoff,
   classifyIntent,
-  isPujaDurationQuery,
   intentForBookingQuestion,
   followUpOnOpenBooking,
   isOrderIntent,

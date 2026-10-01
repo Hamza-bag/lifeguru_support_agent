@@ -6,15 +6,23 @@ const {
   classifyIntent,
   isOrderIntent,
   isComplexSupportMessage,
-  isSankalpOrGotraChangeRequest,
+  isRefundOrCancelRequest,
   isIrritatedOrAngry,
+  isInvoiceRequest,
 } = require('../conversation/intent');
 const { classifyRulesBlockForPrompt } = require('../content/loadContent');
 const { faqById } = require('../faq/faqLookup');
 const { faqCatalogForLlm } = require('../faq/faqSelect');
 const { chooseOrderLookup } = require('../orders/orderLookup');
 
-const VALID_ROUTES = new Set(['admin', 'faq', 'human', 'clarify']);
+const VALID_ROUTES = new Set([
+  'admin',
+  'faq',
+  'human',
+  'clarify',
+  'sankalp_change',
+  'booking_handoff',
+]);
 const VALID_INTENTS = new Set(['puja', 'video', 'prasad', 'both', null]);
 
 function buildClassifyPrompt(userText, recentConversation = '', catalog = []) {
@@ -30,7 +38,7 @@ function buildClassifyPrompt(userText, recentConversation = '', catalog = []) {
 
 {
   "language": "en" | "hi" (template hint only — user may write any language; routing must still work),
-  "route": "admin" | "faq" | "human" | "clarify",
+  "route": "admin" | "faq" | "human" | "clarify" | "sankalp_change" | "booking_handoff",
   "intent": "puja" | "video" | "prasad" | "both" | null,
   "faqId": "<catalog id>" | null,
   "orderLookup": "latest" | "first" | "on_date" | "between" | "puja_on" | null,
@@ -51,7 +59,8 @@ Routes:
   on_date = booked on orderDate. between = booked from orderDateFrom through orderDateTo.
   puja_on = puja scheduled on orderDate (not the booking date). Dates are YYYY-MM-DD only. Never invent a date.
 - "faq": LifeGuru policy/how-to, no order lookup (autopay explainer, how to book, want to book/get puja done — not existing order status). When route is "faq", set faqId to one catalog id that matches the question. For every other route, faqId must be null. Never invent an id.
-- "human": refund, complaint, fraud, media/screenshot, video delay insist/anger, sensitive; long emotional life/business distress; custom sales guarantees or partner money disputes; health/family hardship — even if they mention puja/₹51/sankalp. Also human when they want a person, even if a word is misspelled (for example a transfer or connect request). Read the meaning, not the exact spelling.
+- "human": complaint, fraud, media/screenshot, video delay insist/anger, sensitive; long emotional life/business distress; custom sales guarantees or partner money disputes; health/family hardship — even if they mention puja/₹51/sankalp. Also human when they want a person, even if a word is misspelled (for example a transfer or connect request). Read the meaning, not the exact spelling.
+- A refund or cancellation of a booking is not "human" yet. Route "booking_handoff" so we ask which booking first, then connect them.
 - Name or gotra change is not "human" yet. Route "sankalp_change" so we ask which booking first. The team checks whether that booking can still be changed.
 - NOT "admin": they want help opening a business, minimum sales promises, or puja "so business runs" — that is human, not booking status lookup.
 - "clarify": hi/hello only, vague "help", or ambiguous (one short routing step — never answer off-topic).
@@ -72,13 +81,35 @@ function acceptedFaqId(route, rawId) {
   return faqById(id, 'en') ? id : null;
 }
 
-function preferSankalpPick(result, userText) {
-  if (!isSankalpOrGotraChangeRequest(userText) || isIrritatedOrAngry(userText)) return result;
-  return { ...result, route: 'sankalp_change', intent: null, faqId: null };
+function preferBookingHandoff(result, userText) {
+  if (!isRefundOrCancelRequest(userText)) return result;
+  return { ...result, route: 'booking_handoff', intent: 'human', faqId: null };
+}
+
+function preferDirectHuman(result, userText) {
+  if (isInvoiceRequest(userText)) {
+    return {
+      ...result,
+      route: 'human',
+      intent: null,
+      faqId: null,
+      empathetic: false,
+      reason: 'invoice_override',
+    };
+  }
+  if (!isIrritatedOrAngry(userText)) return result;
+  return {
+    ...result,
+    route: 'human',
+    intent: null,
+    faqId: null,
+    empathetic: true,
+    reason: 'abuse_override',
+  };
 }
 
 function normalizeClassifyResult(parsed, userText) {
-  return preferSankalpPick(buildClassifyResult(parsed, userText), userText);
+  return preferDirectHuman(preferBookingHandoff(buildClassifyResult(parsed, userText), userText), userText);
 }
 
 function buildClassifyResult(parsed, userText) {

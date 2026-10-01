@@ -40,7 +40,7 @@ CS edits those files; no change to `classify.js` / `polish.js` required for poli
 
 **Prompt body (after rules block):** Router-only instructions; scope in/out; route definitions; knowledge-base catalog when `SUPPORT_LLM_FAQ_SELECT` is on (the id is chosen in this same call); optional recent conversation; current user message JSON-stringified.
 
-There is no separate knowledge-base Gemini call. Mirror runs only when the user's language is not already English or Hindi (Hinglish, Gujarati, and other registers). Plain English and Devanagari replies stay on the template.
+There is no separate knowledge-base Gemini call. English, Hinglish, and Devanagari stay on the stored template. Any other language is rewritten by the model. If the model is not sure of the language, it keeps English or Hinglish.
 
 **Not LLM:** Shortcuts via `routingGate.js`; rules-first via `rulesRoute.js`; fallbacks in `normalizeClassifyResult` + `intent.js`.
 
@@ -64,7 +64,7 @@ There is no separate knowledge-base Gemini call. Mirror runs only when the user'
 { "replies": ["...", "..."] }
 ```
 
-**Prompt intent:** Rewrite into the user's register when templates are the wrong language (Hinglish, Eng–Gujarati, Eng–Marathi, other Indic scripts). Plain English and Hindi stay on the template. Civil tone per guardrails; do not invent facts.
+**Prompt intent:** Rewrite into the customer's language when it is not English, Hinglish, or Hindi. The model names the language. If it is not sure, it keeps English or Hinglish. Civil tone per guardrails; do not invent facts.
 
 ---
 

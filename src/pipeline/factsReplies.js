@@ -1,6 +1,7 @@
 const config = require('../config');
 const { t } = require('../conversation/copy');
-const { classifyIntent, intentForBookingQuestion } = require('../conversation/intent');
+const { classifyIntent, intentForBookingQuestion, isPujaDurationQuery } = require('../conversation/intent');
+const { faqById } = require('../faq/faqLookup');
 const { formatWhen, formatStatus } = require('../conversation/format');
 const { reply, forward, askMoreSuggestions } = require('./responses');
 const { failOpenHandoff } = require('../lib/failOpen');
@@ -127,7 +128,7 @@ function buildLiveReply(lang, facts) {
   return t(lang, 'factsLiveNotIncluded', { product });
 }
 
-function buildFactsReply(lang, facts, intent) {
+function buildFactsReply(lang, facts, intent, intentText = '') {
   const product = facts.productName || 'booking';
   const status = formatStatus(facts.orderStatus, lang);
   const when = formatWhen(facts.scheduledAt, lang);
@@ -139,7 +140,11 @@ function buildFactsReply(lang, facts, intent) {
 
   if (intent === 'guide') return buildGuideReply(lang, facts);
   if (intent === 'live') return buildLiveReply(lang, facts);
-  if (intent === 'puja') return puja;
+  if (intent === 'puja') {
+    if (!isPujaDurationQuery(intentText)) return puja;
+    const duration = faqById('puja_duration_hours', lang);
+    return duration?.text ? `${puja}\n${duration.text}` : puja;
+  }
   if (intent === 'video') return video;
   if (intent === 'prasad') return prasad;
   if (intent === 'both') {
@@ -180,7 +185,7 @@ async function answerForOrder(state, factsClient, intentText) {
       response: forward(lang),
     };
   }
-  const body = buildFactsReply(lang, facts, intent);
+  const body = buildFactsReply(lang, facts, intent, intentText);
   return {
     state: { ...state, stage: 'ask_more', askMoreAttempts: 0, pendingText: null, pendingIntent: null },
     response: reply(`${body}\n\n${t(lang, 'askMore')}`, {

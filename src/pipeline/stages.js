@@ -1,12 +1,10 @@
 const policy = require('../config/policy');
 const {
   wantsHuman,
-  needsPersonAfterAnswer,
   wantsNoMore,
   wantsYesMore,
   classifyIntent,
   followUpOnOpenBooking,
-  isPujaDurationQuery,
   isOrderIntent,
   detectReplyLanguage,
 } = require('../conversation/intent');
@@ -32,6 +30,8 @@ const {
   handleAwaitBookingNumber,
   lookupAndShowOrders,
   beginNameChange,
+  beginBookingIssue,
+  forwardBookingIssue,
   handleSelectOrder,
 } = require('./orderFlow');
 const { parseOrderLookup } = require('../orders/orderLookup');
@@ -81,6 +81,24 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
     return started;
   }
 
+  if (routed.route === 'booking_handoff') {
+    const { phone, source: phoneSource } = resolveChatPhone(input, state);
+    if (!phone) {
+      return {
+        state: { ...state, stage: 'await_booking_number', pendingText: queryText },
+        response: withClassifyMeta(askPhoneForHumanReply(lang), routed.classifyMeta),
+      };
+    }
+    const started = await beginBookingIssue(
+      { ...state, chatPhone: phone, chatPhoneSource: phoneSource || 'visitor' },
+      factsClient,
+      queryText,
+      phone,
+    );
+    started.response = withClassifyMeta(started.response, routed.classifyMeta);
+    return started;
+  }
+
   if (routed.route === 'human') {
     return {
       state,
@@ -89,6 +107,9 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
   }
   if (routed.route === 'faq') {
     const faq = await replyFromFaq(state, queryText, routed.classifyMeta?.faqId);
+    if (routed.classifyMeta?.faqId === 'puja_no_benefit_no_guarantee') {
+      faq.state = { ...faq.state, noBenefitAsks: (state.noBenefitAsks || 0) + 1 };
+    }
     faq.response = withClassifyMeta(faq.response, routed.classifyMeta);
     return faq;
   }
@@ -216,11 +237,8 @@ async function handleAskMore(state, text, factsClient, input) {
   if (wantsNoMore(text)) {
     return { state: emptyState(), response: endChat(lang) };
   }
-  if (wantsHuman(text) || needsPersonAfterAnswer(text)) {
+  if (wantsHuman(text)) {
     return { state, response: forward(lang) };
-  }
-  if (isPujaDurationQuery(text)) {
-    return replyFromFaq(state, text, 'puja_duration_hours');
   }
   if (state.orderId && isLateVideoFollowUp(text)) {
     return answerForOrder({ ...state, pendingIntent: 'video' }, factsClient, text);
@@ -341,6 +359,9 @@ async function runConversationStages(state, text, factsClient, turnInput) {
     }
     if (state.stage === 'await_booking_number') {
       return handleAwaitBookingNumber(state, text);
+    }
+    if (state.stage === 'await_handoff_details') {
+      return forwardBookingIssue(state, null);
     }
     if (state.stage === 'select_order') {
       return handleSelectOrder(state, text, factsClient);

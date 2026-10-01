@@ -7,6 +7,7 @@ const { normalizePhoneDigits, extractPhoneCandidate } = require('../src/orders/p
 const { phoneEqualityValues, userPhoneWhere } = require('../src/services/supportFacts/orderListHelpers');
 const {
   wantsHuman,
+  isRefundOrCancelRequest,
   detectLanguage,
   detectReplyLanguage,
   topicSuggestions,
@@ -51,29 +52,42 @@ describe('intent', () => {
     assert.equal(detectLanguage('when is my puja'), 'en');
     const devanagari = detectReplyLanguage('मेरी पूजा कब है');
     assert.equal(devanagari.locale, 'hi');
-    assert.equal(devanagari.mirror, true);
+    assert.equal(devanagari.mirror, false);
     const gujarati = detectReplyLanguage('મારી પૂજા ક્યારે છે');
     assert.equal(gujarati.locale, 'en');
-    assert.equal(gujarati.register, 'indic_regional');
-    const engGuj = detectReplyLanguage('mari puja keweare awse');
-    assert.equal(engGuj.locale, 'en');
-    assert.equal(engGuj.register, 'eng_gujarati');
+    assert.equal(gujarati.register, 'other');
+    assert.equal(gujarati.mirror, true);
+    const otherLatin = detectReplyLanguage('mari puja keweare awse');
+    assert.equal(otherLatin.register, 'other');
+    assert.equal(otherLatin.mirror, true);
     assert.equal(detectReplyLanguage('meri puja kab hai').register, 'hinglish');
-    assert.equal(detectReplyLanguage('naa puja eppudu').register, 'other');
-    assert.equal(detectReplyLanguage('cuando esta mi reserva').register, 'other');
+    const telugu = detectReplyLanguage('naa puja eppudu');
+    assert.equal(telugu.register, 'other');
+    assert.equal(telugu.mirror, true);
+    const spanish = detectReplyLanguage('cuando esta mi reserva');
+    assert.equal(spanish.register, 'other');
+    assert.equal(spanish.mirror, true);
     assert.equal(detectReplyLanguage('when is my puja').register, 'en');
     assert.equal(detectReplyLanguage('I want to book puja').register, 'en');
     assert.equal(detectReplyLanguage('Last puja?').register, 'en');
     assert.equal(
       detectReplyLanguage('Meye pooja book kidi , ehno schedule batawo').register,
-      'punjabi_roman',
+      'other',
+    );
+    assert.equal(
+      detectReplyLanguage('Autopay cancel karna hai paise cut gaye').register,
+      'hinglish',
     );
   });
 
-  it('detects human / refund', () => {
-    assert.equal(wantsHuman('I want a refund'), true);
+  it('detects a person request separately from a booking refund', () => {
+    assert.equal(wantsHuman('I want a refund'), false);
+    assert.equal(isRefundOrCancelRequest('I want a refund'), true);
+    assert.equal(isRefundOrCancelRequest('Autopay cancel karna hai paise cut gaye'), false);
     assert.equal(wantsHuman('Human'), true);
     assert.equal(wantsHuman('when is my puja'), false);
+    assert.equal(wantsHuman('invoice bhejo'), true);
+    assert.equal(wantsHuman('Puja par GST kyun laga hai?'), false);
   });
 
   it('classifies puja, video, prasad', () => {
@@ -139,16 +153,10 @@ describe('conversation (query-first, chat phone lookup)', () => {
     assert.equal(handoff.response.action, 'forward');
   });
 
-  it('lists bookings for puja time instead of handing off, and books without campaigns', async () => {
-    const booked = await handleTurn(
-      { text: 'I want to book puja', chatPhone: CHAT, isNewChat: true },
-      facts,
-    );
-    assert.equal(booked.response.replies.length, 1);
-    assert.match(booked.response.replies[0], /lifeguru.app\/mandir-puja/);
-    assert.doesNotMatch(booked.response.replies[0], /campaign/i);
+  it('lists bookings when the customer picks puja time', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
     const schedule = await handleTurn(
-      { state: booked.state, text: 'Puja time', chatPhone: CHAT },
+      { state, text: 'Puja time', chatPhone: CHAT },
       facts,
     );
     assert.equal(schedule.response.action, 'reply');
@@ -206,21 +214,6 @@ describe('conversation (query-first, chat phone lookup)', () => {
     assert.equal(handoff.state.stage, 'await_query');
   });
 
-  it('shares autopay cancel steps and still forwards a call request', async () => {
-    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
-    const autopay = await handleTurn(
-      { state, text: 'stop autopay money deducted', chatPhone: CHAT },
-      facts,
-    );
-    assert.equal(autopay.response.action, 'reply');
-    assert.match(autopay.response.replies.join('\n'), /PhonePe|youtube\.com\/shorts/i);
-    const call = await handleTurn(
-      { state, text: 'How can I call you', chatPhone: CHAT },
-      facts,
-    );
-    assert.equal(call.response.action, 'forward');
-  });
-
   it('forwards image webhook without text', async () => {
     let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
     const img = await handleTurn(
@@ -235,13 +228,47 @@ describe('conversation (query-first, chat phone lookup)', () => {
     assert.equal(img.response.action, 'forward');
   });
 
-  it('forwards refund without topic menu', async () => {
+  it('lists recent bookings before a refund handoff', async () => {
     let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
-    const result = await handleTurn(
+    const listed = await handleTurn(
       { state, text: 'I want a refund', chatPhone: CHAT },
       facts,
     );
-    assert.equal(result.response.action, 'forward');
+    assert.equal(listed.response.action, 'reply');
+    const body = listed.response.replies.join('\n');
+    assert.match(body, /Satyanarayan/);
+    assert.match(body, /Chadhava/);
+    assert.equal(listed.state.stage, 'select_order');
+
+    const picked = await handleTurn(
+      { state: listed.state, text: '1', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(picked.response.action, 'forward');
+    assert.match(picked.response.replies.join('\n'), /Satyanarayan/);
+  });
+
+  it('asks for puja details when the refund booking is not in the list, then connects', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+    ({ state } = await handleTurn(
+      { state, text: 'I want refund for puja', chatPhone: CHAT },
+      facts,
+    ));
+    const asked = await handleTurn(
+      { state, text: 'it is a different puja', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(asked.response.action, 'reply');
+    assert.equal(asked.state.stage, 'await_handoff_details');
+    const connected = await handleTurn(
+      {
+        state: asked.state,
+        text: 'Ganesh puja on 2 March, booked from 9811111111',
+        chatPhone: CHAT,
+      },
+      facts,
+    );
+    assert.equal(connected.response.action, 'forward');
   });
 
   it('no booking on chat number → ask booking number → forward', async () => {

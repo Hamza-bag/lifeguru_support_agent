@@ -6,6 +6,7 @@ const {
   isPureThanks,
   requiresDirectHumanHandoffText,
   detectReplyLanguage,
+  isRefundOrCancelRequest,
 } = require('./intent');
 
 /**
@@ -34,6 +35,10 @@ function shouldSkipLlmClassify(state, text) {
 
   if (wantsHuman(raw)) return true;
 
+  if (isRefundOrCancelRequest(raw)) return true;
+
+  if (stage === 'await_handoff_details') return true;
+
   if (isPureSocialGreeting(raw) || isPureThanks(raw)) return true;
 
   if (requiresDirectHumanHandoffText(raw)) return true;
@@ -49,16 +54,14 @@ function isTopicChipOnly(raw) {
 }
 
 /**
- * Skip Gemini mirror when the stored template already matches the user.
- * English, Devanagari, and Hinglish are stored. Other languages are rewritten.
+ * Skip Gemini mirror for stored templates: English, Devanagari, Hinglish.
+ * Anything else is rewritten by the model in the customer's language.
  */
 function shouldSkipLlmMirror(state, text) {
   const raw = String(text || '').trim();
   if (!raw) return true;
 
   const stage = state.stage || 'await_query';
-
-  if (stage === 'select_order') return true;
 
   if (stage === 'ask_more') {
     if (wantsNoMore(raw) || wantsYesMore(raw)) return true;
@@ -77,10 +80,12 @@ function shouldSkipLlmMirror(state, text) {
     if (digits.length >= 10) return true;
   }
 
-  const register = detectReplyLanguage(raw).register;
-  if (register === 'en' || register === 'devanagari' || register === 'hinglish') return true;
-
-  return false;
+  const detected = detectReplyLanguage(raw).register;
+  const sessionRegister = state.replyRegister;
+  const numberPick = /^\d{1,2}$/.test(raw);
+  const register =
+    numberPick && sessionRegister && sessionRegister !== 'en' ? sessionRegister : detected;
+  return register === 'en' || register === 'devanagari' || register === 'hinglish';
 }
 
 module.exports = { shouldSkipLlmClassify, shouldSkipLlmMirror };

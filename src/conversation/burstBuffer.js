@@ -7,7 +7,6 @@ const {
   isPureThanks,
   wantsHuman,
   requiresDirectHumanHandoffText,
-  isSankalpOrGotraChangeRequest,
   intentFromTopicChoice,
   followUpOnOpenBooking,
 } = require('./intent');
@@ -35,7 +34,6 @@ function shouldUseBurstBuffer(state, text, input) {
   if (state?.orderId && followUpOnOpenBooking(raw)) return false;
   if (shouldSkipLlmClassify(state, raw)) return false;
   if (requiresDirectHumanHandoffText(raw)) return false;
-  if (isSankalpOrGotraChangeRequest(raw)) return false;
   if (isPureSocialGreeting(raw) || isPureThanks(raw)) return false;
   if (intentFromTopicChoice(raw)) return false;
   return true;
@@ -57,7 +55,7 @@ function bookingBurstLooksComplete(combined, buf) {
   if (buf.parts.length <= 1) return true;
   if (wordCount(combined) >= 5) return true;
   if (
-    /\b(kab|when|kyare|keware|awse|aavse|status|time|aayeg|aayega|milega|milegi|nahi|video|prasad)\b/i.test(
+    /\b(kab|when|status|time|aayeg|aayega|milega|milegi|nahi|video|prasad)\b/i.test(
       combined,
     )
   ) {
@@ -70,7 +68,6 @@ function isBurstReady(state, combined, buf, lang) {
   if (!combined.trim()) return false;
   if (/^[\s?.!,…]+$/.test(combined.trim()) && buf.parts.length >= 2) return true;
   if (requiresDirectHumanHandoffText(combined)) return true;
-  if (isSankalpOrGotraChangeRequest(combined)) return true;
   if (wantsHuman(combined)) return true;
   if (isPureSocialGreeting(combined) || isPureThanks(combined)) return true;
   if (bookingBurstLooksComplete(combined, buf)) return true;

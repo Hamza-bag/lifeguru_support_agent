@@ -50,6 +50,10 @@ describe('routingGate', () => {
       ),
       false,
     );
+    assert.equal(
+      shouldSkipLlmMirror({ stage: 'await_query' }, 'cuando esta mi reserva'),
+      false,
+    );
   });
 
   it('skips mirror for hello and order pick', () => {
@@ -59,8 +63,12 @@ describe('routingGate', () => {
       true,
     );
     assert.equal(
+      shouldSkipLlmMirror({ stage: 'select_order', replyRegister: 'other' }, '1'),
+      false,
+    );
+    assert.equal(
       shouldSkipLlmMirror({ stage: 'select_order', replyRegister: 'other' }, 'shutup'),
-      true,
+      false,
     );
   });
 });

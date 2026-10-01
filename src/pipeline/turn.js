@@ -28,10 +28,13 @@ async function handleTurn(input, factsClient) {
 
   if (text) {
     const detected = detectReplyLanguage(text);
+    const numberPick = /^\d{1,2}$/.test(text);
+    const keepSessionLanguage =
+      numberPick && state.replyRegister && state.replyRegister !== 'en';
     state = {
       ...state,
-      language: detected.locale,
-      replyRegister: detected.register,
+      language: keepSessionLanguage ? state.language : detected.locale,
+      replyRegister: keepSessionLanguage ? state.replyRegister : detected.register,
     };
   }
 
