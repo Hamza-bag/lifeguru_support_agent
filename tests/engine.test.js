@@ -83,6 +83,9 @@ describe('intent', () => {
   it('detects a person request separately from a booking refund', () => {
     assert.equal(wantsHuman('I want a refund'), false);
     assert.equal(isRefundOrCancelRequest('I want a refund'), true);
+    assert.equal(isRefundOrCancelRequest('paisa wapas karo'), true);
+    assert.equal(isRefundOrCancelRequest('Yeh puja se paisa wapas milega na?'), false);
+    assert.equal(isRefundOrCancelRequest('Will this puja give returns'), false);
     assert.equal(isRefundOrCancelRequest('Autopay cancel karna hai paise cut gaye'), false);
     assert.equal(wantsHuman('Human'), true);
     assert.equal(wantsHuman('when is my puja'), false);
@@ -172,6 +175,27 @@ describe('conversation (query-first, chat phone lookup)', () => {
     assert.equal(state.stage, 'await_query');
     assert.match(response.replies.join(' '), /LifeGuru support|Namaste/i);
     assert.equal(response.suggestions, undefined);
+  });
+
+  it('greets on the first message of a new chat, then answers', async () => {
+    const { response } = await handleTurn(
+      { text: 'when is my puja', isNewChat: true, chatPhone: CHAT },
+      facts,
+    );
+    assert.match(response.replies[0], /LifeGuru support|Namaste/i);
+    assert.match(response.replies.join('\n'), /1\./);
+  });
+
+  it('greets a stretched hello and then shows the topic card', async () => {
+    let { state, response } = await handleTurn({ text: '', isNewChat: true }, facts);
+    ({ state, response } = await handleTurn(
+      { state, text: 'Hellooooo', chatPhone: CHAT },
+      facts,
+    ));
+    assert.equal(state.stage, 'pick_topic');
+    assert.match(response.replies[0], /LifeGuru support|Namaste/i);
+    assert.match(response.replies.join('\n'), /Choose one|विकल्प/);
+    assert.ok(response.suggestions?.length);
   });
 
   it('greets on hello without topic menu', async () => {
@@ -284,6 +308,46 @@ describe('conversation (query-first, chat phone lookup)', () => {
     );
     assert.equal(handoff.response.action, 'forward');
     assert.equal(handoff.state.stage, 'await_query');
+  });
+
+  it('answers autopay cancel from the knowledge base, then connects when they insist', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+    const steps = await handleTurn(
+      { state, text: 'Autopay cancel karna hai', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(steps.response.action, 'reply');
+    assert.equal(steps.response.classifyMeta.faqId, 'sub_autopay_cancel_steps');
+    assert.match(steps.response.replies.join('\n'), /PhonePe/);
+    assert.equal(steps.state.lastFaqId, 'sub_autopay_cancel_steps');
+
+    const charged = await handleTurn(
+      { state: steps.state, text: 'paise cut gaye 501', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(charged.response.action, 'reply');
+    assert.equal(charged.response.classifyMeta.faqId, 'autopay_501');
+
+    const insist = await handleTurn(
+      { state: charged.state, text: 'tum hi cancel karo mera paisa kata', chatPhone: CHAT },
+      facts,
+    );
+    assert.equal(insist.response.action, 'forward');
+    assert.equal(insist.response.classifyMeta.reason, 'rules_insist_after_faq');
+  });
+
+  it('connects a person the third time the same autopay question is asked', async () => {
+    let { state } = await handleTurn({ text: '', isNewChat: true }, facts);
+    const line = 'Please cancel my autopay mandate';
+    for (let i = 0; i < 2; i += 1) {
+      const turn = await handleTurn({ state, text: line, chatPhone: CHAT }, facts);
+      assert.equal(turn.response.action, 'reply');
+      assert.equal(turn.response.classifyMeta.faqId, 'sub_autopay_cancel_steps');
+      state = turn.state;
+    }
+    const third = await handleTurn({ state, text: line, chatPhone: CHAT }, facts);
+    assert.equal(third.response.action, 'forward');
+    assert.equal(third.response.classifyMeta.reason, 'rules_faq_repeat');
   });
 
   it('closes after no more help', async () => {

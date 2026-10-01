@@ -99,10 +99,20 @@ function faqAnswer(lang, text) {
   return reply(`${text}\n\n${t(lang, 'askMore')}`, { suggestions: askMoreSuggestions(lang) });
 }
 
+function rememberFaq(state, faqId) {
+  const same = state.lastFaqId === faqId;
+  return {
+    ...state,
+    lastFaqId: faqId,
+    faqRepeatCount: same ? (state.faqRepeatCount || 0) + 1 : 1,
+  };
+}
+
 function answeredFaq(state, lang, picked, meta) {
+  const remembered = rememberFaq(state, picked.id);
   if (picked.handoff) {
     return {
-      state: { ...state, stage: 'ask_more', askMoreAttempts: 0, handoffEscalation: picked.id },
+      state: { ...remembered, stage: 'ask_more', askMoreAttempts: 0, handoffEscalation: picked.id },
       response: withClassifyMeta(
         { action: 'forward', replies: [`${picked.text}\n\n${t(lang, 'forward')}`] },
         { ...meta, route: 'human', reason: `faq_handoff:${picked.id}` },
@@ -110,7 +120,7 @@ function answeredFaq(state, lang, picked, meta) {
     };
   }
   return {
-    state: { ...state, stage: 'ask_more', askMoreAttempts: 0 },
+    state: { ...remembered, stage: 'ask_more', askMoreAttempts: 0 },
     response: withClassifyMeta(faqAnswer(lang, picked.text), meta),
   };
 }
@@ -146,6 +156,23 @@ async function replyFromFaq(state, userText, faqId = null) {
   });
 }
 
+function blockRepeatedFaq(state, result) {
+  if (!result || result.route !== 'faq') return result;
+  const faqId = result.classifyMeta?.faqId;
+  if (!faqId || state.lastFaqId !== faqId || (state.faqRepeatCount || 0) < 2) return result;
+  return {
+    ...result,
+    route: 'human',
+    intent: 'human',
+    classifyMeta: {
+      ...result.classifyMeta,
+      route: 'human',
+      faqId: null,
+      reason: 'faq_repeat',
+    },
+  };
+}
+
 async function applyRouting(state, queryText) {
   const lang = state.language || detectLanguage(queryText);
   let next = { ...state, language: lang };
@@ -171,7 +198,7 @@ async function applyRouting(state, queryText) {
   if (policy.routingStrategy === 'rules_first') {
     const rulesHit = tryRulesRoute(state, queryText);
     if (rulesHit) {
-      return applyClassifyResult(next, lang, rulesHit);
+      return blockRepeatedFaq(next, applyClassifyResult(next, lang, rulesHit));
     }
   }
 
@@ -189,7 +216,7 @@ async function applyRouting(state, queryText) {
       userText: queryText,
       recentConversation,
     });
-    return applyClassifyResult(next, lang, c);
+    return blockRepeatedFaq(next, applyClassifyResult(next, lang, c));
   }
 
   if (

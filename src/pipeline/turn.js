@@ -8,9 +8,23 @@ const { shouldUseBurstBuffer, applyBurstBuffer } = require('../conversation/burs
 const config = require('../config');
 const { emptyState, WELCOME_QUERY } = require('./state');
 const { welcomePrompt } = require('./responses');
+const { t } = require('../conversation/copy');
 const { buildFactsReply } = require('./factsReplies');
 const { resolveChatPhone } = require('./phoneContext');
 const { handleQueryFirstTurn } = require('./stages');
+
+function prependFirstGreeting(result, { isNewChat, text }) {
+  if (!isNewChat || !text) return;
+  const replies = result.response?.replies;
+  if (!Array.isArray(replies) || !replies.length) return;
+  const lang = result.state.language || 'en';
+  const welcome = t(lang, 'welcomeQuery');
+  const first = String(replies[0] || '');
+  if (!first.startsWith(welcome.slice(0, 12))) {
+    result.response = { ...result.response, replies: [welcome, ...replies] };
+  }
+  result.state = { ...result.state, greeted: true };
+}
 
 async function handleTurn(input, factsClient) {
   let state = input.state ? { ...emptyState(), ...input.state } : emptyState();
@@ -63,11 +77,12 @@ async function handleTurn(input, factsClient) {
 
   const turnInputWithPayload = { ...turnInput, salesIqPayload: input.salesIqPayload };
   const result = await handleQueryFirstTurn(state, routeText, factsClient, turnInputWithPayload);
+  prependFirstGreeting(result, { isNewChat: input.isNewChat, text: routeText });
 
   if (routeText && !input.isNewChat) {
     result.state = appendTurn(result.state, 'user', routeText);
   }
-  const botLine = result.response?.replies?.[0];
+  const botLine = (result.response?.replies || []).filter(Boolean).join('\n\n');
   if (botLine && result.response.action !== 'pending') {
     result.state = appendTurn(result.state, 'bot', botLine);
   }

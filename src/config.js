@@ -35,7 +35,7 @@ module.exports = {
   /** Capture-only SalesIQ listener. Off unless explicitly enabled (public URL). */
   supportDevShadow: parseBool(process.env.SUPPORT_DEV_SHADOW, false),
   geminiApiKey: process.env.GEMINI_API_KEY || '',
-  geminiModel: process.env.GEMINI_SUPPORT_MODEL || 'gemini-2.5-flash-lite',
+  geminiModel: process.env.GEMINI_SUPPORT_MODEL || 'gemini-3.5-flash-lite',
   llmClassifyTimeoutMs: Number(process.env.SUPPORT_LLM_CLASSIFY_TIMEOUT_MS) || 4500,
   /** Rewrite template replies in the user's language/register (Hinglish, polite tone). */
   llmMirrorLanguage: parseBool(

@@ -1,6 +1,7 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { normalizeClassifyResult } = require('../src/llm/classify');
+const { buildClassifyPrompt, normalizeClassifyResult } = require('../src/llm/classify');
+const { faqCatalogForLlm } = require('../src/faq/faqSelect');
 const { applyClassifyResult } = require('../src/pipeline/router');
 
 describe('llm classify normalize', () => {
@@ -65,6 +66,17 @@ describe('llm classify normalize', () => {
     );
     assert.equal(r.route, 'human');
     assert.equal(r.empathetic, true);
+  });
+
+  it('shows each card by the question it answers, including words the reply opening drops', () => {
+    const catalog = faqCatalogForLlm();
+    assert.ok(catalog.length >= 80);
+    const hanuman = catalog.find((c) => c.id === 'which_puja_hanuman');
+    assert.match(hanuman.ask, /Hanuman/i);
+    const prompt = buildClassifyPrompt('Hanuman chadhava', '', catalog);
+    assert.match(prompt, /which_puja_hanuman \| Hanuman ji/);
+    assert.match(prompt, /booking_handoff/);
+    assert.doesNotMatch(prompt, /\*\*human\*\*: refund/);
   });
 
   it('routes human for refund-like LLM route', () => {

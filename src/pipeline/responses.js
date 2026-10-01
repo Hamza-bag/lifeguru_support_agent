@@ -82,11 +82,13 @@ function forwardAfterPhoneCollected(lang) {
   return { action: 'forward', replies: lines };
 }
 
-function pickTopicPrompt(state) {
+function pickTopicPrompt(state, options = {}) {
   const lang = state.language || 'en';
+  const card = t(lang, 'pickTopic');
+  const lines = options.greet ? [t(lang, 'welcomeQuery'), card] : [card];
   return {
     state: { ...state, stage: 'pick_topic', language: lang },
-    response: reply(t(lang, 'pickTopic'), {
+    response: reply(lines, {
       suggestions: topicSuggestions(lang),
     }),
   };

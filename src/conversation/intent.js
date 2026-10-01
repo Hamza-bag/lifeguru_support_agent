@@ -43,6 +43,13 @@ function detectReplyLanguage(text) {
   return { locale: 'en', mirror: false, register: 'en' };
 }
 
+/** Stretched hello (Hellooooo, hiii) — still a greeting, not a question. */
+function isGreetingLike(text) {
+  if (isPureSocialGreeting(text)) return true;
+  const lower = String(text || '').trim().toLowerCase();
+  return /^(h+e+l+o+|h+i+|he+y+|helo+|namaste+|namaskar+)[!.?\s]*$/i.test(lower);
+}
+
 /** Hi/hello only — welcome reply, no Gemini or Admin. */
 function isPureSocialGreeting(text) {
   const raw = String(text || '').trim();
@@ -87,14 +94,35 @@ function textContainsExternalLink(text) {
 }
 
 /**
+ * Asking whether a puja brings money, profit, or a result.
+ * That is a knowledge-base question, not a demand to return a payment.
+ */
+function asksAboutMoneyOutcome(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (/\b(refund|money back)\b/.test(lower) || /रिफंड/.test(raw)) return false;
+  if (/\b(cancel|cancellation)\b/.test(lower) && /\b(puja|pooja|booking|order|chadhava)\b/.test(lower)) {
+    return false;
+  }
+  if (/\b(returns?|profit|guarantee|guaranteed)\b/.test(lower) || /गारंटी/.test(raw)) return true;
+  const money = /\b(paisa|paise|money|fayda|labh|dhan)\b/.test(lower) || /पैसा|पैसे|फायदा|लाभ|धन/.test(raw);
+  const outcome =
+    /\b(milega|milegi|milta|milti|hoga|hogi|aayega|aayegi)\b/.test(lower) ||
+    /मिलेगा|मिलेगी|होगा|होगी/.test(raw);
+  return money && outcome;
+}
+
+/**
  * Refund or cancellation of a booking, in English or Hindi.
  * The team still handles it, after we know which booking.
  * AutoPay how-to, anger, and other languages are left for the model.
+ * A question about whether the puja itself brings money is also left for the model.
  */
 function isRefundOrCancelRequest(text) {
   const raw = String(text || '');
   const lower = raw.toLowerCase();
   if (/\b(autopay|auto[\s-]?pay|mandate)\b/.test(lower) || /ऑटोपे|मंडेट/.test(raw)) return false;
+  if (asksAboutMoneyOutcome(raw)) return false;
   if (/\b(refund|money back|paisa wapas)\b/.test(lower)) return true;
   if (/\b(cancel|cancellation)\b/.test(lower) && /\b(puja|pooja|booking|order|chadhava)\b/.test(lower)) {
     return true;
@@ -110,12 +138,19 @@ function mentionsLive(text) {
 function mentionsOwnBooking(text) {
   const raw = String(text || '');
   const lower = raw.toLowerCase();
-  return /\b(my|meri|mera|mere|link|opted|included)\b/.test(lower) || /मेरी|मेरा|लिंक/.test(raw);
+  return /\b(my|meri|mera|mere|opted|included)\b/.test(lower) || /मेरी|मेरा/.test(raw);
 }
 
 /** Any “is this puja live?” that is not about their booking. Never answer from the puja name. */
 function isCatalogueLiveQuestion(text) {
-  return mentionsLive(text) && !mentionsOwnBooking(text);
+  if (!mentionsLive(text) || mentionsOwnBooking(text)) return false;
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  // Hearing or seeing a name on a stream is not "which puja is live".
+  if (/\b(sunai|naam|name|clear|inaudible|network|glitch)\b/.test(lower) || /सुनाई|नाम/.test(raw)) {
+    return false;
+  }
+  return true;
 }
 
 /** Their own booking’s live add-on. Confirmed only from the LivePuja line item. */
@@ -169,8 +204,16 @@ function isSankalpOrGotraChangeRequest(text) {
   const raw = String(text || '');
   const lower = raw.toLowerCase();
   const target = /\b(gotra|naam|name|sankalp)\b/.test(lower) || /गोत्र|नाम|संकल्प/.test(raw);
-  const change = /\b(change|badal|update|correct|galat|kardo|kar do)\b/.test(lower) || /बदल|गलत/.test(raw);
-  return target && change;
+  if (!target) return false;
+  const changeAction = /\b(change|badal|update|correct|kardo|kar do)\b/.test(lower) || /बदल/.test(raw);
+  if (changeAction) return true;
+  const describedWrong = /\bgalat\b/.test(lower) || /गलत/.test(raw);
+  if (!describedWrong) return false;
+  // "The pandit said the name wrong" is about the video, not a change request.
+  if (/\b(video|pandit|bola|sunai|stream)\b/.test(lower) || /वीडियो|पंडित|बोला|सुनाई/.test(raw)) {
+    return false;
+  }
+  return true;
 }
 
 /** How long the puja lasts. A “when is it” question is a booking lookup, not this. */
@@ -180,6 +223,26 @@ function isPujaDurationQuery(text) {
   if (/\b(how long|duration|kitni der|kitne time|kitna time|kitne ghante)\b/.test(lower)) return true;
   if (/कितनी देर|कितने घंटे|कितना समय/.test(raw)) return true;
   return /\b(chalegi|chalti)\b/.test(lower) && /\b(puja|pooja)\b/.test(lower);
+}
+
+/**
+ * They already got the steps and now want us to do the action.
+ * "kaise / how do I" is still a question we should answer.
+ */
+function insistsAgentPerform(text) {
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  if (/\b(kaise|how do i|how to|how can i)\b/.test(lower)) return false;
+  if (/\b(tum hi|aap hi|you do it|you yourself)\b/.test(lower)) return true;
+  if (/\bkhud\b/.test(lower) && /\b(karo|kardo|kar do|cancel|band)\b/.test(lower)) return true;
+  if (
+    /\b(tum|aap)\b/.test(lower) &&
+    /\b(karo|kardo|kar do|cancel karo|band karo|rok do)\b/.test(lower)
+  ) {
+    return true;
+  }
+  if (/\b(cancel|stop|band) (it|this) for me\b/.test(lower)) return true;
+  return /तुम ही|आप ही|तुम करो|आप करो|आप कर दो|खुद करो/.test(raw);
 }
 
 function autopayFaqId(text) {
@@ -277,6 +340,12 @@ function isComplexSupportMessage(text) {
 /** Short, explicit post-booking status questions — safe for keyword "puja/video" routing. */
 function isClearPostBookingStatusQuery(text) {
   if (isComplexSupportMessage(text)) return false;
+  if (asksAboutMoneyOutcome(text)) return false;
+  const lowerEarly = String(text || '').toLowerCase();
+  if (/\b(kya karun|kya karu|what should i do|what do i do)\b/.test(lowerEarly)) return false;
+  if (/\b(kab hogi|kab hoga|when will)\b/.test(lowerEarly) || /कब होगी|कब होगा/.test(String(text || ''))) {
+    return false;
+  }
   const raw = String(text || '').trim();
   const lower = raw.toLowerCase();
   const words = wordCount(raw);
@@ -383,6 +452,7 @@ module.exports = {
   detectLanguage,
   detectReplyLanguage,
   isPureSocialGreeting,
+  isGreetingLike,
   isPureThanks,
   isCatalogueLiveQuestion,
   isOwnLiveBookingQuestion,
@@ -393,6 +463,7 @@ module.exports = {
   isIrritatedOrAngry,
   isSankalpOrGotraChangeRequest,
   isPujaDurationQuery,
+  insistsAgentPerform,
   autopayFaqId,
   isDamagedPrasad,
   isAddPrasadRequest,

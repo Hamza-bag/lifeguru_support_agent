@@ -4,6 +4,7 @@ const {
   wordCount,
   isClearPostBookingStatusQuery,
   isPureSocialGreeting,
+  isGreetingLike,
   isPureThanks,
   wantsHuman,
   requiresDirectHumanHandoffText,
@@ -29,12 +30,12 @@ function shouldUseBurstBuffer(state, text, input) {
   const raw = String(text || '').trim();
   if (!raw) return false;
   const stage = state?.stage || 'await_query';
-  if (!['await_query', 'pick_topic'].includes(stage)) return false;
+  if (stage !== 'await_query') return false;
   if (!isBurstFragmentOnly(raw)) return false;
   if (state?.orderId && followUpOnOpenBooking(raw)) return false;
   if (shouldSkipLlmClassify(state, raw)) return false;
   if (requiresDirectHumanHandoffText(raw)) return false;
-  if (isPureSocialGreeting(raw) || isPureThanks(raw)) return false;
+  if (isGreetingLike(raw) || isPureThanks(raw)) return false;
   if (intentFromTopicChoice(raw)) return false;
   return true;
 }

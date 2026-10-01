@@ -102,4 +102,25 @@ describe('rules-first routing', () => {
   it('does not treat the word puja alone as an existing booking', () => {
     assert.equal(tryRulesRoute({ stage: 'await_query' }, 'tell me about puja'), null);
   });
+
+  it('leaves money-outcome questions for the model and keeps a real refund', () => {
+    assert.equal(tryRulesRoute({ stage: 'await_query' }, 'Yeh puja se paisa wapas milega na?'), null);
+    assert.equal(tryRulesRoute({ stage: 'await_query' }, 'Will this puja give me profit'), null);
+    assert.equal(tryRulesRoute({ stage: 'await_query' }, 'paisa wapas karo').route, 'booking_handoff');
+  });
+
+  it('leaves a mispronounced name and a live-stream complaint for the model', () => {
+    assert.equal(tryRulesRoute({ stage: 'await_query' }, 'Pandit ji ne mera naam galat bola.'), null);
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'Live stream mein naam clear nahi sunai diya.'),
+      null,
+    );
+    assert.equal(
+      tryRulesRoute({ stage: 'await_query' }, 'naam galat hai change kardo').route,
+      'sankalp_change',
+    );
+    const liveLink = tryRulesRoute({ stage: 'await_query' }, 'Yeh puja live hai kya? Link bhejo.');
+    assert.equal(liveLink.route, 'faq');
+    assert.equal(liveLink.faqId, 'live_puja_not_available');
+  });
 });

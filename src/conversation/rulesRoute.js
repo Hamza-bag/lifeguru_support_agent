@@ -14,6 +14,7 @@ const {
   isIrritatedOrAngry,
   isSankalpOrGotraChangeRequest,
   isPujaDurationQuery,
+  insistsAgentPerform,
   autopayFaqId,
   isDamagedPrasad,
   isAddPrasadRequest,
@@ -24,6 +25,40 @@ const {
 } = require('./intent');
 const { parseOrderLookup } = require('../orders/orderLookup');
 const { whichPujaFaqId } = require('../faq/whichPuja');
+
+/** Two answers for the same card, then a person on the next ask. */
+function faqAnswerOrRepeat(state, lang, faqId, reason) {
+  if (state.lastFaqId === faqId && (state.faqRepeatCount || 0) >= 2) {
+    return {
+      language: lang,
+      route: 'human',
+      intent: 'human',
+      reason: 'rules_faq_repeat',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
+  return {
+    language: lang,
+    route: 'faq',
+    intent: null,
+    faqId,
+    reason,
+    usedLlm: false,
+    llmError: false,
+  };
+}
+
+/** After the cancel steps, a debit question gets the charge card instead of the same steps. */
+function autopayChargeFollowUp(state, text) {
+  if (state.lastFaqId !== 'sub_autopay_cancel_steps') return null;
+  const raw = String(text || '');
+  const lower = raw.toLowerCase();
+  const cut =
+    /\b(paisa|paise|kata|kat|cut|charged|deducted|debit|501|301|701)\b/.test(lower) ||
+    /पैसा|कट/.test(raw);
+  return cut ? 'autopay_501' : null;
+}
 
 function isVagueHelpOnly(text) {
   const raw = String(text || '').trim().toLowerCase();
@@ -45,6 +80,17 @@ function resolveRulesIntent(state, queryText) {
  */
 function tryRulesRoute(state, queryText) {
   const lang = state.language || detectLanguage(queryText);
+
+  if (state.lastFaqId && insistsAgentPerform(queryText)) {
+    return {
+      language: lang,
+      route: 'human',
+      intent: 'human',
+      reason: 'rules_insist_after_faq',
+      usedLlm: false,
+      llmError: false,
+    };
+  }
 
   if (isIrritatedOrAngry(queryText)) {
     return {
@@ -140,17 +186,10 @@ function tryRulesRoute(state, queryText) {
       (isDamagedPrasad(queryText) ? 'prasad_box_damaged' : null) ||
       (isAddPrasadRequest(queryText) ? 'prasad_add_after_booking' : null) ||
       (isPaymentFailedBooking(queryText) ? 'payment_done_not_confirmed' : null) ||
+      autopayChargeFollowUp(state, queryText) ||
       autopayFaqId(queryText);
     if (faqId) {
-      return {
-        language: lang,
-        route: 'faq',
-        intent: null,
-        faqId,
-        reason: `rules_${faqId}`,
-        usedLlm: false,
-        llmError: false,
-      };
+      return faqAnswerOrRepeat(state, lang, faqId, `rules_${faqId}`);
     }
   }
 

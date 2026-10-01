@@ -30,8 +30,8 @@ function buildClassifyPrompt(userText, recentConversation = '', catalog = []) {
     ? `\nRecent conversation (oldest first):\n${recentConversation}\n`
     : '';
   const catalogBlock = catalog.length
-    ? `\nKnowledge-base catalog (use an id only when route is "faq"):\n${catalog
-        .map((c) => `- ${c.id}: ${c.hint}`)
+    ? `\nKnowledge-base catalog (use an id only when route is "faq"). Match the customer's meaning to the question. Use the cue only when two questions are close. Never invent an id.\n${catalog
+        .map((c) => `- ${c.id} | ${c.ask || c.cue} | ${c.cue}`)
         .join('\n')}\n`
     : '';
   return `${classifyRulesBlockForPrompt()}You are LifeGuru's customer support router. The person messaging is a LifeGuru customer asking about Mandir Puja, Chadhava, or their booking. Output JSON only — no chat reply.
@@ -61,6 +61,7 @@ Routes:
 - "faq": LifeGuru policy/how-to, no order lookup (autopay explainer, how to book, want to book/get puja done — not existing order status). When route is "faq", set faqId to one catalog id that matches the question. For every other route, faqId must be null. Never invent an id.
 - "human": complaint, fraud, media/screenshot, video delay insist/anger, sensitive; long emotional life/business distress; custom sales guarantees or partner money disputes; health/family hardship — even if they mention puja/₹51/sankalp. Also human when they want a person, even if a word is misspelled (for example a transfer or connect request). Read the meaning, not the exact spelling.
 - A refund or cancellation of a booking is not "human" yet. Route "booking_handoff" so we ask which booking first, then connect them.
+- A question about whether a puja brings money, profit, or a guaranteed result is "faq". Pick the catalog card. It is not "booking_handoff".
 - Name or gotra change is not "human" yet. Route "sankalp_change" so we ask which booking first. The team checks whether that booking can still be changed.
 - NOT "admin": they want help opening a business, minimum sales promises, or puja "so business runs" — that is human, not booking status lookup.
 - "clarify": hi/hello only, vague "help", or ambiguous (one short routing step — never answer off-topic).

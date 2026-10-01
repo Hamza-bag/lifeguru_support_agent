@@ -15,6 +15,8 @@ function whichPujaFaqId(text) {
     /\b(konsi|kaunsi|which|ke liye|karani hai|karni hai|karwana|any puja|koi puja)\b/.test(lower) ||
     /कौन सी|कौनसी|के लिए/.test(raw);
   if (!choosing) return null;
+  // "When will it happen" is a wish, not a request to pick a puja from the list.
+  if (/\b(kab hogi|kab hoga|when will)\b/.test(lower) || /कब होगी|कब होगा/.test(raw)) return null;
   if (/\b(karz|debt|loan)\b/.test(lower) || /कर्ज|ऋण/.test(raw)) return 'which_puja_debt';
   if (/\b(shaadi|vivah|marriage|wedding)\b/.test(lower) || /शादी|विवाह/.test(raw)) {
     return 'which_puja_marriage';

@@ -4,6 +4,7 @@ const {
   wantsNoMore,
   wantsYesMore,
   classifyIntent,
+  isGreetingLike,
   followUpOnOpenBooking,
   isOrderIntent,
   detectReplyLanguage,
@@ -114,8 +115,12 @@ async function handleOrderQuery(state, queryText, factsClient, input) {
     return faq;
   }
   if (routed.route === 'clarify') {
-    if (routed.classifyMeta?.reason === 'rules_help') {
-      const picked = pickTopicPrompt({ ...state, pendingText: queryText, pendingIntent: null });
+    const greet = isGreetingLike(queryText);
+    if (greet || routed.classifyMeta?.reason === 'rules_help') {
+      const picked = pickTopicPrompt(
+        { ...state, pendingText: queryText, pendingIntent: null },
+        { greet },
+      );
       picked.response = withClassifyMeta(picked.response, routed.classifyMeta);
       return picked;
     }
@@ -193,10 +198,12 @@ async function handlePickTopic(state, text, factsClient, input) {
   }
   if (routed.route === 'clarify') {
     const attempts = (state.clarifyAttempts || 0) + 1;
-    if (attempts >= policy.maxAskMoreAttempts || routed.classifyMeta?.reason !== 'rules_help') {
+    const greet = isGreetingLike(text);
+    const showMenu = greet || routed.classifyMeta?.reason === 'rules_help';
+    if (!showMenu || attempts >= policy.maxAskMoreAttempts) {
       return { state, response: withClassifyMeta(forwardUnclear(lang), routed.classifyMeta) };
     }
-    const picked = pickTopicPrompt({ ...state, clarifyAttempts: attempts });
+    const picked = pickTopicPrompt({ ...state, clarifyAttempts: attempts }, { greet });
     picked.response = withClassifyMeta(picked.response, routed.classifyMeta);
     return picked;
   }

@@ -13,6 +13,8 @@ function emptyState() {
     chatPhone: null,
     askMoreAttempts: 0,
     clarifyAttempts: 0,
+    lastFaqId: null,
+    faqRepeatCount: 0,
     turns: [],
   };
 }
